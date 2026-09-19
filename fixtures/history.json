@@ -15,7 +15,8 @@
       "registered_at": "2025-08-31T11:51:47.395000Z",
       "first_match_at": "2025-08-31T18:08:07.076000Z",
       "last_match_at": "2025-08-31T20:39:31.749000Z",
-      "matches_played": 3
+      "matches_played": 3,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-0e14c7c6",
@@ -26,7 +27,8 @@
       "registered_at": "2025-08-25T16:32:41.652000Z",
       "first_match_at": "2025-08-25T16:34:09.515000Z",
       "last_match_at": "2026-03-16T16:44:36.860261Z",
-      "matches_played": 35
+      "matches_played": 35,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-4d6040ac",
@@ -37,7 +39,8 @@
       "registered_at": "2025-08-25T16:32:46.999000Z",
       "first_match_at": "2025-08-25T16:34:31.652000Z",
       "last_match_at": "2026-03-16T16:44:03.123380Z",
-      "matches_played": 49
+      "matches_played": 49,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-276223b4",
@@ -48,18 +51,20 @@
       "registered_at": "2025-09-21T12:12:59.236000Z",
       "first_match_at": "2025-09-21T18:44:46.909000Z",
       "last_match_at": "2025-09-21T18:46:55.668000Z",
-      "matches_played": 3
+      "matches_played": 3,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-e3b73ccb",
       "name": "Uffe Thomsen",
       "entry_elo": 1000.0,
       "position": "both",
-      "is_guest": true,
+      "is_guest": false,
       "registered_at": "2026-01-18T08:03:27.164508Z",
       "first_match_at": "2026-01-18T20:11:07.620388Z",
       "last_match_at": "2026-03-01T19:44:54.339927Z",
-      "matches_played": 9
+      "matches_played": 9,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-ff5f1d49",
@@ -70,18 +75,20 @@
       "registered_at": "2025-11-02T16:32:29.209000Z",
       "first_match_at": "2025-11-02T19:22:26.621000Z",
       "last_match_at": "2025-11-02T19:24:23.940000Z",
-      "matches_played": 3
+      "matches_played": 3,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-174d80a5",
       "name": "Gorm Gade",
       "entry_elo": 1000.0,
       "position": "both",
-      "is_guest": true,
+      "is_guest": false,
       "registered_at": "2025-09-07T09:59:03.079000Z",
       "first_match_at": "2025-09-07T18:38:48.817000Z",
       "last_match_at": "2026-01-12T19:32:12.177893Z",
-      "matches_played": 12
+      "matches_played": 12,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-68a9c117",
@@ -92,7 +99,8 @@
       "registered_at": "2026-01-11T15:01:35.472604Z",
       "first_match_at": "2026-01-12T19:28:28.081307Z",
       "last_match_at": "2026-03-16T16:44:03.123380Z",
-      "matches_played": 18
+      "matches_played": 18,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-cf25b5d1",
@@ -103,7 +111,8 @@
       "registered_at": "2025-09-29T16:59:07.844000Z",
       "first_match_at": "2025-09-29T17:00:53.563000Z",
       "last_match_at": "2026-03-15T16:14:21.748576Z",
-      "matches_played": 27
+      "matches_played": 27,
+      "entry_rating": 1100.0
     },
     {
       "id": "player-dc078d70",
@@ -114,7 +123,8 @@
       "registered_at": "2025-08-25T16:32:52.016000Z",
       "first_match_at": "2025-08-25T16:34:31.652000Z",
       "last_match_at": "2026-03-16T16:44:03.123380Z",
-      "matches_played": 44
+      "matches_played": 44,
+      "entry_rating": 900.0
     },
     {
       "id": "player-e40d5390",
@@ -125,7 +135,8 @@
       "registered_at": "2026-02-08T15:10:09.186192Z",
       "first_match_at": "2026-02-22T10:17:33.311699Z",
       "last_match_at": "2026-02-22T10:19:51.767350Z",
-      "matches_played": 3
+      "matches_played": 3,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-7ef787f5",
@@ -136,7 +147,8 @@
       "registered_at": "2025-08-25T16:32:57.577000Z",
       "first_match_at": "2025-08-25T16:34:09.515000Z",
       "last_match_at": "2026-03-16T16:44:03.123380Z",
-      "matches_played": 20
+      "matches_played": 20,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-26aafd43",
@@ -147,7 +159,8 @@
       "registered_at": "2025-09-21T12:13:10.421000Z",
       "first_match_at": "2025-09-21T18:44:46.909000Z",
       "last_match_at": "2025-09-21T18:46:55.668000Z",
-      "matches_played": 3
+      "matches_played": 3,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-b4db21b2",
@@ -158,7 +171,8 @@
       "registered_at": "2025-09-29T16:59:54.650000Z",
       "first_match_at": "2025-09-29T17:00:53.563000Z",
       "last_match_at": "2025-09-29T17:00:53.563000Z",
-      "matches_played": 1
+      "matches_played": 1,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-deada6fb",
@@ -169,7 +183,8 @@
       "registered_at": "2025-08-25T16:33:07.471000Z",
       "first_match_at": "2025-08-25T16:34:31.652000Z",
       "last_match_at": "2026-03-16T16:44:36.860261Z",
-      "matches_played": 31
+      "matches_played": 31,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-c431b994",
@@ -180,7 +195,8 @@
       "registered_at": "2025-08-25T16:33:13.786000Z",
       "first_match_at": "2025-08-25T16:34:31.652000Z",
       "last_match_at": "2025-08-25T16:35:08.969000Z",
-      "matches_played": 2
+      "matches_played": 2,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-05ebbfd2",
@@ -191,7 +207,8 @@
       "registered_at": "2025-11-16T16:28:44.265000Z",
       "first_match_at": "2025-11-16T19:37:10.406000Z",
       "last_match_at": "2025-11-16T19:39:53.699000Z",
-      "matches_played": 3
+      "matches_played": 3,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-551dbbf0",
@@ -202,7 +219,8 @@
       "registered_at": "2026-02-22T14:48:49.791576Z",
       "first_match_at": "2026-03-01T06:38:07.623355Z",
       "last_match_at": "2026-03-01T06:40:44.269512Z",
-      "matches_played": 3
+      "matches_played": 3,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-4443994a",
@@ -213,18 +231,20 @@
       "registered_at": "2026-02-22T15:17:25.075033Z",
       "first_match_at": "2026-03-01T06:38:07.623355Z",
       "last_match_at": "2026-03-01T06:40:44.269512Z",
-      "matches_played": 3
+      "matches_played": 3,
+      "entry_rating": 1100.0
     },
     {
       "id": "player-695367f9",
       "name": "Carl Kragh",
       "entry_elo": 1000.0,
       "position": "left",
-      "is_guest": true,
+      "is_guest": false,
       "registered_at": "2025-08-31T05:47:48.545000Z",
       "first_match_at": "2025-08-31T18:07:35.472000Z",
       "last_match_at": "2025-09-07T18:42:27.509000Z",
-      "matches_played": 6
+      "matches_played": 6,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-d7f8ab03",
@@ -235,7 +255,8 @@
       "registered_at": "2026-02-08T15:09:24.041705Z",
       "first_match_at": "2026-02-22T10:16:49.027680Z",
       "last_match_at": "2026-02-22T10:19:51.767350Z",
-      "matches_played": 3
+      "matches_played": 3,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-7496ab40",
@@ -246,7 +267,8 @@
       "registered_at": "2025-08-25T16:33:22.078000Z",
       "first_match_at": "2025-08-25T16:34:09.515000Z",
       "last_match_at": "2026-03-16T16:44:36.860261Z",
-      "matches_played": 33
+      "matches_played": 33,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-ecfa70a1",
@@ -257,7 +279,8 @@
       "registered_at": "2025-08-31T05:47:12.088000Z",
       "first_match_at": "2025-08-31T18:07:35.472000Z",
       "last_match_at": "2025-08-31T20:38:56.541000Z",
-      "matches_played": 3
+      "matches_played": 3,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-de57d3f8",
@@ -268,7 +291,8 @@
       "registered_at": "2025-10-26T16:01:45.996000Z",
       "first_match_at": "2025-10-28T18:27:15.751000Z",
       "last_match_at": "2025-10-28T18:29:48.300000Z",
-      "matches_played": 3
+      "matches_played": 3,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-0bf6e48d",
@@ -279,7 +303,8 @@
       "registered_at": "2025-10-26T16:02:05.141000Z",
       "first_match_at": "2025-10-28T18:27:15.751000Z",
       "last_match_at": "2026-03-01T19:44:24.865629Z",
-      "matches_played": 20
+      "matches_played": 20,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-89e469b7",
@@ -290,7 +315,8 @@
       "registered_at": "2025-09-07T09:59:11.629000Z",
       "first_match_at": "2025-09-07T18:39:34.322000Z",
       "last_match_at": "2025-09-07T18:41:53.798000Z",
-      "matches_played": 3
+      "matches_played": 3,
+      "entry_rating": 1000.0
     },
     {
       "id": "player-96a7286a",
@@ -301,7 +327,8 @@
       "registered_at": "2025-09-29T16:59:38.288000Z",
       "first_match_at": "2025-09-29T17:01:38.751000Z",
       "last_match_at": "2025-09-29T17:02:33.308000Z",
-      "matches_played": 2
+      "matches_played": 2,
+      "entry_rating": 800.0
     },
     {
       "id": "player-9d06de2b",
@@ -312,7 +339,8 @@
       "registered_at": "2025-08-25T16:33:29.194000Z",
       "first_match_at": "2025-08-25T16:34:09.515000Z",
       "last_match_at": "2026-03-16T16:44:36.860261Z",
-      "matches_played": 47
+      "matches_played": 47,
+      "entry_rating": 1000.0
     }
   ],
   "matches": [

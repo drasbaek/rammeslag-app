@@ -37,10 +37,23 @@ def to_match_inputs(history: dict[str, Any]) -> list[MatchInput]:
     ]
 
 
+def to_entry_ratings(history: dict[str, Any]) -> dict[str, float]:
+    """Each player's entry rating, as an admin set it.
+
+    Absent players fall back to SEED_RATING inside compute().
+    """
+    return {
+        player["id"]: float(player["entry_rating"])
+        for player in history["players"]
+        if player.get("entry_rating") is not None
+    }
+
+
 def build_expected(history: dict[str, Any], result: RatingResult) -> dict[str, Any]:
     """The golden snapshot, ladder first so a reviewer sees who moved."""
     names = {player["id"]: player["name"] for player in history["players"]}
     guests = {player["id"]: player["is_guest"] for player in history["players"]}
+    entry = to_entry_ratings(history)
 
     ladder = [
         {
@@ -49,6 +62,7 @@ def build_expected(history: dict[str, Any], result: RatingResult) -> dict[str, A
             "name": names.get(player_id, player_id),
             "is_guest": guests.get(player_id),
             "matches_played": result.matches_played[player_id],
+            "entry_rating": entry.get(player_id),
             "rating": rating,
         }
         for rank, (player_id, rating) in enumerate(
@@ -83,7 +97,9 @@ def build_expected(history: dict[str, Any], result: RatingResult) -> dict[str, A
 
 def replay(history: dict[str, Any]) -> dict[str, Any]:
     """History in, golden snapshot out."""
-    return build_expected(history, compute(to_match_inputs(history)))
+    return build_expected(
+        history, compute(to_match_inputs(history), to_entry_ratings(history))
+    )
 
 
 def render(payload: dict[str, Any]) -> str:

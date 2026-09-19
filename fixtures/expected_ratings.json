@@ -19,39 +19,44 @@
       "name": "Klaus Hedegaard",
       "is_guest": false,
       "matches_played": 27,
-      "rating": 1254.7872878447583
+      "entry_rating": 1100.0,
+      "rating": 1303.691650636147
     },
     {
       "rank": 2,
-      "player_id": "player-9d06de2b",
-      "name": "Dennis Damgaard",
-      "is_guest": false,
-      "matches_played": 47,
-      "rating": 1085.625605523471
-    },
-    {
-      "rank": 3,
-      "player_id": "player-174d80a5",
-      "name": "Gorm Gade",
-      "is_guest": true,
-      "matches_played": 12,
-      "rating": 1077.2770861349559
-    },
-    {
-      "rank": 4,
       "player_id": "player-4443994a",
       "name": "Helge Dahl",
       "is_guest": true,
       "matches_played": 3,
-      "rating": 1071.0564390749196
+      "entry_rating": 1100.0,
+      "rating": 1161.5891192285098
     },
     {
-      "rank": 5,
+      "rank": 3,
+      "player_id": "player-9d06de2b",
+      "name": "Dennis Damgaard",
+      "is_guest": false,
+      "matches_played": 47,
+      "entry_rating": 1000.0,
+      "rating": 1079.2292175469065
+    },
+    {
+      "rank": 4,
       "player_id": "player-0e14c7c6",
       "name": "Ivan Friis",
       "is_guest": false,
       "matches_played": 35,
-      "rating": 1070.4994357656017
+      "entry_rating": 1000.0,
+      "rating": 1074.343339127163
+    },
+    {
+      "rank": 5,
+      "player_id": "player-174d80a5",
+      "name": "Gorm Gade",
+      "is_guest": false,
+      "matches_played": 12,
+      "entry_rating": 1000.0,
+      "rating": 1072.8885428981089
     },
     {
       "rank": 6,
@@ -59,7 +64,8 @@
       "name": "Henrik Hansen",
       "is_guest": false,
       "matches_played": 49,
-      "rating": 1063.9251758844441
+      "entry_rating": 1000.0,
+      "rating": 1064.9935774519902
     },
     {
       "rank": 7,
@@ -67,47 +73,53 @@
       "name": "Karsten Knudsen",
       "is_guest": false,
       "matches_played": 20,
-      "rating": 1035.6557983915568
+      "entry_rating": 1000.0,
+      "rating": 1032.907022860296
     },
     {
       "rank": 8,
-      "player_id": "player-b4db21b2",
-      "name": "Palle Poulsen",
-      "is_guest": true,
-      "matches_played": 1,
-      "rating": 1027.142717857783
-    },
-    {
-      "rank": 9,
       "player_id": "player-7ef787f5",
       "name": "Valdemar Ulrich",
       "is_guest": false,
       "matches_played": 20,
-      "rating": 1026.6145875927439
+      "entry_rating": 1000.0,
+      "rating": 1031.1712095483158
+    },
+    {
+      "rank": 9,
+      "player_id": "player-b4db21b2",
+      "name": "Palle Poulsen",
+      "is_guest": true,
+      "matches_played": 1,
+      "entry_rating": 1000.0,
+      "rating": 1023.2217274571664
     },
     {
       "rank": 10,
-      "player_id": "player-26aafd43",
-      "name": "Rune Qvist",
-      "is_guest": true,
-      "matches_played": 3,
-      "rating": 1026.5202146734734
-    },
-    {
-      "rank": 11,
-      "player_id": "player-276223b4",
-      "name": "Niels Nielsen",
-      "is_guest": true,
-      "matches_played": 3,
-      "rating": 1026.5202146734734
-    },
-    {
-      "rank": 12,
       "player_id": "player-05ebbfd2",
       "name": "Erik Winther",
       "is_guest": true,
       "matches_played": 3,
-      "rating": 1025.3916711248655
+      "entry_rating": 1000.0,
+      "rating": 1022.0687610404306
+    },
+    {
+      "rank": 11,
+      "player_id": "player-26aafd43",
+      "name": "Rune Qvist",
+      "is_guest": true,
+      "matches_played": 3,
+      "entry_rating": 1000.0,
+      "rating": 1020.6082780476322
+    },
+    {
+      "rank": 12,
+      "player_id": "player-276223b4",
+      "name": "Niels Nielsen",
+      "is_guest": true,
+      "matches_played": 3,
+      "entry_rating": 1000.0,
+      "rating": 1020.6082780476322
     },
     {
       "rank": 13,
@@ -115,7 +127,8 @@
       "name": "Aksel Agerskov",
       "is_guest": true,
       "matches_played": 2,
-      "rating": 1003.0252100840337
+      "entry_rating": 1000.0,
+      "rating": 1002.592828197193
     },
     {
       "rank": 14,
@@ -123,7 +136,8 @@
       "name": "Joakim Greve",
       "is_guest": true,
       "matches_played": 3,
-      "rating": 987.0536328139689
+      "entry_rating": 1000.0,
+      "rating": 989.214092560628
     },
     {
       "rank": 15,
@@ -131,31 +145,35 @@
       "name": "Mikkel Madsen",
       "is_guest": false,
       "matches_played": 18,
-      "rating": 981.3230752011743
+      "entry_rating": 1000.0,
+      "rating": 985.7583592678734
     },
     {
       "rank": 16,
-      "player_id": "player-e3b73ccb",
-      "name": "Uffe Thomsen",
-      "is_guest": true,
-      "matches_played": 9,
-      "rating": 979.0109681738649
-    },
-    {
-      "rank": 17,
-      "player_id": "player-d7f8ab03",
-      "name": "Svend Riis",
-      "is_guest": true,
-      "matches_played": 3,
-      "rating": 977.220348382271
-    },
-    {
-      "rank": 18,
       "player_id": "player-551dbbf0",
       "name": "Jeppe Jensen",
       "is_guest": true,
       "matches_played": 3,
-      "rating": 975.3456951152295
+      "entry_rating": 1000.0,
+      "rating": 983.4620468580888
+    },
+    {
+      "rank": 17,
+      "player_id": "player-e3b73ccb",
+      "name": "Uffe Thomsen",
+      "is_guest": false,
+      "matches_played": 9,
+      "entry_rating": 1000.0,
+      "rating": 978.6927580229785
+    },
+    {
+      "rank": 18,
+      "player_id": "player-d7f8ab03",
+      "name": "Svend Riis",
+      "is_guest": true,
+      "matches_played": 3,
+      "entry_rating": 1000.0,
+      "rating": 977.3761294160541
     },
     {
       "rank": 19,
@@ -163,7 +181,8 @@
       "name": "Esben Eriksen",
       "is_guest": true,
       "matches_played": 3,
-      "rating": 972.5841505341127
+      "entry_rating": 1000.0,
+      "rating": 973.7725296682274
     },
     {
       "rank": 20,
@@ -171,7 +190,8 @@
       "name": "Ole Olesen",
       "is_guest": false,
       "matches_played": 33,
-      "rating": 961.3701014116741
+      "entry_rating": 1000.0,
+      "rating": 953.8279870935363
     },
     {
       "rank": 21,
@@ -179,15 +199,17 @@
       "name": "Gustav Bech",
       "is_guest": true,
       "matches_played": 3,
-      "rating": 953.1936550626689
+      "entry_rating": 1000.0,
+      "rating": 950.1057739313569
     },
     {
       "rank": 22,
       "player_id": "player-695367f9",
       "name": "Carl Kragh",
-      "is_guest": true,
+      "is_guest": false,
       "matches_played": 6,
-      "rating": 952.0953247628404
+      "entry_rating": 1000.0,
+      "rating": 949.3559356806277
     },
     {
       "rank": 23,
@@ -195,39 +217,44 @@
       "name": "Thor Skovgaard",
       "is_guest": true,
       "matches_played": 3,
-      "rating": 949.405857272174
+      "entry_rating": 1000.0,
+      "rating": 947.332235712626
     },
     {
       "rank": 24,
-      "player_id": "player-96a7286a",
-      "name": "Ib Ipsen",
-      "is_guest": true,
-      "matches_played": 2,
-      "rating": 940.8393492694913
-    },
-    {
-      "rank": 25,
       "player_id": "player-ff5f1d49",
       "name": "Lars Lundberg",
       "is_guest": true,
       "matches_played": 3,
-      "rating": 932.5373213787032
+      "entry_rating": 1000.0,
+      "rating": 935.3783106551484
     },
     {
-      "rank": 26,
+      "rank": 25,
       "player_id": "player-de57d3f8",
       "name": "Finn Fisker",
       "is_guest": true,
       "matches_played": 3,
-      "rating": 920.2845930157133
+      "entry_rating": 1000.0,
+      "rating": 921.3808436708779
     },
     {
-      "rank": 27,
+      "rank": 26,
       "player_id": "player-deada6fb",
       "name": "Bjarne Bundgaard",
       "is_guest": false,
       "matches_played": 31,
-      "rating": 917.1884611246397
+      "entry_rating": 1000.0,
+      "rating": 916.4143977786296
+    },
+    {
+      "rank": 27,
+      "player_id": "player-96a7286a",
+      "name": "Ib Ipsen",
+      "is_guest": true,
+      "matches_played": 2,
+      "entry_rating": 800.0,
+      "rating": 758.2963287144316
     },
     {
       "rank": 28,
@@ -235,7 +262,8 @@
       "name": "Bo Vestergaard",
       "is_guest": false,
       "matches_played": 44,
-      "rating": 766.1062164646116
+      "entry_rating": 900.0,
+      "rating": 722.1295554429461
     }
   ],
   "history": [
@@ -271,16 +299,16 @@
         "player-deada6fb": "W"
       },
       "deltas": {
-        "player-4d6040ac": -25.88235294117647,
-        "player-dc078d70": -25.88235294117647,
-        "player-c431b994": 25.88235294117647,
-        "player-deada6fb": 25.88235294117647
+        "player-4d6040ac": -22.183085687095552,
+        "player-dc078d70": -22.183085687095552,
+        "player-c431b994": 22.183085687095552,
+        "player-deada6fb": 22.183085687095552
       },
       "ratings_after": {
-        "player-4d6040ac": 974.1176470588235,
-        "player-dc078d70": 974.1176470588235,
-        "player-c431b994": 1025.8823529411766,
-        "player-deada6fb": 1025.8823529411766
+        "player-4d6040ac": 977.8169143129045,
+        "player-dc078d70": 877.8169143129045,
+        "player-c431b994": 1022.1830856870955,
+        "player-deada6fb": 1022.1830856870955
       }
     },
     {
@@ -293,16 +321,16 @@
         "player-c431b994": "L"
       },
       "deltas": {
-        "player-0e14c7c6": 22.857142857142854,
-        "player-9d06de2b": 22.857142857142854,
-        "player-dc078d70": -22.857142857142854,
-        "player-c431b994": -22.857142857142854
+        "player-0e14c7c6": 19.590257489902562,
+        "player-9d06de2b": 19.590257489902562,
+        "player-dc078d70": -19.590257489902562,
+        "player-c431b994": -19.590257489902562
       },
       "ratings_after": {
-        "player-0e14c7c6": 1046.015037593985,
-        "player-9d06de2b": 999.6992481203008,
-        "player-dc078d70": 951.2605042016806,
-        "player-c431b994": 1003.0252100840337
+        "player-0e14c7c6": 1042.7481522267447,
+        "player-9d06de2b": 996.4323627530605,
+        "player-dc078d70": 858.2266568230019,
+        "player-c431b994": 1002.592828197193
       }
     },
     {
@@ -315,16 +343,16 @@
         "player-7ef787f5": "W"
       },
       "deltas": {
-        "player-4d6040ac": -20.88754820349633,
-        "player-7496ab40": -20.88754820349633,
-        "player-deada6fb": 20.88754820349633,
-        "player-7ef787f5": 20.88754820349633
+        "player-4d6040ac": -21.111699339384913,
+        "player-7496ab40": -21.111699339384913,
+        "player-deada6fb": 21.111699339384913,
+        "player-7ef787f5": 21.111699339384913
       },
       "ratings_after": {
-        "player-4d6040ac": 953.2300988553272,
-        "player-7496ab40": 1002.2703465333458,
-        "player-deada6fb": 1046.769901144673,
-        "player-7ef787f5": 997.7296534666542
+        "player-4d6040ac": 956.7052149735196,
+        "player-7496ab40": 1002.0461953974572,
+        "player-deada6fb": 1043.2947850264804,
+        "player-7ef787f5": 997.9538046025428
       }
     },
     {
@@ -337,16 +365,16 @@
         "player-ecfa70a1": "L"
       },
       "deltas": {
-        "player-4d6040ac": 24.403124371791538,
-        "player-9d06de2b": 24.403124371791538,
-        "player-695367f9": -24.403124371791538,
-        "player-ecfa70a1": -24.403124371791538
+        "player-4d6040ac": 24.396306011146493,
+        "player-9d06de2b": 24.396306011146493,
+        "player-695367f9": -24.396306011146493,
+        "player-ecfa70a1": -24.396306011146493
       },
       "ratings_after": {
-        "player-4d6040ac": 977.6332232271188,
-        "player-9d06de2b": 1024.1023724920924,
-        "player-695367f9": 975.5968756282084,
-        "player-ecfa70a1": 975.5968756282084
+        "player-4d6040ac": 981.1015209846661,
+        "player-9d06de2b": 1020.828668764207,
+        "player-695367f9": 975.6036939888535,
+        "player-ecfa70a1": 975.6036939888535
       }
     },
     {
@@ -359,16 +387,16 @@
         "player-dc078d70": "D"
       },
       "deltas": {
-        "player-deada6fb": -1.4221579091236247,
-        "player-38386278": -1.4221579091236247,
-        "player-0e14c7c6": 1.4221579091236247,
-        "player-dc078d70": 1.4221579091236247
+        "player-deada6fb": -4.0399645217609415,
+        "player-38386278": -4.0399645217609415,
+        "player-0e14c7c6": 4.0399645217609415,
+        "player-dc078d70": 4.0399645217609415
       },
       "ratings_after": {
-        "player-deada6fb": 1045.3477432355494,
-        "player-38386278": 998.5778420908764,
-        "player-0e14c7c6": 1047.4371955031086,
-        "player-dc078d70": 952.6826621108042
+        "player-deada6fb": 1039.2548205047194,
+        "player-38386278": 995.9600354782391,
+        "player-0e14c7c6": 1046.7881167485057,
+        "player-dc078d70": 862.2666213447628
       }
     },
     {
@@ -381,16 +409,16 @@
         "player-0e14c7c6": "W"
       },
       "deltas": {
-        "player-695367f9": -31.810002127335427,
-        "player-deada6fb": -31.810002127335427,
-        "player-4d6040ac": 31.810002127335423,
-        "player-0e14c7c6": 31.810002127335423
+        "player-695367f9": -31.399964937337675,
+        "player-deada6fb": -31.399964937337675,
+        "player-4d6040ac": 31.39996493733767,
+        "player-0e14c7c6": 31.39996493733767
       },
       "ratings_after": {
-        "player-695367f9": 943.786873500873,
-        "player-deada6fb": 1013.5377411082139,
-        "player-4d6040ac": 1009.4432253544543,
-        "player-0e14c7c6": 1079.247197630444
+        "player-695367f9": 944.2037290515158,
+        "player-deada6fb": 1007.8548555673817,
+        "player-4d6040ac": 1012.5014859220038,
+        "player-0e14c7c6": 1078.1880816858434
       }
     },
     {
@@ -403,16 +431,16 @@
         "player-dc078d70": "W"
       },
       "deltas": {
-        "player-ecfa70a1": -23.245680959779996,
-        "player-38386278": -23.245680959779996,
-        "player-9d06de2b": 23.24568095978,
-        "player-dc078d70": 23.24568095978
+        "player-ecfa70a1": -26.288099617848953,
+        "player-38386278": -26.288099617848953,
+        "player-9d06de2b": 26.288099617848953,
+        "player-dc078d70": 26.288099617848953
       },
       "ratings_after": {
-        "player-ecfa70a1": 952.3511946684284,
-        "player-38386278": 975.3321611310964,
-        "player-9d06de2b": 1047.3480534518724,
-        "player-dc078d70": 975.9283430705842
+        "player-ecfa70a1": 949.3155943710045,
+        "player-38386278": 969.6719358603901,
+        "player-9d06de2b": 1047.1167683820559,
+        "player-dc078d70": 888.5547209626118
       }
     },
     {
@@ -425,16 +453,16 @@
         "player-0e14c7c6": "D"
       },
       "deltas": {
-        "player-deada6fb": -0.8424603942404563,
-        "player-9d06de2b": -0.8424603942404563,
-        "player-ecfa70a1": 0.8424603942404563,
-        "player-0e14c7c6": 0.8424603942404563
+        "player-deada6fb": -0.7901795603523887,
+        "player-9d06de2b": -0.7901795603523887,
+        "player-ecfa70a1": 0.7901795603523887,
+        "player-0e14c7c6": 0.7901795603523887
       },
       "ratings_after": {
-        "player-deada6fb": 1012.6952807139735,
-        "player-9d06de2b": 1046.5055930576318,
-        "player-ecfa70a1": 953.1936550626689,
-        "player-0e14c7c6": 1080.0896580246845
+        "player-deada6fb": 1007.0646760070293,
+        "player-9d06de2b": 1046.3265888217034,
+        "player-ecfa70a1": 950.1057739313569,
+        "player-0e14c7c6": 1078.9782612461959
       }
     },
     {
@@ -447,16 +475,16 @@
         "player-38386278": "L"
       },
       "deltas": {
-        "player-4d6040ac": 25.926303858922385,
-        "player-695367f9": 25.926303858922385,
-        "player-dc078d70": -25.926303858922385,
-        "player-38386278": -25.926303858922385
+        "player-4d6040ac": 22.33970014776415,
+        "player-695367f9": 22.33970014776415,
+        "player-dc078d70": -22.33970014776415,
+        "player-38386278": -22.33970014776415
       },
       "ratings_after": {
-        "player-4d6040ac": 1035.3695292133766,
-        "player-695367f9": 969.7131773597954,
-        "player-dc078d70": 950.0020392116618,
-        "player-38386278": 949.405857272174
+        "player-4d6040ac": 1034.841186069768,
+        "player-695367f9": 966.5434291992799,
+        "player-dc078d70": 866.2150208148477,
+        "player-38386278": 947.332235712626
       }
     },
     {
@@ -469,16 +497,16 @@
         "player-0e14c7c6": "W"
       },
       "deltas": {
-        "player-4d6040ac": -12.890179079276463,
-        "player-9d06de2b": -12.890179079276463,
-        "player-174d80a5": 25.780358158552925,
-        "player-0e14c7c6": 12.890179079276463
+        "player-4d6040ac": -12.897655109963713,
+        "player-9d06de2b": -12.897655109963713,
+        "player-174d80a5": 25.795310219927426,
+        "player-0e14c7c6": 12.897655109963713
       },
       "ratings_after": {
-        "player-4d6040ac": 1022.4793501341002,
-        "player-9d06de2b": 1033.6154139783553,
-        "player-174d80a5": 1025.7803581585529,
-        "player-0e14c7c6": 1092.979837103961
+        "player-4d6040ac": 1021.9435309598042,
+        "player-9d06de2b": 1033.4289337117395,
+        "player-174d80a5": 1025.7953102199274,
+        "player-0e14c7c6": 1091.8759163561597
       }
     },
     {
@@ -491,16 +519,16 @@
         "player-dc078d70": "L"
       },
       "deltas": {
-        "player-695367f9": 22.245934574919094,
-        "player-deada6fb": 11.122967287459547,
-        "player-89e469b7": -22.245934574919094,
-        "player-dc078d70": -11.122967287459547
+        "player-695367f9": 19.7555824874219,
+        "player-deada6fb": 9.87779124371095,
+        "player-89e469b7": -19.7555824874219,
+        "player-dc078d70": -9.87779124371095
       },
       "ratings_after": {
-        "player-695367f9": 991.9591119347145,
-        "player-deada6fb": 1023.8182480014331,
-        "player-89e469b7": 977.7540654250809,
-        "player-dc078d70": 938.8790719242022
+        "player-695367f9": 986.2990116867018,
+        "player-deada6fb": 1016.9424672507403,
+        "player-89e469b7": 980.2444175125781,
+        "player-dc078d70": 856.3372295711367
       }
     },
     {
@@ -513,16 +541,16 @@
         "player-9d06de2b": "W"
       },
       "deltas": {
-        "player-dc078d70": -14.298779440483212,
-        "player-695367f9": -28.597558880966425,
-        "player-174d80a5": 28.59755888096642,
-        "player-9d06de2b": 14.29877944048321
+        "player-dc078d70": -12.2153764261182,
+        "player-695367f9": -24.4307528522364,
+        "player-174d80a5": 24.4307528522364,
+        "player-9d06de2b": 12.2153764261182
       },
       "ratings_after": {
-        "player-dc078d70": 924.580292483719,
-        "player-695367f9": 963.3615530537481,
-        "player-174d80a5": 1054.3779170395194,
-        "player-9d06de2b": 1047.9141934188385
+        "player-dc078d70": 844.1218531450186,
+        "player-695367f9": 961.8682588344653,
+        "player-174d80a5": 1050.2260630721637,
+        "player-9d06de2b": 1045.6443101378577
       }
     },
     {
@@ -535,16 +563,16 @@
         "player-89e469b7": "L"
       },
       "deltas": {
-        "player-0e14c7c6": 10.050666536372713,
-        "player-4d6040ac": 10.050666536372713,
-        "player-deada6fb": -10.050666536372713,
-        "player-89e469b7": -20.101333072745426
+        "player-0e14c7c6": 10.004531257487201,
+        "player-4d6040ac": 10.004531257487201,
+        "player-deada6fb": -10.004531257487201,
+        "player-89e469b7": -20.009062514974403
       },
       "ratings_after": {
-        "player-0e14c7c6": 1103.0305036403338,
-        "player-4d6040ac": 1032.5300166704728,
-        "player-deada6fb": 1013.7675814650604,
-        "player-89e469b7": 957.6527323523354
+        "player-0e14c7c6": 1101.880447613647,
+        "player-4d6040ac": 1031.9480622172914,
+        "player-deada6fb": 1006.9379359932531,
+        "player-89e469b7": 960.2353549976037
       }
     },
     {
@@ -557,16 +585,16 @@
         "player-89e469b7": "W"
       },
       "deltas": {
-        "player-deada6fb": -14.700450230816726,
-        "player-9d06de2b": -14.700450230816726,
-        "player-4d6040ac": 14.700450230816726,
-        "player-89e469b7": 29.40090046163345
+        "player-deada6fb": -14.48936878151217,
+        "player-9d06de2b": -14.48936878151217,
+        "player-4d6040ac": 14.48936878151217,
+        "player-89e469b7": 28.97873756302434
       },
       "ratings_after": {
-        "player-deada6fb": 999.0671312342437,
-        "player-9d06de2b": 1033.213743188022,
-        "player-4d6040ac": 1047.2304669012894,
-        "player-89e469b7": 987.0536328139689
+        "player-deada6fb": 992.4485672117409,
+        "player-9d06de2b": 1031.1549413563455,
+        "player-4d6040ac": 1046.4374309988036,
+        "player-89e469b7": 989.214092560628
       }
     },
     {
@@ -579,16 +607,16 @@
         "player-0e14c7c6": "W"
       },
       "deltas": {
-        "player-174d80a5": -22.532456581815463,
-        "player-695367f9": -11.266228290907732,
-        "player-dc078d70": 11.266228290907732,
-        "player-0e14c7c6": 11.266228290907732
+        "player-174d80a5": -25.02464630767541,
+        "player-695367f9": -12.512323153837706,
+        "player-dc078d70": 12.512323153837706,
+        "player-0e14c7c6": 12.512323153837706
       },
       "ratings_after": {
-        "player-174d80a5": 1031.845460457704,
-        "player-695367f9": 952.0953247628404,
-        "player-dc078d70": 935.8465207746267,
-        "player-0e14c7c6": 1114.2967319312415
+        "player-174d80a5": 1025.2014167644884,
+        "player-695367f9": 949.3559356806277,
+        "player-dc078d70": 856.6341762988562,
+        "player-0e14c7c6": 1114.3927707674848
       }
     },
     {
@@ -601,16 +629,16 @@
         "player-9d06de2b": "W"
       },
       "deltas": {
-        "player-dc078d70": -9.97489506041509,
-        "player-7496ab40": -19.94979012083018,
-        "player-4d6040ac": 9.97489506041509,
-        "player-9d06de2b": 9.97489506041509
+        "player-dc078d70": -8.687313433054564,
+        "player-7496ab40": -17.37462686610913,
+        "player-4d6040ac": 8.687313433054566,
+        "player-9d06de2b": 8.687313433054566
       },
       "ratings_after": {
-        "player-dc078d70": 925.8716257142116,
-        "player-7496ab40": 982.3205564125157,
-        "player-4d6040ac": 1057.2053619617045,
-        "player-9d06de2b": 1043.188638248437
+        "player-dc078d70": 847.9468628658017,
+        "player-7496ab40": 984.671568531348,
+        "player-4d6040ac": 1055.1247444318583,
+        "player-9d06de2b": 1039.8422547894002
       }
     },
     {
@@ -623,16 +651,16 @@
         "player-276223b4": "L"
       },
       "deltas": {
-        "player-deada6fb": 10.192453641005592,
-        "player-174d80a5": 20.384907282011184,
-        "player-26aafd43": -20.384907282011184,
-        "player-276223b4": -20.384907282011184
+        "player-deada6fb": 10.39578765265247,
+        "player-174d80a5": 20.79157530530494,
+        "player-26aafd43": -20.79157530530494,
+        "player-276223b4": -20.79157530530494
       },
       "ratings_after": {
-        "player-deada6fb": 1009.2595848752493,
-        "player-174d80a5": 1052.2303677397151,
-        "player-26aafd43": 979.6150927179888,
-        "player-276223b4": 979.6150927179888
+        "player-deada6fb": 1002.8443548643933,
+        "player-174d80a5": 1045.9929920697932,
+        "player-26aafd43": 979.208424694695,
+        "player-276223b4": 979.208424694695
       }
     },
     {
@@ -645,16 +673,16 @@
         "player-174d80a5": "W"
       },
       "deltas": {
-        "player-4d6040ac": -11.902471182488535,
-        "player-7496ab40": -23.80494236497707,
-        "player-9d06de2b": 11.902471182488535,
-        "player-174d80a5": 23.80494236497707
+        "player-4d6040ac": -12.08500670088567,
+        "player-7496ab40": -24.17001340177134,
+        "player-9d06de2b": 12.085006700885671,
+        "player-174d80a5": 24.170013401771342
       },
       "ratings_after": {
-        "player-4d6040ac": 1045.3028907792159,
-        "player-7496ab40": 958.5156140475386,
-        "player-9d06de2b": 1055.0911094309256,
-        "player-174d80a5": 1076.0353101046921
+        "player-4d6040ac": 1043.0397377309725,
+        "player-7496ab40": 960.5015551295767,
+        "player-9d06de2b": 1051.927261490286,
+        "player-174d80a5": 1070.1630054715645
       }
     },
     {
@@ -667,16 +695,16 @@
         "player-276223b4": "W"
       },
       "deltas": {
-        "player-deada6fb": -13.628226146300964,
-        "player-dc078d70": -13.628226146300964,
-        "player-26aafd43": 27.25645229260193,
-        "player-276223b4": 27.25645229260193
+        "player-deada6fb": -11.948344142357097,
+        "player-dc078d70": -11.948344142357097,
+        "player-26aafd43": 23.89668828471419,
+        "player-276223b4": 23.89668828471419
       },
       "ratings_after": {
-        "player-deada6fb": 995.6313587289483,
-        "player-dc078d70": 912.2433995679106,
-        "player-26aafd43": 1006.8715450105907,
-        "player-276223b4": 1006.8715450105907
+        "player-deada6fb": 990.8960107220362,
+        "player-dc078d70": 835.9985187234446,
+        "player-26aafd43": 1003.1051129794092,
+        "player-276223b4": 1003.1051129794092
       }
     },
     {
@@ -689,16 +717,16 @@
         "player-deada6fb": "L"
       },
       "deltas": {
-        "player-174d80a5": 9.549131325946734,
-        "player-4d6040ac": 9.549131325946734,
-        "player-7496ab40": -19.098262651893467,
-        "player-deada6fb": -9.549131325946734
+        "player-174d80a5": 9.640787050117487,
+        "player-4d6040ac": 9.640787050117487,
+        "player-7496ab40": -19.281574100234973,
+        "player-deada6fb": -9.640787050117487
       },
       "ratings_after": {
-        "player-174d80a5": 1085.584441430639,
-        "player-4d6040ac": 1054.8520221051626,
-        "player-7496ab40": 939.4173513956451,
-        "player-deada6fb": 986.0822274030015
+        "player-174d80a5": 1079.803792521682,
+        "player-4d6040ac": 1052.68052478109,
+        "player-7496ab40": 941.2199810293417,
+        "player-deada6fb": 981.2552236719187
       }
     },
     {
@@ -711,16 +739,16 @@
         "player-276223b4": "W"
       },
       "deltas": {
-        "player-9d06de2b": -9.824334831441382,
-        "player-dc078d70": -9.824334831441382,
-        "player-26aafd43": 19.648669662882764,
-        "player-276223b4": 19.648669662882764
+        "player-9d06de2b": -8.751582534111494,
+        "player-dc078d70": -8.751582534111494,
+        "player-26aafd43": 17.50316506822299,
+        "player-276223b4": 17.50316506822299
       },
       "ratings_after": {
-        "player-9d06de2b": 1045.2667745994843,
-        "player-dc078d70": 902.4190647364692,
-        "player-26aafd43": 1026.5202146734734,
-        "player-276223b4": 1026.5202146734734
+        "player-9d06de2b": 1043.1756789561744,
+        "player-dc078d70": 827.246936189333,
+        "player-26aafd43": 1020.6082780476322,
+        "player-276223b4": 1020.6082780476322
       }
     },
     {
@@ -733,16 +761,16 @@
         "player-7496ab40": "L"
       },
       "deltas": {
-        "player-b4db21b2": 27.142717857783122,
-        "player-cf25b5d1": 27.142717857783122,
-        "player-4d6040ac": -13.571358928891561,
-        "player-7496ab40": -13.571358928891561
+        "player-b4db21b2": 23.22172745716639,
+        "player-cf25b5d1": 23.22172745716639,
+        "player-4d6040ac": -11.610863728583196,
+        "player-7496ab40": -11.610863728583196
       },
       "ratings_after": {
-        "player-b4db21b2": 1027.142717857783,
-        "player-cf25b5d1": 1027.142717857783,
-        "player-4d6040ac": 1041.280663176271,
-        "player-7496ab40": 925.8459924667536
+        "player-b4db21b2": 1023.2217274571664,
+        "player-cf25b5d1": 1123.2217274571665,
+        "player-4d6040ac": 1041.069661052507,
+        "player-7496ab40": 929.6091173007585
       }
     },
     {
@@ -755,16 +783,16 @@
         "player-96a7286a": "L"
       },
       "deltas": {
-        "player-9d06de2b": 15.828010108841287,
-        "player-dc078d70": 15.828010108841287,
-        "player-deada6fb": -15.828010108841287,
-        "player-96a7286a": -31.656020217682574
+        "player-9d06de2b": 13.085663140888489,
+        "player-dc078d70": 13.085663140888489,
+        "player-deada6fb": -13.085663140888489,
+        "player-96a7286a": -26.171326281776977
       },
       "ratings_after": {
-        "player-9d06de2b": 1061.0947847083255,
-        "player-dc078d70": 918.2470748453105,
-        "player-deada6fb": 970.2542172941602,
-        "player-96a7286a": 968.3439797823174
+        "player-9d06de2b": 1056.2613420970629,
+        "player-dc078d70": 840.3325993302216,
+        "player-deada6fb": 968.1695605310301,
+        "player-96a7286a": 773.8286737182231
       }
     },
     {
@@ -777,16 +805,16 @@
         "player-dc078d70": "L"
       },
       "deltas": {
-        "player-4d6040ac": 10.371283528618822,
-        "player-9d06de2b": 10.371283528618822,
-        "player-cf25b5d1": -20.742567057237643,
-        "player-dc078d70": -10.371283528618822
+        "player-4d6040ac": 10.797648888428657,
+        "player-9d06de2b": 10.797648888428657,
+        "player-cf25b5d1": -21.595297776857315,
+        "player-dc078d70": -10.797648888428657
       },
       "ratings_after": {
-        "player-4d6040ac": 1051.6519467048897,
-        "player-9d06de2b": 1071.4660682369442,
-        "player-cf25b5d1": 1006.4001508005454,
-        "player-dc078d70": 907.8757913166917
+        "player-4d6040ac": 1051.8673099409357,
+        "player-9d06de2b": 1067.0589909854916,
+        "player-cf25b5d1": 1101.6264296803092,
+        "player-dc078d70": 829.534950441793
       }
     },
     {
@@ -799,16 +827,16 @@
         "player-96a7286a": "L"
       },
       "deltas": {
-        "player-9d06de2b": 13.75231525641305,
-        "player-cf25b5d1": 27.5046305128261,
-        "player-deada6fb": -13.75231525641305,
-        "player-96a7286a": -27.5046305128261
+        "player-9d06de2b": 7.766172501895724,
+        "player-cf25b5d1": 15.532345003791448,
+        "player-deada6fb": -7.766172501895724,
+        "player-96a7286a": -15.532345003791448
       },
       "ratings_after": {
-        "player-9d06de2b": 1085.2183834933574,
-        "player-cf25b5d1": 1033.9047813133714,
-        "player-deada6fb": 956.5019020377472,
-        "player-96a7286a": 940.8393492694913
+        "player-9d06de2b": 1074.8251634873873,
+        "player-cf25b5d1": 1117.1587746841008,
+        "player-deada6fb": 960.4033880291344,
+        "player-96a7286a": 758.2963287144316
       }
     },
     {
@@ -821,16 +849,16 @@
         "player-dc078d70": "L"
       },
       "deltas": {
-        "player-7496ab40": 14.612168482363726,
-        "player-0bf6e48d": 29.224336964727453,
-        "player-de57d3f8": -29.224336964727453,
-        "player-dc078d70": -14.612168482363726
+        "player-7496ab40": 12.854538186827853,
+        "player-0bf6e48d": 25.709076373655705,
+        "player-de57d3f8": -25.709076373655705,
+        "player-dc078d70": -12.854538186827853
       },
       "ratings_after": {
-        "player-7496ab40": 940.4581609491173,
-        "player-0bf6e48d": 1029.2243369647274,
-        "player-de57d3f8": 970.7756630352726,
-        "player-dc078d70": 893.263622834328
+        "player-7496ab40": 942.4636554875864,
+        "player-0bf6e48d": 1025.7090763736558,
+        "player-de57d3f8": 974.2909236263442,
+        "player-dc078d70": 816.6804122549651
       }
     },
     {
@@ -843,16 +871,16 @@
         "player-deada6fb": "D"
       },
       "deltas": {
-        "player-9d06de2b": -0.9479928899807955,
-        "player-4d6040ac": -0.9479928899807955,
-        "player-0e14c7c6": 0.9479928899807955,
-        "player-deada6fb": 0.9479928899807955
+        "player-9d06de2b": -0.7454624995548698,
+        "player-4d6040ac": -0.7454624995548698,
+        "player-0e14c7c6": 0.7454624995548698,
+        "player-deada6fb": 0.7454624995548698
       },
       "ratings_after": {
-        "player-9d06de2b": 1084.2703906033767,
-        "player-4d6040ac": 1050.703953814909,
-        "player-0e14c7c6": 1115.2447248212222,
-        "player-deada6fb": 957.449894927728
+        "player-9d06de2b": 1074.0797009878324,
+        "player-4d6040ac": 1051.1218474413809,
+        "player-0e14c7c6": 1115.1382332670396,
+        "player-deada6fb": 961.1488505286892
       }
     },
     {
@@ -865,16 +893,16 @@
         "player-de57d3f8": "L"
       },
       "deltas": {
-        "player-4d6040ac": 7.544691372826598,
-        "player-0e14c7c6": 7.544691372826598,
-        "player-deada6fb": -7.544691372826598,
-        "player-de57d3f8": -15.089382745653197
+        "player-4d6040ac": 7.644648822283463,
+        "player-0e14c7c6": 7.644648822283463,
+        "player-deada6fb": -7.644648822283463,
+        "player-de57d3f8": -15.289297644566926
       },
       "ratings_after": {
-        "player-4d6040ac": 1058.2486451877355,
-        "player-0e14c7c6": 1122.7894161940487,
-        "player-deada6fb": 949.9052035549014,
-        "player-de57d3f8": 955.6862802896194
+        "player-4d6040ac": 1058.7664962636643,
+        "player-0e14c7c6": 1122.782882089323,
+        "player-deada6fb": 953.5042017064058,
+        "player-de57d3f8": 959.0016259817774
       }
     },
     {
@@ -887,16 +915,16 @@
         "player-dc078d70": "D"
       },
       "deltas": {
-        "player-9d06de2b": -1.4608337041130182,
-        "player-7496ab40": -1.4608337041130182,
-        "player-0bf6e48d": 2.9216674082260363,
-        "player-dc078d70": 1.4608337041130182
+        "player-9d06de2b": -2.4550848973221373,
+        "player-7496ab40": -2.4550848973221373,
+        "player-0bf6e48d": 4.910169794644275,
+        "player-dc078d70": 2.4550848973221373
       },
       "ratings_after": {
-        "player-9d06de2b": 1082.8095568992637,
-        "player-7496ab40": 938.9973272450043,
-        "player-0bf6e48d": 1032.1460043729535,
-        "player-dc078d70": 894.724456538441
+        "player-9d06de2b": 1071.6246160905102,
+        "player-7496ab40": 940.0085705902643,
+        "player-0bf6e48d": 1030.6192461683,
+        "player-dc078d70": 819.1354971522871
       }
     },
     {
@@ -909,16 +937,16 @@
         "player-dc078d70": "L"
       },
       "deltas": {
-        "player-4d6040ac": 11.57804532393063,
-        "player-7496ab40": 11.57804532393063,
-        "player-0e14c7c6": -11.57804532393063,
-        "player-dc078d70": -11.57804532393063
+        "player-4d6040ac": 10.331536112679098,
+        "player-7496ab40": 10.331536112679098,
+        "player-0e14c7c6": -10.331536112679098,
+        "player-dc078d70": -10.331536112679098
       },
       "ratings_after": {
-        "player-4d6040ac": 1069.8266905116661,
-        "player-7496ab40": 950.5753725689349,
-        "player-0e14c7c6": 1111.2113708701181,
-        "player-dc078d70": 883.1464112145104
+        "player-4d6040ac": 1069.0980323763433,
+        "player-7496ab40": 950.3401067029434,
+        "player-0e14c7c6": 1112.451345976644,
+        "player-dc078d70": 808.803961039608
       }
     },
     {
@@ -931,16 +959,16 @@
         "player-deada6fb": "W"
       },
       "deltas": {
-        "player-9d06de2b": -17.70084363695306,
-        "player-de57d3f8": -35.40168727390612,
-        "player-dc078d70": 17.70084363695306,
-        "player-deada6fb": 17.70084363695306
+        "player-9d06de2b": -18.810391155449746,
+        "player-de57d3f8": -37.62078231089949,
+        "player-dc078d70": 18.810391155449746,
+        "player-deada6fb": 18.810391155449746
       },
       "ratings_after": {
-        "player-9d06de2b": 1065.1087132623106,
-        "player-de57d3f8": 920.2845930157133,
-        "player-dc078d70": 900.8472548514635,
-        "player-deada6fb": 967.6060471918545
+        "player-9d06de2b": 1052.8142249350606,
+        "player-de57d3f8": 921.3808436708779,
+        "player-dc078d70": 827.6143521950578,
+        "player-deada6fb": 972.3145928618555
       }
     },
     {
@@ -953,16 +981,16 @@
         "player-0bf6e48d": "D"
       },
       "deltas": {
-        "player-4d6040ac": -1.5005150612297347,
-        "player-9d06de2b": -1.5005150612297347,
-        "player-7ef787f5": 3.0010301224594693,
-        "player-0bf6e48d": 3.0010301224594693
+        "player-4d6040ac": -1.335238035769517,
+        "player-9d06de2b": -1.335238035769517,
+        "player-7ef787f5": 2.670476071539034,
+        "player-0bf6e48d": 2.670476071539034
       },
       "ratings_after": {
-        "player-4d6040ac": 1068.3261754504365,
-        "player-9d06de2b": 1063.608198201081,
-        "player-7ef787f5": 1000.7306835891137,
-        "player-0bf6e48d": 1035.147034495413
+        "player-4d6040ac": 1067.762794340574,
+        "player-9d06de2b": 1051.4789868992912,
+        "player-7ef787f5": 1000.6242806740819,
+        "player-0bf6e48d": 1033.289722239839
       }
     },
     {
@@ -975,16 +1003,16 @@
         "player-174d80a5": "W"
       },
       "deltas": {
-        "player-0e14c7c6": -14.115539672086312,
-        "player-ff5f1d49": -28.231079344172624,
-        "player-cf25b5d1": 28.231079344172628,
-        "player-174d80a5": 14.115539672086314
+        "player-0e14c7c6": -12.556781637238807,
+        "player-ff5f1d49": -25.113563274477613,
+        "player-cf25b5d1": 25.113563274477613,
+        "player-174d80a5": 12.556781637238807
       },
       "ratings_after": {
-        "player-0e14c7c6": 1097.0958311980319,
-        "player-ff5f1d49": 971.7689206558274,
-        "player-cf25b5d1": 1062.135860657544,
-        "player-174d80a5": 1099.6999811027251
+        "player-0e14c7c6": 1099.8945643394052,
+        "player-ff5f1d49": 974.8864367255223,
+        "player-cf25b5d1": 1142.2723379585784,
+        "player-174d80a5": 1092.3605741589208
       }
     },
     {
@@ -997,16 +1025,16 @@
         "player-174d80a5": "L"
       },
       "deltas": {
-        "player-cf25b5d1": 26.652255393854908,
-        "player-0bf6e48d": 26.652255393854908,
-        "player-0e14c7c6": -13.326127696927454,
-        "player-174d80a5": -13.326127696927454
+        "player-cf25b5d1": 23.893768510047117,
+        "player-0bf6e48d": 23.893768510047117,
+        "player-0e14c7c6": -11.946884255023559,
+        "player-174d80a5": -11.946884255023559
       },
       "ratings_after": {
-        "player-cf25b5d1": 1088.788116051399,
-        "player-0bf6e48d": 1061.7992898892678,
-        "player-0e14c7c6": 1083.7697035011045,
-        "player-174d80a5": 1086.3738534057977
+        "player-cf25b5d1": 1166.1661064686255,
+        "player-0bf6e48d": 1057.183490749886,
+        "player-0e14c7c6": 1087.9476800843815,
+        "player-174d80a5": 1080.4136899038972
       }
     },
     {
@@ -1019,16 +1047,16 @@
         "player-9d06de2b": "L"
       },
       "deltas": {
-        "player-4d6040ac": 10.247664832837884,
-        "player-7ef787f5": 20.49532966567577,
-        "player-ff5f1d49": -20.49532966567577,
-        "player-9d06de2b": -10.247664832837884
+        "player-4d6040ac": 10.118764866571933,
+        "player-7ef787f5": 20.237529733143866,
+        "player-ff5f1d49": -20.237529733143866,
+        "player-9d06de2b": -10.118764866571933
       },
       "ratings_after": {
-        "player-4d6040ac": 1078.5738402832744,
-        "player-7ef787f5": 1021.2260132547895,
-        "player-ff5f1d49": 951.2735909901517,
-        "player-9d06de2b": 1053.360533368243
+        "player-4d6040ac": 1077.8815592071458,
+        "player-7ef787f5": 1020.8618104072258,
+        "player-ff5f1d49": 954.6489069923784,
+        "player-9d06de2b": 1041.3602220327193
       }
     },
     {
@@ -1041,16 +1069,16 @@
         "player-7ef787f5": "L"
       },
       "deltas": {
-        "player-4d6040ac": 15.608365562012848,
-        "player-cf25b5d1": 15.608365562012848,
-        "player-0e14c7c6": -15.608365562012848,
-        "player-7ef787f5": -31.216731124025696
+        "player-4d6040ac": 13.84795342589033,
+        "player-cf25b5d1": 13.84795342589033,
+        "player-0e14c7c6": -13.84795342589033,
+        "player-7ef787f5": -27.69590685178066
       },
       "ratings_after": {
-        "player-4d6040ac": 1094.1822058452872,
-        "player-cf25b5d1": 1104.3964816134117,
-        "player-0e14c7c6": 1068.1613379390917,
-        "player-7ef787f5": 990.0092821307637
+        "player-4d6040ac": 1091.7295126330362,
+        "player-cf25b5d1": 1180.0140598945159,
+        "player-0e14c7c6": 1074.0997266584911,
+        "player-7ef787f5": 993.1659035554451
       }
     },
     {
@@ -1063,16 +1091,16 @@
         "player-0bf6e48d": "L"
       },
       "deltas": {
-        "player-9d06de2b": 9.368134805724225,
-        "player-174d80a5": 9.368134805724225,
-        "player-ff5f1d49": -18.73626961144845,
-        "player-0bf6e48d": -18.73626961144845
+        "player-9d06de2b": 9.635298168615034,
+        "player-174d80a5": 9.635298168615034,
+        "player-ff5f1d49": -19.270596337230067,
+        "player-0bf6e48d": -19.270596337230067
       },
       "ratings_after": {
-        "player-9d06de2b": 1062.7286681739672,
-        "player-174d80a5": 1095.7419882115219,
-        "player-ff5f1d49": 932.5373213787032,
-        "player-0bf6e48d": 1043.0630202778193
+        "player-9d06de2b": 1050.9955202013343,
+        "player-174d80a5": 1090.0489880725122,
+        "player-ff5f1d49": 935.3783106551484,
+        "player-0bf6e48d": 1037.912894412656
       }
     },
     {
@@ -1085,16 +1113,16 @@
         "player-05ebbfd2": "W"
       },
       "deltas": {
-        "player-9d06de2b": -12.42772457349876,
-        "player-0bf6e48d": -12.42772457349876,
-        "player-7ef787f5": 12.42772457349876,
-        "player-05ebbfd2": 24.85544914699752
+        "player-9d06de2b": -12.127138054696442,
+        "player-0bf6e48d": -12.127138054696442,
+        "player-7ef787f5": 12.127138054696442,
+        "player-05ebbfd2": 24.254276109392883
       },
       "ratings_after": {
-        "player-9d06de2b": 1050.3009436004684,
-        "player-0bf6e48d": 1030.6352957043205,
-        "player-7ef787f5": 1002.4370067042624,
-        "player-05ebbfd2": 1024.8554491469974
+        "player-9d06de2b": 1038.868382146638,
+        "player-0bf6e48d": 1025.7857563579596,
+        "player-7ef787f5": 1005.2930416101415,
+        "player-05ebbfd2": 1024.2542761093928
       }
     },
     {
@@ -1107,16 +1135,16 @@
         "player-dc078d70": "D"
       },
       "deltas": {
-        "player-4d6040ac": -0.5680377543650006,
-        "player-7496ab40": -0.5680377543650006,
-        "player-cf25b5d1": 0.5680377543650006,
-        "player-dc078d70": 0.5680377543650006
+        "player-4d6040ac": -0.49524333029918877,
+        "player-7496ab40": -0.49524333029918877,
+        "player-cf25b5d1": 0.49524333029918877,
+        "player-dc078d70": 0.49524333029918877
       },
       "ratings_after": {
-        "player-4d6040ac": 1093.6141680909222,
-        "player-7496ab40": 950.0073348145698,
-        "player-cf25b5d1": 1104.9645193677766,
-        "player-dc078d70": 901.4152926058285
+        "player-4d6040ac": 1091.234269302737,
+        "player-7496ab40": 949.8448633726442,
+        "player-cf25b5d1": 1180.509303224815,
+        "player-dc078d70": 828.109595525357
       }
     },
     {
@@ -1129,16 +1157,16 @@
         "player-05ebbfd2": "W"
       },
       "deltas": {
-        "player-4d6040ac": -12.87509065022368,
-        "player-9d06de2b": -12.87509065022368,
-        "player-0bf6e48d": 12.87509065022368,
-        "player-05ebbfd2": 25.75018130044736
+        "player-4d6040ac": -12.739567983735913,
+        "player-9d06de2b": -12.739567983735913,
+        "player-0bf6e48d": 12.739567983735913,
+        "player-05ebbfd2": 25.479135967471827
       },
       "ratings_after": {
-        "player-4d6040ac": 1080.7390774406986,
-        "player-9d06de2b": 1037.4258529502447,
-        "player-0bf6e48d": 1043.5103863545442,
-        "player-05ebbfd2": 1050.6056304474448
+        "player-4d6040ac": 1078.494701319001,
+        "player-9d06de2b": 1026.128814162902,
+        "player-0bf6e48d": 1038.5253243416955,
+        "player-05ebbfd2": 1049.7334120768646
       }
     },
     {
@@ -1151,16 +1179,16 @@
         "player-dc078d70": "L"
       },
       "deltas": {
-        "player-cf25b5d1": 11.226950252055357,
-        "player-7496ab40": 11.226950252055357,
-        "player-7ef787f5": -11.226950252055357,
-        "player-dc078d70": -11.226950252055357
+        "player-cf25b5d1": 8.527110265307652,
+        "player-7496ab40": 8.527110265307652,
+        "player-7ef787f5": -8.527110265307652,
+        "player-dc078d70": -8.527110265307652
       },
       "ratings_after": {
-        "player-cf25b5d1": 1116.1914696198319,
-        "player-7496ab40": 961.2342850666251,
-        "player-7ef787f5": 991.2100564522071,
-        "player-dc078d70": 890.1883423537732
+        "player-cf25b5d1": 1189.0364134901226,
+        "player-7496ab40": 958.3719736379519,
+        "player-7ef787f5": 996.7659313448338,
+        "player-dc078d70": 819.5824852600493
       }
     },
     {
@@ -1173,16 +1201,16 @@
         "player-0bf6e48d": "L"
       },
       "deltas": {
-        "player-cf25b5d1": 11.56066185249877,
-        "player-4d6040ac": 11.56066185249877,
-        "player-7ef787f5": -11.56066185249877,
-        "player-0bf6e48d": -11.56066185249877
+        "player-cf25b5d1": 10.165386849596263,
+        "player-4d6040ac": 10.165386849596263,
+        "player-7ef787f5": -10.165386849596263,
+        "player-0bf6e48d": -10.165386849596263
       },
       "ratings_after": {
-        "player-cf25b5d1": 1127.7521314723306,
-        "player-4d6040ac": 1092.2997392931973,
-        "player-7ef787f5": 979.6493945997083,
-        "player-0bf6e48d": 1031.9497245020455
+        "player-cf25b5d1": 1199.2018003397188,
+        "player-4d6040ac": 1088.6600881685972,
+        "player-7ef787f5": 986.6005444952375,
+        "player-0bf6e48d": 1028.3599374920993
       }
     },
     {
@@ -1195,16 +1223,16 @@
         "player-7496ab40": "L"
       },
       "deltas": {
-        "player-9d06de2b": 12.606979661289678,
-        "player-dc078d70": 12.606979661289678,
-        "player-05ebbfd2": -25.213959322579356,
-        "player-7496ab40": -12.606979661289678
+        "player-9d06de2b": 13.832325518217015,
+        "player-dc078d70": 13.832325518217015,
+        "player-05ebbfd2": -27.66465103643403,
+        "player-7496ab40": -13.832325518217015
       },
       "ratings_after": {
-        "player-9d06de2b": 1050.0328326115343,
-        "player-dc078d70": 902.7953220150629,
-        "player-05ebbfd2": 1025.3916711248655,
-        "player-7496ab40": 948.6273054053355
+        "player-9d06de2b": 1039.961139681119,
+        "player-dc078d70": 833.4148107782663,
+        "player-05ebbfd2": 1022.0687610404306,
+        "player-7496ab40": 944.5396481197349
       }
     },
     {
@@ -1217,16 +1245,16 @@
         "player-dc078d70": "L"
       },
       "deltas": {
-        "player-9d06de2b": 10.086022043021979,
-        "player-4d6040ac": 10.086022043021979,
-        "player-cf25b5d1": -10.086022043021979,
-        "player-dc078d70": -10.086022043021979
+        "player-9d06de2b": 10.352528369332111,
+        "player-4d6040ac": 10.352528369332111,
+        "player-cf25b5d1": -10.352528369332111,
+        "player-dc078d70": -10.352528369332111
       },
       "ratings_after": {
-        "player-9d06de2b": 1060.1188546545563,
-        "player-4d6040ac": 1102.3857613362193,
-        "player-cf25b5d1": 1117.6661094293086,
-        "player-dc078d70": 892.7092999720409
+        "player-9d06de2b": 1050.313668050451,
+        "player-4d6040ac": 1099.0126165379293,
+        "player-cf25b5d1": 1188.8492719703868,
+        "player-dc078d70": 823.0622824089342
       }
     },
     {
@@ -1239,16 +1267,16 @@
         "player-7496ab40": "W"
       },
       "deltas": {
-        "player-174d80a5": -18.617801220762217,
-        "player-deada6fb": -18.617801220762217,
-        "player-68a9c117": 37.235602441524435,
-        "player-7496ab40": 18.617801220762217
+        "player-174d80a5": -18.6872911154968,
+        "player-deada6fb": -18.6872911154968,
+        "player-68a9c117": 37.3745822309936,
+        "player-7496ab40": 18.6872911154968
       },
       "ratings_after": {
-        "player-174d80a5": 1077.1241869907597,
-        "player-deada6fb": 948.9882459710923,
-        "player-68a9c117": 1037.2356024415244,
-        "player-7496ab40": 967.2451066260977
+        "player-174d80a5": 1071.3616969570155,
+        "player-deada6fb": 953.6273017463587,
+        "player-68a9c117": 1037.3745822309936,
+        "player-7496ab40": 963.2269392352317
       }
     },
     {
@@ -1261,16 +1289,16 @@
         "player-deada6fb": "W"
       },
       "deltas": {
-        "player-68a9c117": -21.48690654005434,
-        "player-dc078d70": -10.74345327002717,
-        "player-cf25b5d1": 10.743453270027167,
-        "player-deada6fb": 10.743453270027167
+        "player-68a9c117": -16.40065432518558,
+        "player-dc078d70": -8.20032716259279,
+        "player-cf25b5d1": 8.20032716259279,
+        "player-deada6fb": 8.20032716259279
       },
       "ratings_after": {
-        "player-68a9c117": 1015.7486959014701,
-        "player-dc078d70": 881.9658467020137,
-        "player-cf25b5d1": 1128.4095626993358,
-        "player-deada6fb": 959.7316992411195
+        "player-68a9c117": 1020.9739279058081,
+        "player-dc078d70": 814.8619552463414,
+        "player-cf25b5d1": 1197.0495991329797,
+        "player-deada6fb": 961.8276289089515
       }
     },
     {
@@ -1283,16 +1311,16 @@
         "player-7496ab40": "L"
       },
       "deltas": {
-        "player-9d06de2b": 10.83605009118008,
-        "player-174d80a5": 10.83605009118008,
-        "player-4d6040ac": -10.83605009118008,
-        "player-7496ab40": -10.83605009118008
+        "player-9d06de2b": 10.976075811115269,
+        "player-174d80a5": 10.976075811115269,
+        "player-4d6040ac": -10.976075811115269,
+        "player-7496ab40": -10.976075811115269
       },
       "ratings_after": {
-        "player-9d06de2b": 1070.9549047457365,
-        "player-174d80a5": 1087.9602370819398,
-        "player-4d6040ac": 1091.5497112450391,
-        "player-7496ab40": 956.4090565349177
+        "player-9d06de2b": 1061.2897438615664,
+        "player-174d80a5": 1082.337772768131,
+        "player-4d6040ac": 1088.0365407268139,
+        "player-7496ab40": 952.2508634241165
       }
     },
     {
@@ -1305,16 +1333,16 @@
         "player-7496ab40": "L"
       },
       "deltas": {
-        "player-4d6040ac": 9.729586767953405,
-        "player-cf25b5d1": 9.729586767953405,
-        "player-9d06de2b": -9.729586767953405,
-        "player-7496ab40": -9.729586767953405
+        "player-4d6040ac": 8.372838041892857,
+        "player-cf25b5d1": 8.372838041892857,
+        "player-9d06de2b": -8.372838041892857,
+        "player-7496ab40": -8.372838041892857
       },
       "ratings_after": {
-        "player-4d6040ac": 1101.2792980129925,
-        "player-cf25b5d1": 1138.1391494672891,
-        "player-9d06de2b": 1061.225317977783,
-        "player-7496ab40": 946.6794697669643
+        "player-4d6040ac": 1096.4093787687068,
+        "player-cf25b5d1": 1205.4224371748726,
+        "player-9d06de2b": 1052.9169058196735,
+        "player-7496ab40": 943.8780253822237
       }
     },
     {
@@ -1327,16 +1355,16 @@
         "player-dc078d70": "L"
       },
       "deltas": {
-        "player-68a9c117": 21.36630189396779,
-        "player-deada6fb": 10.683150946983895,
-        "player-174d80a5": -10.683150946983895,
-        "player-dc078d70": -10.683150946983895
+        "player-68a9c117": 18.89845974004416,
+        "player-deada6fb": 9.44922987002208,
+        "player-174d80a5": -9.44922987002208,
+        "player-dc078d70": -9.44922987002208
       },
       "ratings_after": {
-        "player-68a9c117": 1037.1149977954378,
-        "player-deada6fb": 970.4148501881034,
-        "player-174d80a5": 1077.2770861349559,
-        "player-dc078d70": 871.2826957550297
+        "player-68a9c117": 1039.8723876458523,
+        "player-deada6fb": 971.2768587789736,
+        "player-174d80a5": 1072.8885428981089,
+        "player-dc078d70": 805.4127253763193
       }
     },
     {
@@ -1349,16 +1377,16 @@
         "player-e3b73ccb": "L"
       },
       "deltas": {
-        "player-4d6040ac": 10.813215725138667,
-        "player-9d06de2b": 10.813215725138667,
-        "player-0e14c7c6": -10.813215725138667,
-        "player-e3b73ccb": -21.626431450277334
+        "player-4d6040ac": 11.152015599253323,
+        "player-9d06de2b": 11.152015599253323,
+        "player-0e14c7c6": -11.152015599253323,
+        "player-e3b73ccb": -22.304031198506646
       },
       "ratings_after": {
-        "player-4d6040ac": 1112.0925137381312,
-        "player-9d06de2b": 1072.0385337029218,
-        "player-0e14c7c6": 1057.348122213953,
-        "player-e3b73ccb": 978.3735685497227
+        "player-4d6040ac": 1107.56139436796,
+        "player-9d06de2b": 1064.0689214189267,
+        "player-0e14c7c6": 1062.947711059238,
+        "player-e3b73ccb": 977.6959688014933
       }
     },
     {
@@ -1371,16 +1399,16 @@
         "player-7ef787f5": "L"
       },
       "deltas": {
-        "player-deada6fb": 11.088802773619683,
-        "player-0bf6e48d": 11.088802773619683,
-        "player-dc078d70": -11.088802773619683,
-        "player-7ef787f5": -11.088802773619683
+        "player-deada6fb": 10.02058136516836,
+        "player-0bf6e48d": 10.02058136516836,
+        "player-dc078d70": -10.02058136516836,
+        "player-7ef787f5": -10.02058136516836
       },
       "ratings_after": {
-        "player-deada6fb": 981.5036529617231,
-        "player-0bf6e48d": 1043.038527275665,
-        "player-dc078d70": 860.19389298141,
-        "player-7ef787f5": 968.5605918260886
+        "player-deada6fb": 981.297440144142,
+        "player-0bf6e48d": 1038.3805188572676,
+        "player-dc078d70": 795.3921440111509,
+        "player-7ef787f5": 976.5799631300691
       }
     },
     {
@@ -1393,16 +1421,16 @@
         "player-7ef787f5": "W"
       },
       "deltas": {
-        "player-4d6040ac": -12.916065795800106,
-        "player-e3b73ccb": -25.832131591600213,
-        "player-deada6fb": 12.916065795800106,
-        "player-7ef787f5": 12.916065795800106
+        "player-4d6040ac": -12.7215668371424,
+        "player-e3b73ccb": -25.4431336742848,
+        "player-deada6fb": 12.7215668371424,
+        "player-7ef787f5": 12.7215668371424
       },
       "ratings_after": {
-        "player-4d6040ac": 1099.1764479423312,
-        "player-e3b73ccb": 952.5414369581225,
-        "player-deada6fb": 994.4197187575232,
-        "player-7ef787f5": 981.4766576218888
+        "player-4d6040ac": 1094.8398275308177,
+        "player-e3b73ccb": 952.2528351272085,
+        "player-deada6fb": 994.0190069812844,
+        "player-7ef787f5": 989.3015299672115
       }
     },
     {
@@ -1415,16 +1443,16 @@
         "player-dc078d70": "L"
       },
       "deltas": {
-        "player-9d06de2b": 9.426485692036591,
-        "player-0e14c7c6": 9.426485692036591,
-        "player-0bf6e48d": -9.426485692036591,
-        "player-dc078d70": -9.426485692036591
+        "player-9d06de2b": 8.268918964768034,
+        "player-0e14c7c6": 8.268918964768034,
+        "player-0bf6e48d": -8.268918964768034,
+        "player-dc078d70": -8.268918964768034
       },
       "ratings_after": {
-        "player-9d06de2b": 1081.4650193949583,
-        "player-0e14c7c6": 1066.7746079059896,
-        "player-0bf6e48d": 1033.6120415836285,
-        "player-dc078d70": 850.7674072893734
+        "player-9d06de2b": 1072.3378403836948,
+        "player-0e14c7c6": 1071.216630024006,
+        "player-0bf6e48d": 1030.1115998924995,
+        "player-dc078d70": 787.1232250463829
       }
     },
     {
@@ -1437,16 +1465,16 @@
         "player-0bf6e48d": "W"
       },
       "deltas": {
-        "player-4d6040ac": -10.43642225041209,
-        "player-deada6fb": -10.43642225041209,
-        "player-9d06de2b": 10.436422250412088,
-        "player-0bf6e48d": 10.436422250412088
+        "player-4d6040ac": -10.558628119189475,
+        "player-deada6fb": -10.558628119189475,
+        "player-9d06de2b": 10.558628119189475,
+        "player-0bf6e48d": 10.558628119189475
       },
       "ratings_after": {
-        "player-4d6040ac": 1088.740025691919,
-        "player-deada6fb": 983.9832965071112,
-        "player-9d06de2b": 1091.9014416453704,
-        "player-0bf6e48d": 1044.0484638340406
+        "player-4d6040ac": 1084.2811994116282,
+        "player-deada6fb": 983.4603788620949,
+        "player-9d06de2b": 1082.8964685028843,
+        "player-0bf6e48d": 1040.670228011689
       }
     },
     {
@@ -1459,16 +1487,16 @@
         "player-7ef787f5": "W"
       },
       "deltas": {
-        "player-dc078d70": -11.932475601270246,
-        "player-0e14c7c6": -11.932475601270246,
-        "player-e3b73ccb": 23.86495120254049,
-        "player-7ef787f5": 11.932475601270244
+        "player-dc078d70": -10.76550336932977,
+        "player-0e14c7c6": -10.76550336932977,
+        "player-e3b73ccb": 21.531006738659535,
+        "player-7ef787f5": 10.765503369329767
       },
       "ratings_after": {
-        "player-dc078d70": 838.8349316881032,
-        "player-0e14c7c6": 1054.8421323047194,
-        "player-e3b73ccb": 976.406388160663,
-        "player-7ef787f5": 993.409133223159
+        "player-dc078d70": 776.3577216770532,
+        "player-0e14c7c6": 1060.4511266546763,
+        "player-e3b73ccb": 973.7838418658681,
+        "player-7ef787f5": 1000.0670333365413
       }
     },
     {
@@ -1481,16 +1509,16 @@
         "player-0e14c7c6": "W"
       },
       "deltas": {
-        "player-4d6040ac": -13.270839549025862,
-        "player-dc078d70": -13.270839549025862,
-        "player-0bf6e48d": 13.27083954902586,
-        "player-0e14c7c6": 13.27083954902586
+        "player-4d6040ac": -11.674314230705196,
+        "player-dc078d70": -11.674314230705196,
+        "player-0bf6e48d": 11.674314230705194,
+        "player-0e14c7c6": 11.674314230705194
       },
       "ratings_after": {
-        "player-4d6040ac": 1075.4691861428932,
-        "player-dc078d70": 825.5640921390774,
-        "player-0bf6e48d": 1057.3193033830664,
-        "player-0e14c7c6": 1068.1129718537452
+        "player-4d6040ac": 1072.606885180923,
+        "player-dc078d70": 764.6834074463479,
+        "player-0bf6e48d": 1052.3445422423943,
+        "player-0e14c7c6": 1072.1254408853815
       }
     },
     {
@@ -1503,16 +1531,16 @@
         "player-68a9c117": "L"
       },
       "deltas": {
-        "player-cf25b5d1": 16.54364659552329,
-        "player-7496ab40": 16.54364659552329,
-        "player-9d06de2b": -16.54364659552329,
-        "player-68a9c117": -33.08729319104658
+        "player-cf25b5d1": 14.961901004012397,
+        "player-7496ab40": 14.961901004012397,
+        "player-9d06de2b": -14.961901004012397,
+        "player-68a9c117": -29.923802008024794
       },
       "ratings_after": {
-        "player-cf25b5d1": 1154.6827960628125,
-        "player-7496ab40": 963.2231163624876,
-        "player-9d06de2b": 1075.357795049847,
-        "player-68a9c117": 1004.0277046043913
+        "player-cf25b5d1": 1220.384338178885,
+        "player-7496ab40": 958.839926386236,
+        "player-9d06de2b": 1067.934567498872,
+        "player-68a9c117": 1009.9485856378275
       }
     },
     {
@@ -1525,16 +1553,16 @@
         "player-7496ab40": "W"
       },
       "deltas": {
-        "player-4d6040ac": -9.30199055943851,
-        "player-dc078d70": -9.30199055943851,
-        "player-cf25b5d1": 9.30199055943851,
-        "player-7496ab40": 9.30199055943851
+        "player-4d6040ac": -7.255096595073774,
+        "player-dc078d70": -7.255096595073774,
+        "player-cf25b5d1": 7.2550965950737725,
+        "player-7496ab40": 7.2550965950737725
       },
       "ratings_after": {
-        "player-4d6040ac": 1066.1671955834547,
-        "player-dc078d70": 816.2621015796389,
-        "player-cf25b5d1": 1163.984786622251,
-        "player-7496ab40": 972.5251069219262
+        "player-4d6040ac": 1065.3517885858491,
+        "player-dc078d70": 757.4283108512742,
+        "player-cf25b5d1": 1227.6394347739588,
+        "player-7496ab40": 966.0950229813097
       }
     },
     {
@@ -1547,16 +1575,16 @@
         "player-0e14c7c6": "W"
       },
       "deltas": {
-        "player-9d06de2b": -16.0085175633468,
-        "player-68a9c117": -32.0170351266936,
-        "player-0bf6e48d": 16.0085175633468,
-        "player-0e14c7c6": 16.0085175633468
+        "player-9d06de2b": -15.995253142353633,
+        "player-68a9c117": -31.990506284707266,
+        "player-0bf6e48d": 15.995253142353633,
+        "player-0e14c7c6": 15.995253142353633
       },
       "ratings_after": {
-        "player-9d06de2b": 1059.3492774865003,
-        "player-68a9c117": 972.0106694776977,
-        "player-0bf6e48d": 1073.3278209464133,
-        "player-0e14c7c6": 1084.121489417092
+        "player-9d06de2b": 1051.9393143565183,
+        "player-68a9c117": 977.9580793531202,
+        "player-0bf6e48d": 1068.339795384748,
+        "player-0e14c7c6": 1088.1206940277352
       }
     },
     {
@@ -1569,16 +1597,16 @@
         "player-68a9c117": "L"
       },
       "deltas": {
-        "player-4d6040ac": 15.571360163898559,
-        "player-dc078d70": 15.571360163898559,
-        "player-9d06de2b": -15.571360163898559,
-        "player-68a9c117": -15.571360163898559
+        "player-4d6040ac": 16.57981941120335,
+        "player-dc078d70": 16.57981941120335,
+        "player-9d06de2b": -16.57981941120335,
+        "player-68a9c117": -16.57981941120335
       },
       "ratings_after": {
-        "player-4d6040ac": 1081.7385557473533,
-        "player-dc078d70": 831.8334617435374,
-        "player-9d06de2b": 1043.7779173226018,
-        "player-68a9c117": 956.4393093137991
+        "player-4d6040ac": 1081.9316079970524,
+        "player-dc078d70": 774.0081302624776,
+        "player-9d06de2b": 1035.359494945315,
+        "player-68a9c117": 961.3782599419168
       }
     },
     {
@@ -1591,16 +1619,16 @@
         "player-0bf6e48d": "L"
       },
       "deltas": {
-        "player-cf25b5d1": 13.735001667890197,
-        "player-7496ab40": 13.735001667890197,
-        "player-0e14c7c6": -13.735001667890197,
-        "player-0bf6e48d": -13.735001667890197
+        "player-cf25b5d1": 12.618797841698838,
+        "player-7496ab40": 12.618797841698838,
+        "player-0e14c7c6": -12.618797841698838,
+        "player-0bf6e48d": -12.618797841698838
       },
       "ratings_after": {
-        "player-cf25b5d1": 1177.7197882901412,
-        "player-7496ab40": 986.2601085898164,
-        "player-0e14c7c6": 1070.386487749202,
-        "player-0bf6e48d": 1059.5928192785232
+        "player-cf25b5d1": 1240.2582326156576,
+        "player-7496ab40": 978.7138208230086,
+        "player-0e14c7c6": 1075.5018961860364,
+        "player-0bf6e48d": 1055.7209975430492
       }
     },
     {
@@ -1613,16 +1641,16 @@
         "player-e3b73ccb": "L"
       },
       "deltas": {
-        "player-0e14c7c6": 11.107827441832896,
-        "player-7ef787f5": 11.107827441832896,
-        "player-dc078d70": -11.107827441832896,
-        "player-e3b73ccb": -22.215654883665792
+        "player-0e14c7c6": 9.607215634072137,
+        "player-7ef787f5": 9.607215634072137,
+        "player-dc078d70": -9.607215634072137,
+        "player-e3b73ccb": -19.214431268144274
       },
       "ratings_after": {
-        "player-0e14c7c6": 1081.4943151910347,
-        "player-7ef787f5": 1004.5169606649919,
-        "player-dc078d70": 820.7256343017045,
-        "player-e3b73ccb": 954.1907332769972
+        "player-0e14c7c6": 1085.1091118201086,
+        "player-7ef787f5": 1009.6742489706135,
+        "player-dc078d70": 764.4009146284054,
+        "player-e3b73ccb": 954.5694105977238
       }
     },
     {
@@ -1635,16 +1663,16 @@
         "player-cf25b5d1": "D"
       },
       "deltas": {
-        "player-4d6040ac": 0.5529685163749498,
-        "player-9d06de2b": 0.5529685163749498,
-        "player-7496ab40": -0.5529685163749498,
-        "player-cf25b5d1": -0.5529685163749498
+        "player-4d6040ac": 1.4529507659944108,
+        "player-9d06de2b": 1.4529507659944108,
+        "player-7496ab40": -1.4529507659944096,
+        "player-cf25b5d1": -1.4529507659944096
       },
       "ratings_after": {
-        "player-4d6040ac": 1082.2915242637282,
-        "player-9d06de2b": 1044.3308858389767,
-        "player-7496ab40": 985.7071400734415,
-        "player-cf25b5d1": 1177.1668197737663
+        "player-4d6040ac": 1083.384558763047,
+        "player-9d06de2b": 1036.8124457113095,
+        "player-7496ab40": 977.2608700570142,
+        "player-cf25b5d1": 1238.805281849663
       }
     },
     {
@@ -1657,16 +1685,16 @@
         "player-7496ab40": "W"
       },
       "deltas": {
-        "player-dc078d70": -7.152895368487393,
-        "player-7ef787f5": -7.152895368487393,
-        "player-4d6040ac": 7.152895368487393,
-        "player-7496ab40": 7.152895368487393
+        "player-dc078d70": -6.563682775531633,
+        "player-7ef787f5": -6.563682775531633,
+        "player-4d6040ac": 6.563682775531634,
+        "player-7496ab40": 6.563682775531634
       },
       "ratings_after": {
-        "player-dc078d70": 813.5727389332171,
-        "player-7ef787f5": 997.3640652965045,
-        "player-4d6040ac": 1089.4444196322156,
-        "player-7496ab40": 992.8600354419289
+        "player-dc078d70": 757.8372318528737,
+        "player-7ef787f5": 1003.1105661950818,
+        "player-4d6040ac": 1089.9482415385785,
+        "player-7496ab40": 983.8245528325459
       }
     },
     {
@@ -1679,16 +1707,16 @@
         "player-e3b73ccb": "L"
       },
       "deltas": {
-        "player-cf25b5d1": 10.229408552267877,
-        "player-9d06de2b": 10.229408552267877,
-        "player-0e14c7c6": -10.229408552267877,
-        "player-e3b73ccb": -20.458817104535754
+        "player-cf25b5d1": 9.317491382723514,
+        "player-9d06de2b": 9.317491382723514,
+        "player-0e14c7c6": -9.317491382723514,
+        "player-e3b73ccb": -18.634982765447027
       },
       "ratings_after": {
-        "player-cf25b5d1": 1187.3962283260341,
-        "player-9d06de2b": 1054.5602943912445,
-        "player-0e14c7c6": 1071.264906638767,
-        "player-e3b73ccb": 933.7319161724614
+        "player-cf25b5d1": 1248.1227732323866,
+        "player-9d06de2b": 1046.129937094033,
+        "player-0e14c7c6": 1075.791620437385,
+        "player-e3b73ccb": 935.9344278322768
       }
     },
     {
@@ -1701,16 +1729,16 @@
         "player-7ef787f5": "L"
       },
       "deltas": {
-        "player-0e14c7c6": 10.068366577053204,
-        "player-9d06de2b": 10.068366577053204,
-        "player-4d6040ac": -10.068366577053204,
-        "player-7ef787f5": -10.068366577053204
+        "player-0e14c7c6": 10.22386171295127,
+        "player-9d06de2b": 10.22386171295127,
+        "player-4d6040ac": -10.22386171295127,
+        "player-7ef787f5": -10.22386171295127
       },
       "ratings_after": {
-        "player-0e14c7c6": 1081.33327321582,
-        "player-9d06de2b": 1064.6286609682977,
-        "player-4d6040ac": 1079.3760530551624,
-        "player-7ef787f5": 987.2956987194513
+        "player-0e14c7c6": 1086.0154821503363,
+        "player-9d06de2b": 1056.3537988069843,
+        "player-4d6040ac": 1079.7243798256272,
+        "player-7ef787f5": 992.8867044821305
       }
     },
     {
@@ -1723,16 +1751,16 @@
         "player-dc078d70": "L"
       },
       "deltas": {
-        "player-cf25b5d1": 7.676453544917819,
-        "player-e3b73ccb": 7.676453544917819,
-        "player-7496ab40": -7.676453544917819,
-        "player-dc078d70": -7.676453544917819
+        "player-cf25b5d1": 5.831735303958049,
+        "player-e3b73ccb": 5.831735303958049,
+        "player-7496ab40": -5.831735303958049,
+        "player-dc078d70": -5.831735303958049
       },
       "ratings_after": {
-        "player-cf25b5d1": 1195.072681870952,
-        "player-e3b73ccb": 941.4083697173792,
-        "player-7496ab40": 985.1835818970111,
-        "player-dc078d70": 805.8962853882994
+        "player-cf25b5d1": 1253.9545085363447,
+        "player-e3b73ccb": 941.7661631362348,
+        "player-7496ab40": 977.9928175285879,
+        "player-dc078d70": 752.0054965489157
       }
     },
     {
@@ -1745,16 +1773,16 @@
         "player-0bf6e48d": "W"
       },
       "deltas": {
-        "player-7496ab40": -10.704187842896495,
-        "player-d7f8ab03": -21.40837568579299,
-        "player-4d6040ac": 10.704187842896495,
-        "player-0bf6e48d": 10.704187842896495
+        "player-7496ab40": -10.635472305168676,
+        "player-d7f8ab03": -21.270944610337352,
+        "player-4d6040ac": 10.635472305168676,
+        "player-0bf6e48d": 10.635472305168676
       },
       "ratings_after": {
-        "player-7496ab40": 974.4793940541146,
-        "player-d7f8ab03": 978.591624314207,
-        "player-4d6040ac": 1090.080240898059,
-        "player-0bf6e48d": 1070.2970071214197
+        "player-7496ab40": 967.3573452234192,
+        "player-d7f8ab03": 978.7290553896627,
+        "player-4d6040ac": 1090.3598521307958,
+        "player-0bf6e48d": 1066.3564698482178
       }
     },
     {
@@ -1767,16 +1795,16 @@
         "player-dc078d70": "L"
       },
       "deltas": {
-        "player-cf25b5d1": 7.555755996261853,
-        "player-e40d5390": 15.111511992523706,
-        "player-0e14c7c6": -7.555755996261853,
-        "player-dc078d70": -7.555755996261853
+        "player-cf25b5d1": 6.004242103125808,
+        "player-e40d5390": 12.008484206251616,
+        "player-0e14c7c6": -6.004242103125808,
+        "player-dc078d70": -6.004242103125808
       },
       "ratings_after": {
-        "player-cf25b5d1": 1202.628437867214,
-        "player-e40d5390": 1015.1115119925237,
-        "player-0e14c7c6": 1073.7775172195581,
-        "player-dc078d70": 798.3405293920375
+        "player-cf25b5d1": 1259.9587506394705,
+        "player-e40d5390": 1012.0084842062516,
+        "player-0e14c7c6": 1080.0112400472105,
+        "player-dc078d70": 746.00125444579
       }
     },
     {
@@ -1789,16 +1817,16 @@
         "player-d7f8ab03": "L"
       },
       "deltas": {
-        "player-cf25b5d1": 10.917622674857464,
-        "player-0e14c7c6": 10.917622674857464,
-        "player-4d6040ac": -10.917622674857464,
-        "player-d7f8ab03": -21.835245349714928
+        "player-cf25b5d1": 9.673646365108983,
+        "player-0e14c7c6": 9.673646365108983,
+        "player-4d6040ac": -9.673646365108983,
+        "player-d7f8ab03": -19.347292730217966
       },
       "ratings_after": {
-        "player-cf25b5d1": 1213.5460605420715,
-        "player-0e14c7c6": 1084.6951398944157,
-        "player-4d6040ac": 1079.1626182232014,
-        "player-d7f8ab03": 956.7563789644921
+        "player-cf25b5d1": 1269.6323970045794,
+        "player-0e14c7c6": 1089.6848864123194,
+        "player-4d6040ac": 1080.686205765687,
+        "player-d7f8ab03": 959.3817626594447
       }
     },
     {
@@ -1811,16 +1839,16 @@
         "player-0bf6e48d": "W"
       },
       "deltas": {
-        "player-dc078d70": -11.031696020316014,
-        "player-e40d5390": -22.063392040632028,
-        "player-7496ab40": 11.031696020316012,
-        "player-0bf6e48d": 11.031696020316012
+        "player-dc078d70": -10.120793890707391,
+        "player-e40d5390": -20.241587781414783,
+        "player-7496ab40": 10.120793890707391,
+        "player-0bf6e48d": 10.120793890707391
       },
       "ratings_after": {
-        "player-dc078d70": 787.3088333717216,
-        "player-e40d5390": 993.0481199518916,
-        "player-7496ab40": 985.5110900744305,
-        "player-0bf6e48d": 1081.3287031417358
+        "player-dc078d70": 735.8804605550825,
+        "player-e40d5390": 991.7668964248369,
+        "player-7496ab40": 977.4781391141266,
+        "player-0bf6e48d": 1076.477263738925
       }
     },
     {
@@ -1833,16 +1861,16 @@
         "player-dc078d70": "L"
       },
       "deltas": {
-        "player-0e14c7c6": 7.0469000996947875,
-        "player-4d6040ac": 7.0469000996947875,
-        "player-0bf6e48d": -7.0469000996947875,
-        "player-dc078d70": -7.0469000996947875
+        "player-0e14c7c6": 6.188183096864859,
+        "player-4d6040ac": 6.188183096864859,
+        "player-0bf6e48d": -6.188183096864859,
+        "player-dc078d70": -6.188183096864859
       },
       "ratings_after": {
-        "player-0e14c7c6": 1091.7420399941104,
-        "player-4d6040ac": 1086.2095183228962,
-        "player-0bf6e48d": 1074.281803042041,
-        "player-dc078d70": 780.2619332720268
+        "player-0e14c7c6": 1095.8730695091842,
+        "player-4d6040ac": 1086.8743888625518,
+        "player-0bf6e48d": 1070.2890806420603,
+        "player-dc078d70": 729.6922774582177
       }
     },
     {
@@ -1855,16 +1883,16 @@
         "player-d7f8ab03": "W"
       },
       "deltas": {
-        "player-7496ab40": -10.23198470888944,
-        "player-e40d5390": -20.46396941777888,
-        "player-cf25b5d1": 10.231984708889438,
-        "player-d7f8ab03": 20.463969417778877
+        "player-7496ab40": -8.997183378304703,
+        "player-e40d5390": -17.994366756609406,
+        "player-cf25b5d1": 8.997183378304701,
+        "player-d7f8ab03": 17.994366756609402
       },
       "ratings_after": {
-        "player-7496ab40": 975.2791053655411,
-        "player-e40d5390": 972.5841505341127,
-        "player-cf25b5d1": 1223.778045250961,
-        "player-d7f8ab03": 977.220348382271
+        "player-7496ab40": 968.4809557358219,
+        "player-e40d5390": 973.7725296682274,
+        "player-cf25b5d1": 1278.6295803828841,
+        "player-d7f8ab03": 977.3761294160541
       }
     },
     {
@@ -1877,16 +1905,16 @@
         "player-7496ab40": "W"
       },
       "deltas": {
-        "player-9d06de2b": -13.086281447848226,
-        "player-deada6fb": -13.086281447848226,
-        "player-4d6040ac": 13.086281447848226,
-        "player-7496ab40": 13.086281447848226
+        "player-9d06de2b": -13.03517588534887,
+        "player-deada6fb": -13.03517588534887,
+        "player-4d6040ac": 13.03517588534887,
+        "player-7496ab40": 13.03517588534887
       },
       "ratings_after": {
-        "player-9d06de2b": 1051.5423795204495,
-        "player-deada6fb": 970.8970150592629,
-        "player-4d6040ac": 1099.2957997707445,
-        "player-7496ab40": 988.3653868133894
+        "player-9d06de2b": 1043.3186229216353,
+        "player-deada6fb": 970.425202976746,
+        "player-4d6040ac": 1099.9095647479007,
+        "player-7496ab40": 981.5161316211708
       }
     },
     {
@@ -1899,16 +1927,16 @@
         "player-68a9c117": "L"
       },
       "deltas": {
-        "player-cf25b5d1": 9.04558111113533,
-        "player-4443994a": 18.09116222227066,
-        "player-551dbbf0": -18.09116222227066,
-        "player-68a9c117": -9.04558111113533
+        "player-cf25b5d1": 6.608771425649114,
+        "player-4443994a": 13.217542851298228,
+        "player-551dbbf0": -13.217542851298228,
+        "player-68a9c117": -6.608771425649114
       },
       "ratings_after": {
-        "player-cf25b5d1": 1232.8236263620963,
-        "player-4443994a": 1018.0911622222707,
-        "player-551dbbf0": 981.9088377777293,
-        "player-68a9c117": 947.3937282026637
+        "player-cf25b5d1": 1285.2383518085333,
+        "player-4443994a": 1113.2175428512983,
+        "player-551dbbf0": 986.7824571487017,
+        "player-68a9c117": 954.7694885162676
       }
     },
     {
@@ -1921,16 +1949,16 @@
         "player-68a9c117": "L"
       },
       "deltas": {
-        "player-4d6040ac": 8.547444021347756,
-        "player-551dbbf0": 17.094888042695512,
-        "player-7496ab40": -8.547444021347756,
-        "player-68a9c117": -8.547444021347756
+        "player-4d6040ac": 8.4739414482072,
+        "player-551dbbf0": 16.9478828964144,
+        "player-7496ab40": -8.4739414482072,
+        "player-68a9c117": -8.4739414482072
       },
       "ratings_after": {
-        "player-4d6040ac": 1107.8432437920922,
-        "player-551dbbf0": 999.0037258204248,
-        "player-7496ab40": 979.8179427920417,
-        "player-68a9c117": 938.846284181316
+        "player-4d6040ac": 1108.3835061961079,
+        "player-551dbbf0": 1003.7303400451161,
+        "player-7496ab40": 973.0421901729635,
+        "player-68a9c117": 946.2955470680604
       }
     },
     {
@@ -1943,16 +1971,16 @@
         "player-4443994a": "W"
       },
       "deltas": {
-        "player-cf25b5d1": -14.653623073726841,
-        "player-deada6fb": -14.653623073726841,
-        "player-9d06de2b": 14.653623073726841,
-        "player-4443994a": 29.307246147453682
+        "player-cf25b5d1": -14.051641595092075,
+        "player-deada6fb": -14.051641595092075,
+        "player-9d06de2b": 14.051641595092075,
+        "player-4443994a": 28.10328319018415
       },
       "ratings_after": {
-        "player-cf25b5d1": 1218.1700032883696,
-        "player-deada6fb": 956.243391985536,
-        "player-9d06de2b": 1066.1960025941762,
-        "player-4443994a": 1047.3984083697244
+        "player-cf25b5d1": 1271.186710213441,
+        "player-deada6fb": 956.373561381654,
+        "player-9d06de2b": 1057.3702645167275,
+        "player-4443994a": 1141.3208260414824
       }
     },
     {
@@ -1965,16 +1993,16 @@
         "player-7496ab40": "W"
       },
       "deltas": {
-        "player-4d6040ac": -12.069358629968137,
-        "player-9d06de2b": -12.069358629968137,
-        "player-cf25b5d1": 12.069358629968137,
-        "player-7496ab40": 12.069358629968137
+        "player-4d6040ac": -11.094286333883101,
+        "player-9d06de2b": -11.094286333883101,
+        "player-cf25b5d1": 11.094286333883103,
+        "player-7496ab40": 11.094286333883103
       },
       "ratings_after": {
-        "player-4d6040ac": 1095.773885162124,
-        "player-9d06de2b": 1054.1266439642081,
-        "player-cf25b5d1": 1230.2393619183376,
-        "player-7496ab40": 991.8873014220098
+        "player-4d6040ac": 1097.2892198622249,
+        "player-9d06de2b": 1046.2759781828445,
+        "player-cf25b5d1": 1282.280996547324,
+        "player-7496ab40": 984.1364765068466
       }
     },
     {
@@ -1987,16 +2015,16 @@
         "player-68a9c117": "W"
       },
       "deltas": {
-        "player-deada6fb": -11.82901535259764,
-        "player-551dbbf0": -23.65803070519528,
-        "player-4443994a": 23.65803070519528,
-        "player-68a9c117": 11.82901535259764
+        "player-deada6fb": -10.13414659351367,
+        "player-551dbbf0": -20.26829318702734,
+        "player-4443994a": 20.26829318702734,
+        "player-68a9c117": 10.13414659351367
       },
       "ratings_after": {
-        "player-deada6fb": 944.4143766329385,
-        "player-551dbbf0": 975.3456951152295,
-        "player-4443994a": 1071.0564390749196,
-        "player-68a9c117": 950.6752995339136
+        "player-deada6fb": 946.2394147881403,
+        "player-551dbbf0": 983.4620468580888,
+        "player-4443994a": 1161.5891192285098,
+        "player-68a9c117": 956.4296936615741
       }
     },
     {
@@ -2009,16 +2037,16 @@
         "player-dc078d70": "W"
       },
       "deltas": {
-        "player-4d6040ac": -13.749094700696089,
-        "player-deada6fb": -13.749094700696089,
-        "player-0e14c7c6": 13.749094700696089,
-        "player-dc078d70": 13.749094700696089
+        "player-4d6040ac": -14.486401363317325,
+        "player-deada6fb": -14.486401363317325,
+        "player-0e14c7c6": 14.486401363317325,
+        "player-dc078d70": 14.486401363317325
       },
       "ratings_after": {
-        "player-4d6040ac": 1082.024790461428,
-        "player-deada6fb": 930.6652819322424,
-        "player-0e14c7c6": 1105.4911346948065,
-        "player-dc078d70": 794.0110279727229
+        "player-4d6040ac": 1082.8028184989075,
+        "player-deada6fb": 931.7530134248229,
+        "player-0e14c7c6": 1110.3594708725016,
+        "player-dc078d70": 744.1786788215351
       }
     },
     {
@@ -2031,16 +2059,16 @@
         "player-0bf6e48d": "L"
       },
       "deltas": {
-        "player-e3b73ccb": 15.618417668864142,
-        "player-68a9c117": 15.618417668864142,
-        "player-9d06de2b": -15.618417668864142,
-        "player-0bf6e48d": -15.618417668864142
+        "player-e3b73ccb": 15.344779767360492,
+        "player-68a9c117": 15.344779767360492,
+        "player-9d06de2b": -15.344779767360492,
+        "player-0bf6e48d": -15.344779767360492
       },
       "ratings_after": {
-        "player-e3b73ccb": 957.0267873862433,
-        "player-68a9c117": 966.2937172027778,
-        "player-9d06de2b": 1038.508226295344,
-        "player-0bf6e48d": 1058.6633853731769
+        "player-e3b73ccb": 957.1109429035953,
+        "player-68a9c117": 971.7744734289346,
+        "player-9d06de2b": 1030.931198415484,
+        "player-0bf6e48d": 1054.9443008746998
       }
     },
     {
@@ -2053,16 +2081,16 @@
         "player-e3b73ccb": "W"
       },
       "deltas": {
-        "player-0e14c7c6": -15.624137776230704,
-        "player-4d6040ac": -15.624137776230704,
-        "player-9d06de2b": 15.624137776230704,
-        "player-e3b73ccb": 15.624137776230704
+        "player-0e14c7c6": -15.83884491877897,
+        "player-4d6040ac": -15.83884491877897,
+        "player-9d06de2b": 15.83884491877897,
+        "player-e3b73ccb": 15.83884491877897
       },
       "ratings_after": {
-        "player-0e14c7c6": 1089.8669969185758,
-        "player-4d6040ac": 1066.4006526851972,
-        "player-9d06de2b": 1054.1323640715748,
-        "player-e3b73ccb": 972.650925162474
+        "player-0e14c7c6": 1094.5206259537226,
+        "player-4d6040ac": 1066.9639735801286,
+        "player-9d06de2b": 1046.770043334263,
+        "player-e3b73ccb": 972.9497878223742
       }
     },
     {
@@ -2075,16 +2103,16 @@
         "player-dc078d70": "L"
       },
       "deltas": {
-        "player-deada6fb": 11.524375394485071,
-        "player-68a9c117": 11.524375394485071,
-        "player-0bf6e48d": -11.524375394485071,
-        "player-dc078d70": -11.524375394485071
+        "player-deada6fb": 10.4722505497738,
+        "player-68a9c117": 10.4722505497738,
+        "player-0bf6e48d": -10.4722505497738,
+        "player-dc078d70": -10.4722505497738
       },
       "ratings_after": {
-        "player-deada6fb": 942.1896573267275,
-        "player-68a9c117": 977.8180925972629,
-        "player-0bf6e48d": 1047.1390099786918,
-        "player-dc078d70": 782.4866525782378
+        "player-deada6fb": 942.2252639745967,
+        "player-68a9c117": 982.2467239787084,
+        "player-0bf6e48d": 1044.472050324926,
+        "player-dc078d70": 733.7064282717613
       }
     },
     {
@@ -2097,16 +2125,16 @@
         "player-deada6fb": "L"
       },
       "deltas": {
-        "player-4d6040ac": 11.483211587135012,
-        "player-9d06de2b": 11.483211587135012,
-        "player-0bf6e48d": -11.483211587135012,
-        "player-deada6fb": -11.483211587135012
+        "player-4d6040ac": 11.565027464629923,
+        "player-9d06de2b": 11.565027464629923,
+        "player-0bf6e48d": -11.565027464629923,
+        "player-deada6fb": -11.565027464629923
       },
       "ratings_after": {
-        "player-4d6040ac": 1077.8838642723322,
-        "player-9d06de2b": 1065.6155756587098,
-        "player-0bf6e48d": 1035.6557983915568,
-        "player-deada6fb": 930.7064457395925
+        "player-4d6040ac": 1078.5290010447586,
+        "player-9d06de2b": 1058.335070798893,
+        "player-0bf6e48d": 1032.907022860296,
+        "player-deada6fb": 930.6602365099668
       }
     },
     {
@@ -2119,16 +2147,16 @@
         "player-68a9c117": "L"
       },
       "deltas": {
-        "player-0e14c7c6": 6.360043011390889,
-        "player-e3b73ccb": 6.360043011390889,
-        "player-dc078d70": -6.360043011390889,
-        "player-68a9c117": -6.360043011390889
+        "player-0e14c7c6": 5.742970200604256,
+        "player-e3b73ccb": 5.742970200604256,
+        "player-dc078d70": -5.742970200604256,
+        "player-68a9c117": -5.742970200604256
       },
       "ratings_after": {
-        "player-0e14c7c6": 1096.2270399299666,
-        "player-e3b73ccb": 979.0109681738649,
-        "player-dc078d70": 776.1266095668469,
-        "player-68a9c117": 971.458049585872
+        "player-0e14c7c6": 1100.263596154327,
+        "player-e3b73ccb": 978.6927580229785,
+        "player-dc078d70": 727.963458071157,
+        "player-68a9c117": 976.503753778104
       }
     },
     {
@@ -2141,16 +2169,16 @@
         "player-7496ab40": "L"
       },
       "deltas": {
-        "player-0e14c7c6": 13.024028282461117,
-        "player-9d06de2b": 13.024028282461117,
-        "player-4d6040ac": -13.024028282461117,
-        "player-7496ab40": -13.024028282461117
+        "player-0e14c7c6": 12.942173303922162,
+        "player-9d06de2b": 12.942173303922162,
+        "player-4d6040ac": -12.942173303922162,
+        "player-7496ab40": -12.942173303922162
       },
       "ratings_after": {
-        "player-0e14c7c6": 1109.2510682124278,
-        "player-9d06de2b": 1078.639603941171,
-        "player-4d6040ac": 1064.859835989871,
-        "player-7496ab40": 978.8632731395487
+        "player-0e14c7c6": 1113.205769458249,
+        "player-9d06de2b": 1071.277244102815,
+        "player-4d6040ac": 1065.5868277408365,
+        "player-7496ab40": 971.1943032029245
       }
     },
     {
@@ -2163,16 +2191,16 @@
         "player-7ef787f5": "L"
       },
       "deltas": {
-        "player-cf25b5d1": 5.433185331767634,
-        "player-68a9c117": 5.433185331767634,
-        "player-dc078d70": -5.433185331767634,
-        "player-7ef787f5": -5.433185331767634
+        "player-cf25b5d1": 4.315862330789586,
+        "player-68a9c117": 4.315862330789586,
+        "player-dc078d70": -4.315862330789586,
+        "player-7ef787f5": -4.315862330789586
       },
       "ratings_after": {
-        "player-cf25b5d1": 1235.6725472501053,
-        "player-68a9c117": 976.8912349176396,
-        "player-dc078d70": 770.6934242350793,
-        "player-7ef787f5": 981.8625133876836
+        "player-cf25b5d1": 1286.5968588781136,
+        "player-68a9c117": 980.8196161088937,
+        "player-dc078d70": 723.6475957403674,
+        "player-7ef787f5": 988.5708421513409
       }
     },
     {
@@ -2185,16 +2213,16 @@
         "player-cf25b5d1": "W"
       },
       "deltas": {
-        "player-9d06de2b": -11.001298764580701,
-        "player-4d6040ac": -11.001298764580701,
-        "player-7ef787f5": 11.001298764580701,
-        "player-cf25b5d1": 11.001298764580701
+        "player-9d06de2b": -9.889874927111876,
+        "player-4d6040ac": -9.889874927111876,
+        "player-7ef787f5": 9.889874927111874,
+        "player-cf25b5d1": 9.889874927111874
       },
       "ratings_after": {
-        "player-9d06de2b": 1067.6383051765902,
-        "player-4d6040ac": 1053.8585372252903,
-        "player-7ef787f5": 992.8638121522644,
-        "player-cf25b5d1": 1246.673846014686
+        "player-9d06de2b": 1061.3873691757033,
+        "player-4d6040ac": 1055.6969528137247,
+        "player-7ef787f5": 998.4607170784528,
+        "player-cf25b5d1": 1296.4867338052254
       }
     },
     {
@@ -2207,16 +2235,16 @@
         "player-7496ab40": "W"
       },
       "deltas": {
-        "player-dc078d70": -6.5488160712292816,
-        "player-68a9c117": -6.5488160712292816,
-        "player-0e14c7c6": 6.5488160712292816,
-        "player-7496ab40": 6.5488160712292816
+        "player-dc078d70": -6.022878244814716,
+        "player-68a9c117": -6.022878244814716,
+        "player-0e14c7c6": 6.022878244814716,
+        "player-7496ab40": 6.022878244814716
       },
       "ratings_after": {
-        "player-dc078d70": 764.1446081638501,
-        "player-68a9c117": 970.3424188464104,
-        "player-0e14c7c6": 1115.799884283657,
-        "player-7496ab40": 985.4120892107779
+        "player-dc078d70": 717.6247174955527,
+        "player-68a9c117": 974.796737864079,
+        "player-0e14c7c6": 1119.2286477030639,
+        "player-7496ab40": 977.2171814477392
       }
     },
     {
@@ -2229,16 +2257,16 @@
         "player-68a9c117": "L"
       },
       "deltas": {
-        "player-cf25b5d1": 8.113441830072327,
-        "player-4d6040ac": 8.113441830072327,
-        "player-7496ab40": -8.113441830072327,
-        "player-68a9c117": -8.113441830072327
+        "player-cf25b5d1": 7.204916830921501,
+        "player-4d6040ac": 7.204916830921501,
+        "player-7496ab40": -7.204916830921501,
+        "player-68a9c117": -7.204916830921501
       },
       "ratings_after": {
-        "player-cf25b5d1": 1254.7872878447583,
-        "player-4d6040ac": 1061.9719790553627,
-        "player-7496ab40": 977.2986473807056,
-        "player-68a9c117": 962.228977016338
+        "player-cf25b5d1": 1303.691650636147,
+        "player-4d6040ac": 1062.9018696446462,
+        "player-7496ab40": 970.0122646168177,
+        "player-68a9c117": 967.5918210331574
       }
     },
     {
@@ -2251,16 +2279,16 @@
         "player-dc078d70": "L"
       },
       "deltas": {
-        "player-9d06de2b": 8.390824098386412,
-        "player-7ef787f5": 8.390824098386412,
-        "player-0e14c7c6": -8.390824098386412,
-        "player-dc078d70": -8.390824098386412
+        "player-9d06de2b": 7.7587400725092355,
+        "player-7ef787f5": 7.7587400725092355,
+        "player-0e14c7c6": -7.7587400725092355,
+        "player-dc078d70": -7.7587400725092355
       },
       "ratings_after": {
-        "player-9d06de2b": 1076.0291292749766,
-        "player-7ef787f5": 1001.2546362506507,
-        "player-0e14c7c6": 1107.4090601852706,
-        "player-dc078d70": 755.7537840654637
+        "player-9d06de2b": 1069.1461092482125,
+        "player-7ef787f5": 1006.2194571509621,
+        "player-0e14c7c6": 1111.4699076305546,
+        "player-dc078d70": 709.8659774230434
       }
     },
     {
@@ -2273,16 +2301,16 @@
         "player-dc078d70": "W"
       },
       "deltas": {
-        "player-0e14c7c6": -15.683309565712783,
-        "player-deada6fb": -15.683309565712783,
-        "player-4d6040ac": 15.683309565712783,
-        "player-dc078d70": 15.683309565712783
+        "player-0e14c7c6": -16.431923265493822,
+        "player-deada6fb": -16.431923265493822,
+        "player-4d6040ac": 16.431923265493822,
+        "player-dc078d70": 16.431923265493822
       },
       "ratings_after": {
-        "player-0e14c7c6": 1091.7257506195579,
-        "player-deada6fb": 915.0231361738797,
-        "player-4d6040ac": 1077.6552886210754,
-        "player-dc078d70": 771.4370936311765
+        "player-0e14c7c6": 1095.0379843650608,
+        "player-deada6fb": 914.2283132444729,
+        "player-4d6040ac": 1079.3337929101401,
+        "player-dc078d70": 726.2979006885373
       }
     },
     {
@@ -2295,16 +2323,16 @@
         "player-7ef787f5": "W"
       },
       "deltas": {
-        "player-9d06de2b": -12.696529811866592,
-        "player-7496ab40": -12.696529811866592,
-        "player-68a9c117": 12.696529811866592,
-        "player-7ef787f5": 12.696529811866592
+        "player-9d06de2b": -12.304864964164242,
+        "player-7496ab40": -12.304864964164242,
+        "player-68a9c117": 12.304864964164242,
+        "player-7ef787f5": 12.304864964164242
       },
       "ratings_after": {
-        "player-9d06de2b": 1063.33259946311,
-        "player-7496ab40": 964.6021175688389,
-        "player-68a9c117": 974.9255068282047,
-        "player-7ef787f5": 1013.9511660625174
+        "player-9d06de2b": 1056.8412442840483,
+        "player-7496ab40": 957.7073996526534,
+        "player-68a9c117": 979.8966859973217,
+        "player-7ef787f5": 1018.5243221151263
       }
     },
     {
@@ -2317,16 +2345,16 @@
         "player-deada6fb": "L"
       },
       "deltas": {
-        "player-9d06de2b": 10.063840554800546,
-        "player-68a9c117": 10.063840554800546,
-        "player-4d6040ac": -10.063840554800546,
-        "player-deada6fb": -10.063840554800546
+        "player-9d06de2b": 10.100944364350815,
+        "player-68a9c117": 10.100944364350815,
+        "player-4d6040ac": -10.100944364350815,
+        "player-deada6fb": -10.100944364350815
       },
       "ratings_after": {
-        "player-9d06de2b": 1073.3964400179104,
-        "player-68a9c117": 984.9893473830052,
-        "player-4d6040ac": 1067.591448066275,
-        "player-deada6fb": 904.9592956190792
+        "player-9d06de2b": 1066.9421886483992,
+        "player-68a9c117": 989.9976303616725,
+        "player-4d6040ac": 1069.2328485457892,
+        "player-deada6fb": 904.1273688801222
       }
     },
     {
@@ -2339,16 +2367,16 @@
         "player-dc078d70": "L"
       },
       "deltas": {
-        "player-7ef787f5": 8.997149348395718,
-        "player-7496ab40": 8.997149348395718,
-        "player-0e14c7c6": -8.997149348395718,
-        "player-dc078d70": -8.997149348395718
+        "player-7ef787f5": 8.407616339390348,
+        "player-7496ab40": 8.407616339390348,
+        "player-0e14c7c6": -8.407616339390348,
+        "player-dc078d70": -8.407616339390348
       },
       "ratings_after": {
-        "player-7ef787f5": 1022.9483154109131,
-        "player-7496ab40": 973.5992669172347,
-        "player-0e14c7c6": 1082.7286012711622,
-        "player-dc078d70": 762.4399442827807
+        "player-7ef787f5": 1026.9319384545167,
+        "player-7496ab40": 966.1150159920437,
+        "player-0e14c7c6": 1086.6303680256704,
+        "player-dc078d70": 717.890284349147
       }
     },
     {
@@ -2361,16 +2389,16 @@
         "player-dc078d70": "D"
       },
       "deltas": {
-        "player-4d6040ac": -3.6662721818308786,
-        "player-68a9c117": -3.6662721818308786,
-        "player-7ef787f5": 3.6662721818308786,
-        "player-dc078d70": 3.6662721818308786
+        "player-4d6040ac": -4.239271093799104,
+        "player-68a9c117": -4.239271093799104,
+        "player-7ef787f5": 4.239271093799104,
+        "player-dc078d70": 4.239271093799104
       },
       "ratings_after": {
-        "player-4d6040ac": 1063.9251758844441,
-        "player-68a9c117": 981.3230752011743,
-        "player-7ef787f5": 1026.6145875927439,
-        "player-dc078d70": 766.1062164646116
+        "player-4d6040ac": 1064.9935774519902,
+        "player-68a9c117": 985.7583592678734,
+        "player-7ef787f5": 1031.1712095483158,
+        "player-dc078d70": 722.1295554429461
       }
     },
     {
@@ -2383,16 +2411,16 @@
         "player-7496ab40": "L"
       },
       "deltas": {
-        "player-9d06de2b": 12.229165505560527,
-        "player-deada6fb": 12.229165505560527,
-        "player-0e14c7c6": -12.229165505560527,
-        "player-7496ab40": -12.229165505560527
+        "player-9d06de2b": 12.287028898507351,
+        "player-deada6fb": 12.287028898507351,
+        "player-0e14c7c6": -12.287028898507351,
+        "player-7496ab40": -12.287028898507351
       },
       "ratings_after": {
-        "player-9d06de2b": 1085.625605523471,
-        "player-deada6fb": 917.1884611246397,
-        "player-0e14c7c6": 1070.4994357656017,
-        "player-7496ab40": 961.3701014116741
+        "player-9d06de2b": 1079.2292175469065,
+        "player-deada6fb": 916.4143977786296,
+        "player-0e14c7c6": 1074.343339127163,
+        "player-7496ab40": 953.8279870935363
       }
     }
   ]

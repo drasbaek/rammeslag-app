@@ -31,6 +31,8 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 EXPORT_FILE = REPO_ROOT / "export" / "padel_history.json"
 FIXTURE_FILE = REPO_ROOT / "fixtures" / "history.json"
 NAME_MAP_FILE = REPO_ROOT / "scripts" / "name_map.json"
+OVERRIDES_FILE = REPO_ROOT / "scripts" / "player_overrides.json"
+SEED_RATING = 1000.0
 
 # 28 invented Danish names, one per real player. Index i of FIRST_NAMES is
 # paired with index i of LAST_NAMES. None of these words occur in the real
@@ -83,13 +85,41 @@ def build_mapping(players: list[dict[str, Any]]) -> dict[str, dict[str, str]]:
     return mapping
 
 
+def load_overrides(path: Path) -> tuple[dict[str, float], float, set[str]]:
+    """Local corrections to the export, keyed by real name.
+
+    Entry ratings and member status are admin judgements the old app never
+    recorded, so they live outside the export. Gitignored: real names.
+    Returns (entry ratings, default rating, players promoted to member).
+    """
+    if not path.exists():
+        return {}, float(SEED_RATING), set()
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    return (
+        {str(k): float(v) for k, v in payload.get("entry_ratings", {}).items()},
+        float(payload.get("_default_entry_rating", SEED_RATING)),
+        {str(name) for name in payload.get("promoted_to_member", [])},
+    )
+
+
 def pseudonymize_player(
-    player: dict[str, Any], mapping: dict[str, dict[str, str]]
+    player: dict[str, Any],
+    mapping: dict[str, dict[str, str]],
+    entry_ratings: dict[str, float],
+    default_rating: float,
+    promoted: set[str],
 ) -> dict[str, Any]:
     entry = mapping[player["id"]]
+    real_name = entry["real_name"]
     out = dict(player)
     out["id"] = entry["fake_id"]
     out["name"] = entry["fake_name"]
+    # entry_elo is the old app's number, kept as provenance. entry_rating is
+    # ours: what an admin says this player entered the ladder at.
+    out["entry_rating"] = entry_ratings.get(real_name, default_rating)
+    # Guests become members. The export's flag is a snapshot, not the truth.
+    if real_name in promoted:
+        out["is_guest"] = False
     return out
 
 
@@ -113,11 +143,20 @@ def pseudonymize_match(
     return out
 
 
-def pseudonymize(history: dict[str, Any], mapping: dict[str, dict[str, str]]) -> dict[str, Any]:
+def pseudonymize(
+    history: dict[str, Any],
+    mapping: dict[str, dict[str, str]],
+    entry_ratings: dict[str, float] | None = None,
+    default_rating: float = 1000.0,
+    promoted: set[str] | None = None,
+) -> dict[str, Any]:
     """Same keys, same order, same values - only player identities replaced."""
     out = dict(history)
     out["source"] = "pseudonymised from export/padel_history.json"
-    out["players"] = [pseudonymize_player(p, mapping) for p in history["players"]]
+    out["players"] = [
+        pseudonymize_player(p, mapping, entry_ratings or {}, default_rating, promoted or set())
+        for p in history["players"]
+    ]
     out["matches"] = [pseudonymize_match(m, mapping) for m in history["matches"]]
     return out
 
@@ -163,6 +202,7 @@ def main() -> int:
     parser.add_argument("--export", type=Path, default=EXPORT_FILE)
     parser.add_argument("--fixture", type=Path, default=FIXTURE_FILE)
     parser.add_argument("--name-map", type=Path, default=NAME_MAP_FILE)
+    parser.add_argument("--overrides", type=Path, default=OVERRIDES_FILE)
     args = parser.parse_args()
 
     if not args.export.exists():
@@ -171,7 +211,11 @@ def main() -> int:
     history = json.loads(args.export.read_text(encoding="utf-8"))
     mapping = build_mapping(history["players"])
 
-    write_json(args.fixture, pseudonymize(history, mapping))
+    entry_ratings, default_rating, promoted = load_overrides(args.overrides)
+    write_json(
+        args.fixture,
+        pseudonymize(history, mapping, entry_ratings, default_rating, promoted),
+    )
     write_json(args.name_map, mapping)
 
     verify_no_real_names(mapping, args.fixture.parent)
@@ -179,6 +223,9 @@ def main() -> int:
     print(f"wrote {args.fixture.relative_to(REPO_ROOT)}: "
           f"{len(history['players'])} players, {len(history['matches'])} matches")
     print(f"wrote {args.name_map.relative_to(REPO_ROOT)} (gitignored, never commit)")
+    non_default = sum(1 for v in entry_ratings.values() if v != default_rating)
+    print(f"applied {non_default} non-default entry ratings (default {default_rating:.0f})")
+    print(f"promoted {len(promoted)} players from guest to member")
     print("verified: no real name appears anywhere in fixtures/")
     return 0
 
