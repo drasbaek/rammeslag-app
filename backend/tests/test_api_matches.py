@@ -215,3 +215,74 @@ def test_deleting_a_match_replays_the_rest(client, db) -> None:
     assert before["p1"] != after["p1"]
     # p5 never played; a delete cannot move them.
     assert before["p5"] == after["p5"]
+
+
+# --------------------------------------------------------------------------
+# Backfilling a session played in the past
+# --------------------------------------------------------------------------
+
+
+def test_a_backfilled_session_replays_on_the_date_it_was_played(client, db) -> None:
+    """Ratings are a chronological replay, so a session recorded days late must
+    still land in the position it was played -- not the position it was typed.
+
+    Recording the earlier evening SECOND is the case that matters: stamping it
+    with the clock would replay it after the later one and compute a different
+    ladder.
+    """
+    from datetime import date
+
+    from tests.conftest import EFTERAAR, login, make_player, make_season, make_session
+
+    make_season(db, EFTERAAR, "season-1")
+    make_player(db, "boss", "Boss", pin="9999", is_admin=True)
+    for pid in ("p1", "p2", "p3", "p4"):
+        make_player(db, pid, pid.upper())
+    early = date(2025, 9, 1)
+    late = date(2025, 9, 15)
+    make_session(db, "s-early", "season-1", early)
+    make_session(db, "s-late", "season-1", late)
+    login(client, "boss", "9999")
+
+    body = {"team_a": ["p1", "p2"], "team_b": ["p3", "p4"], "sets": [{"games_a": 6, "games_b": 2}]}
+    # Entered in the WRONG order on purpose: the later evening first.
+    assert client.post("/api/matches", json={**body, "session_id": "s-late"}).status_code == 201
+    assert client.post("/api/matches", json={**body, "session_id": "s-early"}).status_code == 201
+
+    stamps = {
+        m["session_id"]: m["played_at"]
+        for sid in ("s-early", "s-late")
+        for m in client.get(f"/api/sessions/{sid}").json()["matches"]
+    }
+    assert stamps["s-early"][:10] == str(early)
+    assert stamps["s-late"][:10] == str(late)
+    assert stamps["s-early"] < stamps["s-late"]
+
+
+def test_matches_in_one_backfilled_session_keep_entry_order(client, db) -> None:
+    from datetime import date
+
+    from tests.conftest import EFTERAAR, login, make_player, make_season, make_session
+
+    make_season(db, EFTERAAR, "season-1")
+    make_player(db, "boss", "Boss", pin="9999", is_admin=True)
+    for pid in ("p1", "p2", "p3", "p4"):
+        make_player(db, pid, pid.upper())
+    played = date(2025, 9, 1)
+    make_session(db, "s1", "season-1", played)
+    login(client, "boss", "9999")
+
+    body = {
+        "session_id": "s1",
+        "team_a": ["p1", "p2"],
+        "team_b": ["p3", "p4"],
+        "sets": [{"games_a": 6, "games_b": 2}],
+    }
+    for _ in range(6):
+        assert client.post("/api/matches", json=body).status_code == 201
+
+    stamps = [m["played_at"] for m in client.get("/api/sessions/s1").json()["matches"]]
+    assert len(stamps) == 6
+    assert all(s[:10] == str(played) for s in stamps), "every match sits on the session's date"
+    assert stamps == sorted(stamps), "and they replay in the order they were entered"
+    assert len(set(stamps)) == 6, "no two matches may share a timestamp"

@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, date, datetime, time, timedelta
 from typing import TYPE_CHECKING
 
 from sqlalchemy import func, select
@@ -511,22 +511,45 @@ def validate_sets(sets: Sequence[tuple[int, int]]) -> None:
         raise DomainError("En kamp skal have mindst ét spillet parti.")
 
 
-def next_played_at(db: DbSession, session_id: str, now: datetime) -> datetime:
-    """``now``, or one tick after the session's latest match if that is later.
+#: Time of day a backfilled session's first match is anchored to. The real
+#: history runs roughly 16:30-20:40 UTC, so an evening default keeps new
+#: sessions in the same band as imported ones.
+SESSION_ANCHOR_HOUR = 18
 
-    Six matches on one evening must replay in the order they were entered.
-    ``match_id`` is only a weak tie-break (docs/RATING.md), so two matches in a
-    session must never share a timestamp -- and a clock that has not moved
-    between two quick submissions must not decide the order by accident.
+
+def next_played_at(db: DbSession, played_on: date, now: datetime) -> datetime:
+    """The timestamp for the next match on ``played_on``.
+
+    Anchored to the SESSION'S OWN DATE, not the clock. A session recorded
+    days after it was played must still replay in the position it was played
+    -- ratings are a chronological replay, so stamping a backfilled evening
+    with today's time would compute the ladder in the order results were
+    typed rather than the order they happened.
+
+    Within a day, each match lands one second after the last, so six matches
+    on one evening replay in the order they were entered. ``match_id`` is only
+    a weak tie-break (docs/RATING.md), so two matches must never share a
+    timestamp, and a clock that has not moved between two quick submissions
+    must not decide the order by accident.
+
+    The window is the whole calendar day rather than the session, so two
+    sessions on one date (a training and a casual game) still order correctly
+    against each other.
     """
+    day_start = datetime.combine(played_on, time.min, tzinfo=UTC)
+    day_end = day_start + timedelta(days=1)
     latest = db.execute(
-        select(func.max(Match.played_at)).where(Match.session_id == session_id)
+        select(func.max(Match.played_at)).where(
+            Match.played_at >= day_start, Match.played_at < day_end
+        )
     ).scalar_one_or_none()
     if latest is None:
-        return now
+        anchor = day_start + timedelta(hours=SESSION_ANCHOR_HOUR)
+        # A session recorded live should not be stamped in its own future.
+        return min(anchor, now) if day_start <= now < day_end else anchor
     if latest.tzinfo is None:
         latest = latest.replace(tzinfo=UTC)
-    return now if now > latest else latest + timedelta(microseconds=1)
+    return latest + timedelta(seconds=1)
 
 
 def create_match(
@@ -571,7 +594,7 @@ def create_match(
         session_id=session_id,
         # Stamped at entry time. match_id is only a weak tie-break, so two
         # matches in the same session must not share a timestamp.
-        played_at=played_at or next_played_at(db, session_id, utcnow()),
+        played_at=played_at or next_played_at(db, play_session.played_on, utcnow()),
         source=source,
         team_a_player1_id=team_a[0],
         team_a_player2_id=team_a[1],
