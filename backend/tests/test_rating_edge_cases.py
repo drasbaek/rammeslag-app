@@ -152,14 +152,14 @@ def test_matches_are_sorted_by_played_at_then_match_id() -> None:
 def test_entry_ratings_seed_individual_players() -> None:
     """An admin sets a newcomer's entry rating by judgement; absent players
     fall back to SEED_RATING."""
-    from datetime import datetime
+    from datetime import UTC, datetime
 
     from rammeslag.modules.rating.constants import SEED_RATING
     from rammeslag.modules.rating.engine import MatchInput, compute
 
     match = MatchInput(
         match_id="m1",
-        played_at=datetime(2026, 9, 1),
+        played_at=datetime(2026, 9, 1, tzinfo=UTC),
         team_a=("strong", "ordinary"),
         team_b=("weak", "unlisted"),
         games_a=6,
@@ -181,11 +181,11 @@ def test_entry_ratings_seed_individual_players() -> None:
 
 def test_compute_without_entry_ratings_is_unchanged() -> None:
     """The parameter is optional; omitting it seeds everyone at SEED_RATING."""
-    from datetime import datetime
+    from datetime import UTC, datetime
 
     from rammeslag.modules.rating.constants import SEED_RATING
     from rammeslag.modules.rating.engine import MatchInput, compute
 
-    match = MatchInput("m1", datetime(2026, 9, 1), ("a", "b"), ("c", "d"), 6, 4)
+    match = MatchInput("m1", datetime(2026, 9, 1, tzinfo=UTC), ("a", "b"), ("c", "d"), 6, 4)
     assert compute([match]) == compute([match], entry_ratings={})
     assert compute([match], entry_ratings={"a": SEED_RATING}) == compute([match])

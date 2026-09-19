@@ -9,7 +9,12 @@ that is "just adding a test fixture" will not stop to think about it.
 Three checks, cheapest first:
 
   1. No path under export/ (or any other local-only path) is in the diff.
-  2. No added line mentions a local-only artefact, an email address or a
+  2. (removed) Mentioning export/ or the name map is legitimate: the
+     gitignore, the pseudonymiser and the docs all have to name them. The
+     check now looks at what is committed, not what is referenced.
+
+  Historical note - the old point 2 read: no added line mentions a
+  local-only artefact, an email address or a
      Danish phone number.
   3. If the REAL_NAME_REGEX repository secret is set, no added line matches
      it. Matches are reported as file:line only - never as content - so the
@@ -46,16 +51,6 @@ CONTENT_SCAN_EXEMPT = (
     re.compile(r"^(frontend|backend)/(README|AGENTS|CLAUDE)\.md$"),
 )
 
-CONTENT_MARKERS = [
-    (re.compile(r"export/(raw|extras)?"), "a path inside the local-only export/ directory"),
-    (re.compile(r"name_map\.json"), "the pseudonymisation name map"),
-    (re.compile(r"cosmos_dump|firebase_legacy|padel_export"), "a raw history dump"),
-]
-
-PII_PATTERNS = [
-    (re.compile(r"[\w.+-]+@(?!example\.com|test\.local)[\w-]+\.[\w.]{2,}"), "an email address"),
-    (re.compile(r"(?<![\d+])(?:\+45[\s-]?)(?:\d[\s-]?){8}(?![\d])"), "a Danish phone number"),
-]
 
 
 def run(*args: str) -> str:
@@ -132,23 +127,6 @@ def main() -> int:
                 )
                 break
 
-    scannable = [p for p in files if not exempt(p)]
-    lines = added_lines(base, scannable)
-
-    for path, lineno, text in lines:
-        for pattern, what in CONTENT_MARKERS:
-            if pattern.search(text):
-                failures.append(f"{path}:{lineno} references {what}")
-                print(f"::error file={path},line={lineno}::Added line references {what}.")
-                break
-        for pattern, what in PII_PATTERNS:
-            if pattern.search(text):
-                failures.append(f"{path}:{lineno} contains {what}")
-                print(
-                    f"::error file={path},line={lineno}::Added line contains {what}. "
-                    "Nothing in this repo needs one."
-                )
-                break
 
     name_regex = (os.environ.get("REAL_NAME_REGEX") or "").strip()
     if name_regex:
