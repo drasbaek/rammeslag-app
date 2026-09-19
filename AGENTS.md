@@ -48,6 +48,9 @@ chat, so it is allowed to be funny.
   layout that only works on a laptop is not done.
 - **Last place gets the bundprop treatment.** The humour is a feature that
   was explicitly asked for. Keep it affectionate.
+- **Never show `entry_rating` outside the admin player screen.** It is an
+  admin's private judgement of how good someone is. The API returns it; the
+  dashboard must not put it in front of the player it describes.
 - **Every stat shows its sample size.** "3-1 with Klaus" — never an
   unqualified claim of chemistry from four matches. The app does not
   pretend to know more than it does.

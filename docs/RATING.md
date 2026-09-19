@@ -10,7 +10,10 @@ Matches where `source = 'internal'`, replayed in chronological order by
 `played_at`, ties broken by `match_id`.
 
 Every player starts at their own **entry rating**, a required field set by an
-admin when the player is added. A newcomer joining an established field is
+admin when the player is added. It is **not shown anywhere in the dashboard**
+except the admin player screen where it is set: it is the admin's private
+judgement of how strong someone is, and it stays between admins. The API
+returns it; the UI must not surface it to players. A newcomer joining an established field is
 not a 1000-rated player, and the admin is better placed to judge that than
 any formula. `SEED_RATING` is the suggested default and the fallback for a
 player with no entry rating recorded.
