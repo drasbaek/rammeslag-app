@@ -83,7 +83,15 @@ def verify(body: str, moved: list[Movement]) -> list[str]:
 
 def main(before_path: str, after_path: str) -> int:
     body = HTML_COMMENT.sub("", os.environ.get("PR_BODY") or "")
-    moved = movements(load_ladder(before_path), load_ladder(after_path))
+    before, after = load_ladder(before_path), load_ladder(after_path)
+
+    if not before:
+        # The snapshot did not exist before this PR. Creating it is not a
+        # change to anyone's rating, so there is nothing to explain yet.
+        print(f"Golden snapshot created ({len(after)} players). Nothing to explain.")
+        return 0
+
+    moved = movements(before, after)
 
     problems: list[str] = []
     if not re.search(r"^\s*#{1,4}\s*rating change\b", body, re.IGNORECASE | re.MULTILINE):
