@@ -7,18 +7,25 @@ regenerating `fixtures/expected_ratings.json` in the same commit.
 ## Inputs
 
 Matches where `source = 'internal'`, replayed in chronological order by
-`played_at`, ties broken by `match_id`. Every player starts at **1000.0**.
+`played_at`, ties broken by `match_id`.
+
+Every player starts at their own **entry rating**, a required field set by an
+admin when the player is added. A newcomer joining an established field is
+not a 1000-rated player, and the admin is better placed to judge that than
+any formula. `SEED_RATING` is the suggested default and the fallback for a
+player with no entry rating recorded.
 
 The engine sorts defensively rather than trusting input order. `match_id` is
 a weak tie-break — it is stable but arbitrary — so the matches module must
 stamp `played_at` at entry time, which keeps matches within a session
 distinct and in the order they were actually played.
 
-**Entry ratings from the old app are deliberately ignored.** `export/` records
-that one player entered at 1100 and that this is required to reconcile with
-the old system's numbers. We seed everyone at 1000.0, so **these ratings will
-not reconcile with the old app's, by design.** The fixture preserves
-`entry_elo` as provenance; the engine does not read it.
+**The old app's entry ratings are not inherited automatically.** `export/`
+records that one player entered at 1100 and that this is required to
+reconcile with the old system's numbers. The fixture preserves `entry_elo` as
+provenance, but the engine reads entry ratings from the players table, which
+an admin fills in deliberately. Until they are set, everyone falls back to
+`SEED_RATING` and **these ratings will not reconcile with the old app's**.
 
 Only the game totals matter. Sets are stored and displayed, but the engine
 reads `games_a` and `games_b`, each the sum over the match's sets.
@@ -90,7 +97,7 @@ provisional. That is intended.
 
 | Name | Value |
 |---|---|
-| `SEED_RATING` | 1000.0 |
+| `SEED_RATING` | 1000.0 (default and fallback, not a universal seed) |
 | `K_STANDARD` | 20.0 |
 | `K_PROVISIONAL` | 40.0 |
 | `PROVISIONAL_MATCHES` | 5 |
@@ -120,6 +127,23 @@ end unfinished at 4-3 or 5-4 routinely.
 This rule does **not** feed the rating. Across all 98 historical matches the
 set verdict and the games verdict never disagree; games merely resolves 11
 matches that sets leaves level.
+
+## Who appears on the ladder
+
+`is_guest` is a meaningful distinction, not a stale flag: **members** are the
+team, for whom rankings matter; **guests** turned up to be measured. Guest
+status is editable, because guests become members.
+
+- The ladder shows **members only by default**. Guests are available behind
+  an explicit filter.
+- There is **no activity filter.** A member who missed a season still appears.
+- Everyone shown is ranked, including a player with two matches. A player
+  under `PROVISIONAL_MATCHES` is flagged `provisional` so the UI can say the
+  number is still settling — but they keep their rank.
+
+Guest matches always feed the engine. 54% of historical matches involve a
+guest, so excluding them would discard most of the evidence. This is a
+presentation filter and must never change what `compute()` is fed.
 
 ## Derived views
 

@@ -147,3 +147,45 @@ def test_matches_are_sorted_by_played_at_then_match_id() -> None:
 
     assert [delta.match_id for delta in forward.history] == ["match-a", "match-b"]
     assert forward.final == backward.final
+
+
+def test_entry_ratings_seed_individual_players() -> None:
+    """An admin sets a newcomer's entry rating by judgement; absent players
+    fall back to SEED_RATING."""
+    from datetime import datetime
+
+    from rammeslag.modules.rating.constants import SEED_RATING
+    from rammeslag.modules.rating.engine import MatchInput, compute
+
+    match = MatchInput(
+        match_id="m1",
+        played_at=datetime(2026, 9, 1),
+        team_a=("strong", "ordinary"),
+        team_b=("weak", "unlisted"),
+        games_a=6,
+        games_b=4,
+    )
+    result = compute([match], entry_ratings={"strong": 1300.0, "weak": 700.0})
+
+    # The listed pair started where they were told to; the rest at the seed.
+    assert result.history[0].ratings_after["strong"] > 1300.0
+    assert result.history[0].ratings_after["weak"] < 700.0
+    ordinary_delta = result.history[0].deltas["ordinary"]
+    assert result.final["ordinary"] == SEED_RATING + ordinary_delta
+
+    # A heavily favoured team gains far less for the same win than an evenly
+    # matched one would.
+    even = compute([match])
+    assert 0 < result.history[0].deltas["strong"] < even.history[0].deltas["strong"] / 3
+
+
+def test_compute_without_entry_ratings_is_unchanged() -> None:
+    """The parameter is optional; omitting it seeds everyone at SEED_RATING."""
+    from datetime import datetime
+
+    from rammeslag.modules.rating.constants import SEED_RATING
+    from rammeslag.modules.rating.engine import MatchInput, compute
+
+    match = MatchInput("m1", datetime(2026, 9, 1), ("a", "b"), ("c", "d"), 6, 4)
+    assert compute([match]) == compute([match], entry_ratings={})
+    assert compute([match], entry_ratings={"a": SEED_RATING}) == compute([match])

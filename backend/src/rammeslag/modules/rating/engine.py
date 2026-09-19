@@ -7,7 +7,7 @@ rating; nothing is ever updated incrementally.
 
 from __future__ import annotations
 
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -90,19 +90,28 @@ def _verdict(score: float) -> str:
     return DRAW
 
 
-def compute(matches: Sequence[MatchInput]) -> RatingResult:
-    """Replay `matches` from the seed rating and return the resulting ladder.
+def compute(
+    matches: Sequence[MatchInput],
+    entry_ratings: Mapping[str, float] | None = None,
+) -> RatingResult:
+    """Replay `matches` from each player's entry rating and return the ladder.
+
+    `entry_ratings` maps player id to the rating that player entered the
+    ladder at. An admin sets it by judgement when adding someone, because a
+    newcomer joining an established field is not a 1000-rated player. Anyone
+    absent from the mapping falls back to SEED_RATING.
 
     Input order is not trusted: matches are sorted by `played_at`, ties broken
     by `match_id`.
     """
+    entry = dict(entry_ratings or {})
     ratings: dict[str, float] = {}
     matches_played: dict[str, int] = {}
     history: list[MatchDelta] = []
 
     def seed(player_id: str) -> None:
         if player_id not in ratings:
-            ratings[player_id] = SEED_RATING
+            ratings[player_id] = entry.get(player_id, SEED_RATING)
             matches_played[player_id] = 0
 
     for match in sorted(matches, key=lambda m: (m.played_at, m.match_id)):
