@@ -1,6 +1,22 @@
-import type { PlayerStats, Season } from "@/lib/types";
 import { rating as formatRating, delta, recordLine } from "@/lib/format";
 import { cn } from "@/lib/utils";
+
+/**
+ * One column of numbers. `rating` and `peak` are optional because the season
+ * side of the profile does not have them: `GET /api/players/{id}` reports one
+ * all-time rating plus per-season records, and a season rating would be a
+ * number the API never claimed.
+ */
+export interface StatColumn {
+  rank: number | null;
+  rating?: number;
+  rating_gained: number;
+  wins: number;
+  losses: number;
+  draws: number;
+  matches: number;
+  peak?: number;
+}
 
 function Line({ label, value, tone }: { label: string; value: string; tone?: string }) {
   return (
@@ -18,13 +34,11 @@ function Column({
   caption,
   stats,
   accent,
-  showRating,
 }: {
   title: string;
   caption: string;
-  stats: PlayerStats | null;
+  stats: StatColumn | null;
   accent: boolean;
-  showRating: boolean;
 }) {
   return (
     <div
@@ -36,12 +50,14 @@ function Column({
       <p className={cn("eyebrow", accent ? "text-volt/80" : "text-mute")}>{title}</p>
       <p className="mt-0.5 truncate text-[10px] text-dim">{caption}</p>
 
-      {stats === null ? (
+      {stats === null || stats.matches === 0 ? (
         <p className="py-4 text-center text-[11px] text-dim">Ingen kampe endnu.</p>
       ) : (
         <div className="mt-2 divide-y divide-line-soft">
           <Line label="Placering" value={stats.rank === null ? "–" : `nr. ${stats.rank}`} />
-          {showRating ? <Line label="Rating" value={formatRating(stats.rating)} /> : null}
+          {stats.rating !== undefined ? (
+            <Line label="Rating" value={formatRating(stats.rating)} />
+          ) : null}
           <Line
             label="Vundet"
             value={delta(stats.rating_gained, 0)}
@@ -54,8 +70,8 @@ function Column({
             }
           />
           <Line label="V–N–U" value={recordLine(stats.wins, stats.losses, stats.draws)} />
-          <Line label="Kampe" value={String(stats.matches_played)} />
-          <Line label="Top" value={formatRating(stats.peak_rating)} />
+          <Line label="Kampe" value={String(stats.matches)} />
+          {stats.peak !== undefined ? <Line label="Top" value={formatRating(stats.peak)} /> : null}
         </div>
       )}
     </div>
@@ -66,27 +82,20 @@ function Column({
 export function StatColumns({
   allTime,
   season,
-  currentSeason,
+  seasonName,
 }: {
-  allTime: PlayerStats;
-  season: PlayerStats | null;
-  currentSeason: Season | null;
+  allTime: StatColumn;
+  season: StatColumn | null;
+  seasonName: string;
 }) {
   return (
     <div className="grid grid-cols-2 gap-2">
+      <Column title="All-time" caption="Siden første kamp" stats={allTime} accent={false} />
       <Column
-        title="All-time"
-        caption="Siden første kamp"
-        stats={allTime}
-        accent={false}
-        showRating
-      />
-      <Column
-        title={currentSeason?.name ?? "Sæson"}
+        title={seasonName}
         caption="Ratingen nulstilles aldrig"
         stats={season}
         accent
-        showRating={false}
       />
     </div>
   );

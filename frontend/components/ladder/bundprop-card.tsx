@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { LadderEntry } from "@/lib/types";
+import type { LadderEntryOut } from "@/lib/types";
 import { FormDots } from "@/components/ui/form-dots";
 import { Movement } from "@/components/ui/movement";
 import { ProvisionalMark } from "@/components/ladder/provisional-mark";
@@ -43,13 +43,16 @@ function Plug({ className }: { className?: string }) {
 export function BundpropCard({
   entry,
   seasonMode,
+  threshold,
   above,
   innerRef,
 }: {
-  entry: LadderEntry;
+  entry: LadderEntryOut;
   seasonMode: boolean;
+  /** Career matches below which the rating is still settling. */
+  threshold: number;
   /** The member one rung up — the distance to daylight is the funny part. */
-  above: LadderEntry | null;
+  above: LadderEntryOut | null;
   innerRef?: (node: HTMLElement | null) => void;
 }) {
   const number = seasonMode ? delta(entry.rating_gained, 0) : formatRating(entry.rating);
@@ -62,7 +65,7 @@ export function BundpropCard({
   return (
     <Link
       ref={innerRef as never}
-      href={`/players/${entry.player.id}`}
+      href={`/players/${entry.player_id}`}
       className="bund-grain animate-rise relative mt-2 block overflow-hidden rounded-card border border-loss/25"
     >
       <div className="hazard h-[5px] w-full opacity-70" aria-hidden />
@@ -85,11 +88,13 @@ export function BundpropCard({
             <Movement movement={entry.movement} className="ml-auto" />
           </div>
           <p className="mt-1 flex items-center gap-1.5 text-[17px] font-extrabold tracking-tight">
-            <span className="min-w-0 truncate">{entry.player.name}</span>
-            {entry.provisional ? <ProvisionalMark matchesPlayed={entry.matches_played} /> : null}
+            <span className="min-w-0 truncate">{entry.name}</span>
+            {entry.provisional ? (
+              <ProvisionalMark careerMatches={entry.career_matches} threshold={threshold} />
+            ) : null}
           </p>
           <p className="mt-0.5 truncate text-[11px] italic text-loss/80">
-            {roastFor(entry.player.id)}
+            {roastFor(entry.player_id)}
           </p>
         </div>
 
@@ -106,7 +111,7 @@ export function BundpropCard({
         <div className="relative flex items-center gap-2 border-t border-loss/15 px-3 py-2">
           <span className="num text-[10px] font-black text-loss">{gap}</span>
           <span className="text-[10px] text-mute">
-            point op til {firstName(above.player.name)}. Det er tre gode aftener.
+            point op til {firstName(above.name)}. Det er tre gode aftener.
           </span>
         </div>
       ) : null}

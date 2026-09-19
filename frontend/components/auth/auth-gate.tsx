@@ -19,14 +19,14 @@ export function AuthGateProvider({ children }: { children: ReactNode }) {
 
   const requireAuth = useCallback(
     (action?: () => void) => {
-      if (me.data?.player) {
+      if (me.data) {
         action?.();
         return;
       }
       pending.current = action ?? null;
       setOpen(true);
     },
-    [me.data?.player],
+    [me.data],
   );
 
   const value = useMemo<AuthGate>(

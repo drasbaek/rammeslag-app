@@ -1,6 +1,5 @@
-import type { Match } from "@/lib/types";
+import type { MatchOut } from "@/lib/types";
 import { firstName, formatTime } from "@/lib/format";
-import { setVerdictOf } from "@/lib/sets";
 import { cn } from "@/lib/utils";
 
 function TeamLine({
@@ -52,10 +51,12 @@ function TeamLine({
   );
 }
 
-export function MatchCard({ match, index }: { match: Match; index: number }) {
+export function MatchCard({ match, index }: { match: MatchOut; index: number }) {
   const gamesA = match.sets.map((set) => set.games_a);
   const gamesB = match.sets.map((set) => set.games_b);
-  const verdicts = match.sets.map((set) => setVerdictOf(set.games_a, set.games_b));
+  // The set verdict is display only and comes down the wire already decided:
+  // two clear games or 7-6, "D" for the timed sets that end level.
+  const verdicts = match.sets.map((set) => set.winner);
 
   return (
     <article
@@ -71,14 +72,14 @@ export function MatchCard({ match, index }: { match: Match; index: number }) {
       <TeamLine
         names={`${firstName(match.team_a[0].name)} & ${firstName(match.team_a[1].name)}`}
         games={gamesA}
-        won={match.winner === "a"}
-        setResults={verdicts.map((v) => (v === null ? null : v === "a"))}
+        won={match.winner === "A"}
+        setResults={verdicts.map((v) => (v === "D" ? null : v === "A"))}
       />
       <TeamLine
         names={`${firstName(match.team_b[0].name)} & ${firstName(match.team_b[1].name)}`}
         games={gamesB}
-        won={match.winner === "b"}
-        setResults={verdicts.map((v) => (v === null ? null : v === "b"))}
+        won={match.winner === "B"}
+        setResults={verdicts.map((v) => (v === "D" ? null : v === "B"))}
       />
     </article>
   );

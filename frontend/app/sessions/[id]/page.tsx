@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
+import { useMemo } from "react";
 import { MatchCard } from "@/components/session/match-card";
 import { MovementBars } from "@/components/session/movement-bars";
 import { Recap } from "@/components/session/recap";
@@ -9,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthGate } from "@/components/auth/auth-gate";
 import { useSession } from "@/lib/queries";
+import { participants, sessionStandings } from "@/lib/session-stats";
 import { formatDateShort, SESSION_TYPE_LABEL, weekdayShort } from "@/lib/format";
 import { haptic } from "@/lib/haptics";
 
@@ -19,6 +21,12 @@ export default function SessionDetailPage() {
   const gate = useAuthGate();
   const session = useSession(id);
   const data = session.data;
+
+  // The endpoint hands over the matches and a three-line recap; who played and
+  // how the evening moved are sums over those matches.
+  const matches = useMemo(() => data?.matches ?? [], [data?.matches]);
+  const standings = useMemo(() => sessionStandings(matches), [matches]);
+  const squad = useMemo(() => participants(matches), [matches]);
 
   return (
     <div>
@@ -60,8 +68,8 @@ export default function SessionDetailPage() {
             </h1>
 
             <p className="num mt-1.5 text-mini text-mute">
-              {data.season_name} · {data.match_count} {data.match_count === 1 ? "kamp" : "kampe"} ·{" "}
-              {data.players.length} spillere
+              {data.season.name} · {matches.length} {matches.length === 1 ? "kamp" : "kampe"} ·{" "}
+              {squad.length} spillere
             </p>
             {data.note ? <p className="mt-1 text-[11px] italic text-dim">{data.note}</p> : null}
           </header>
@@ -79,9 +87,9 @@ export default function SessionDetailPage() {
             </Button>
           ) : null}
 
-          <Recap recap={data.recap} />
+          <Recap recap={data.recap} standings={standings} />
 
-          {data.matches.length > 0 ? (
+          {matches.length > 0 ? (
             <section className="mt-6">
               <div className="flex items-center justify-between px-1 pb-2">
                 <div className="flex items-center gap-2">
@@ -91,7 +99,7 @@ export default function SessionDetailPage() {
                 <span className="num text-[10px] text-dim">Sæt vises som spillet</span>
               </div>
               <div className="space-y-1.5">
-                {data.matches.map((match, index) => (
+                {matches.map((match, index) => (
                   <MatchCard key={match.id} match={match} index={index} />
                 ))}
               </div>
@@ -102,7 +110,7 @@ export default function SessionDetailPage() {
             </p>
           )}
 
-          <MovementBars standings={data.standings} />
+          <MovementBars standings={standings} />
 
           <footer className="mt-8 flex items-center justify-between border-t border-line-soft px-1 pt-3">
             <span className="text-[9px] font-bold tracking-[0.2em] text-ink-500">RAMMESLAG FC</span>

@@ -8,9 +8,9 @@ import { PlayerForm } from "@/components/admin/player-form";
 import { useMe, usePlayers } from "@/lib/queries";
 import { rating as formatRating } from "@/lib/format";
 import { haptic } from "@/lib/haptics";
-import type { Player } from "@/lib/types";
+import type { PlayerOut } from "@/lib/types";
 
-type Editing = { mode: "create" } | { mode: "edit"; player: Player } | null;
+type Editing = { mode: "create" } | { mode: "edit"; player: PlayerOut } | null;
 
 /**
  * An occasional settings screen. Deliberately plain: no accent gradients, no
@@ -23,7 +23,7 @@ export default function AdminPlayersPage() {
   const players = usePlayers();
   const [editing, setEditing] = useState<Editing>(null);
 
-  const isAdmin = me.data?.player?.is_admin ?? false;
+  const isAdmin = me.data?.is_admin ?? false;
   const all = players.data ?? [];
   const members = all.filter((p) => !p.is_guest);
   const guests = all.filter((p) => p.is_guest);
@@ -40,7 +40,7 @@ export default function AdminPlayersPage() {
     );
   }
 
-  const Row = ({ player }: { player: Player }) => (
+  const Row = ({ player }: { player: PlayerOut }) => (
     <button
       onClick={() => {
         haptic("tap");
@@ -50,10 +50,9 @@ export default function AdminPlayersPage() {
     >
       <span className="min-w-0 flex-1">
         <span className="block truncate text-[13px] font-semibold">{player.name}</span>
-        <span className="text-[10px] text-dim">
-          {player.is_guest ? "Gæst" : "Medlem"}
-          {player.is_admin ? " · admin" : ""}
-        </span>
+        {/* GET /api/players returns PlayerOut, which does not say who is an
+            admin — so this line does not pretend to know. */}
+        <span className="text-[10px] text-dim">{player.is_guest ? "Gæst" : "Medlem"}</span>
       </span>
       <span className="shrink-0 text-right">
         <span className="num block text-[13px] font-bold tabular-nums">

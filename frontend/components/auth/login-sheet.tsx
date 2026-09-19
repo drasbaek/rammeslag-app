@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { usePlayers, useLogin } from "@/lib/queries";
 import { haptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
-import type { Player } from "@/lib/types";
+import type { PlayerOut } from "@/lib/types";
 
 const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "⌫"];
 
@@ -26,7 +26,7 @@ export function LoginSheet({
 }) {
   const players = usePlayers();
   const login = useLogin();
-  const [selected, setSelected] = useState<Player | null>(null);
+  const [selected, setSelected] = useState<PlayerOut | null>(null);
   const [pin, setPin] = useState("");
   const [error, setError] = useState<string | null>(null);
 

@@ -9,21 +9,24 @@ import { cn } from "@/lib/utils";
  * its sample size is a claim the app cannot back up.
  */
 export function ProvisionalMark({
-  matchesPlayed,
+  careerMatches,
+  threshold = PROVISIONAL_MATCHES,
   className,
 }: {
-  matchesPlayed: number;
+  /** CAREER matches — the ladder's `threshold` is measured against those. */
+  careerMatches: number;
+  threshold?: number;
   className?: string;
 }) {
-  const left = Math.max(0, PROVISIONAL_MATCHES - matchesPlayed);
+  const left = Math.max(0, threshold - careerMatches);
 
   return (
     <span
       className={cn("inline-flex shrink-0 items-center text-volt/55", className)}
-      title={`Ratingen sætter sig endnu — ${matchesPlayed} ${
-        matchesPlayed === 1 ? "kamp" : "kampe"
+      title={`Ratingen sætter sig endnu — ${careerMatches} ${
+        careerMatches === 1 ? "kamp" : "kampe"
       }, ${left} igen`}
-      aria-label={`Ratingen sætter sig endnu, ${matchesPlayed} kampe spillet`}
+      aria-label={`Ratingen sætter sig endnu, ${careerMatches} kampe spillet`}
     >
       <svg viewBox="0 0 12 12" className="h-[11px] w-[11px]" aria-hidden>
         <circle
@@ -42,8 +45,14 @@ export function ProvisionalMark({
 }
 
 /** The same idea, spelled out, for places with room for a sentence. */
-export function ProvisionalNote({ matchesPlayed }: { matchesPlayed: number }) {
-  const left = Math.max(0, PROVISIONAL_MATCHES - matchesPlayed);
+export function ProvisionalNote({
+  careerMatches,
+  threshold = PROVISIONAL_MATCHES,
+}: {
+  careerMatches: number;
+  threshold?: number;
+}) {
+  const left = Math.max(0, threshold - careerMatches);
   return (
     <span className="text-[10px] text-volt/60">
       Ratingen sætter sig endnu · {left} {left === 1 ? "kamp" : "kampe"} igen

@@ -41,7 +41,7 @@ function AdminLink() {
 function TopBar() {
   const me = useMe();
   const gate = useAuthGate();
-  const player = me.data?.player ?? null;
+  const player = me.data ?? null;
 
   return (
     <header
@@ -102,9 +102,7 @@ function BottomNav() {
   const gate = useAuthGate();
   const sessions = useSessions();
 
-  const openSession = sessions.data?.groups
-    .flatMap((group) => group.sessions)
-    .find((session) => session.status === "open");
+  const openSession = sessions.data?.find((session) => session.status === "open");
 
   return (
     <nav

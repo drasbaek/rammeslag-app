@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { LadderEntry } from "@/lib/types";
+import type { LadderEntryOut } from "@/lib/types";
 import { FormDots } from "@/components/ui/form-dots";
 import { Movement } from "@/components/ui/movement";
 import { ProvisionalMark } from "@/components/ladder/provisional-mark";
@@ -14,11 +14,14 @@ import { cn } from "@/lib/utils";
 export function LadderRow({
   entry,
   seasonMode,
+  threshold,
   innerRef,
   index,
 }: {
-  entry: LadderEntry;
+  entry: LadderEntryOut;
   seasonMode: boolean;
+  /** Career matches below which the rating is still settling. */
+  threshold: number;
   innerRef?: (node: HTMLElement | null) => void;
   index: number;
 }) {
@@ -39,7 +42,7 @@ export function LadderRow({
   return (
     <Link
       ref={innerRef as never}
-      href={`/players/${entry.player.id}`}
+      href={`/players/${entry.player_id}`}
       style={{ animationDelay: `${Math.min(index, 12) * 22}ms` }}
       className={cn(
         "animate-rise relative flex items-center gap-2.5 overflow-hidden rounded-row border px-3 transition-colors",
@@ -67,7 +70,7 @@ export function LadderRow({
         <span className="flex items-center gap-1.5">
           {/* A one-letter mark, not the word: at 390px the word GÆST costs
               four characters of somebody's actual name. */}
-          {entry.player.is_guest ? (
+          {entry.is_guest ? (
             <span
               className="flex h-[15px] w-[15px] shrink-0 items-center justify-center rounded-[4px] border border-ink-500 text-[9px] font-black text-dim"
               title="Gæst"
@@ -79,13 +82,15 @@ export function LadderRow({
           <span
             className={cn(
               "min-w-0 truncate font-bold tracking-tight",
-              leader ? "text-[17px]" : entry.player.is_guest ? "text-[13px]" : "text-body",
-              entry.player.is_guest ? "text-mute" : "",
+              leader ? "text-[17px]" : entry.is_guest ? "text-[13px]" : "text-body",
+              entry.is_guest ? "text-mute" : "",
             )}
           >
-            {entry.player.name}
+            {entry.name}
           </span>
-          {entry.provisional ? <ProvisionalMark matchesPlayed={entry.matches_played} /> : null}
+          {entry.provisional ? (
+            <ProvisionalMark careerMatches={entry.career_matches} threshold={threshold} />
+          ) : null}
         </span>
         {leader ? (
           <span className="num mt-1 block truncate text-[9px] font-bold tracking-[0.08em] text-volt/70">

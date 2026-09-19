@@ -1,6 +1,6 @@
 "use client";
 
-import type { Player } from "@/lib/types";
+import type { PlayerOut } from "@/lib/types";
 import { firstName } from "@/lib/format";
 import { haptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
@@ -14,7 +14,7 @@ export function PlayerPicker({
   selected,
   onToggle,
 }: {
-  roster: Player[];
+  roster: PlayerOut[];
   selected: string[];
   onToggle: (id: string) => void;
 }) {

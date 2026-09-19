@@ -8,7 +8,7 @@ import { BundpropCard } from "@/components/ladder/bundprop-card";
 import { GuestToggle } from "@/components/ladder/guest-toggle";
 import { useFlip } from "@/components/ladder/use-flip";
 import { useLadder, useSeasons } from "@/lib/queries";
-import type { LadderScope } from "@/lib/types";
+import { PROVISIONAL_MATCHES, type LadderScope } from "@/lib/types";
 
 export default function LadderPage() {
   const seasons = useSeasons();
@@ -28,10 +28,11 @@ export default function LadderPage() {
 
   const seasonMode = scope !== "all";
   const entries = ladder.data?.entries ?? [];
-  const members = entries.filter((entry) => !entry.player.is_guest);
+  const threshold = ladder.data?.threshold ?? PROVISIONAL_MATCHES;
+  const members = entries.filter((entry) => !entry.is_guest);
 
   // The bundprop is the last MEMBER, whether or not guests are on screen.
-  const bundpropId = members.length > 1 ? members[members.length - 1].player.id : null;
+  const bundpropId = members.length > 1 ? members[members.length - 1].player_id : null;
   const above = members.length > 1 ? members[members.length - 2] : null;
 
   return (
@@ -74,21 +75,23 @@ export default function LadderPage() {
       ) : (
         <div className="space-y-1.5">
           {entries.map((entry, index) =>
-            entry.player.id === bundpropId ? (
+            entry.player_id === bundpropId ? (
               <BundpropCard
-                key={entry.player.id}
+                key={entry.player_id}
                 entry={entry}
                 seasonMode={seasonMode}
+                threshold={threshold}
                 above={above}
-                innerRef={register(entry.player.id)}
+                innerRef={register(entry.player_id)}
               />
             ) : (
-              <Fragment key={entry.player.id}>
+              <Fragment key={entry.player_id}>
                 <LadderRow
                   entry={entry}
                   index={index}
                   seasonMode={seasonMode}
-                  innerRef={register(entry.player.id)}
+                  threshold={threshold}
+                  innerRef={register(entry.player_id)}
                 />
               </Fragment>
             ),

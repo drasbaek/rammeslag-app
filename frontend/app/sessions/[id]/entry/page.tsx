@@ -16,10 +16,11 @@ import {
   usePlayers,
   useSession,
 } from "@/lib/queries";
+import { participants } from "@/lib/session-stats";
 import { firstName, formatDateLong, delta } from "@/lib/format";
 import { haptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
-import type { Player } from "@/lib/types";
+import type { PlayerOut } from "@/lib/types";
 
 /**
  * Rotation that keeps the evening even: the four who have played least, drawn
@@ -27,7 +28,7 @@ import type { Player } from "@/lib/types";
  * played a single match tonight is only pulled in when there are not four
  * players to choose from — the API has no session roster to ask.
  */
-function proposeFour(squad: Player[], playedTonight: Map<string, number>, nudge: number): string[] {
+function proposeFour(squad: PlayerOut[], playedTonight: Map<string, number>, nudge: number): string[] {
   const present = squad.filter((p) => (playedTonight.get(p.id) ?? 0) > 0);
   const pool = present.length >= 4 ? present : squad;
   const ordered = [...pool].sort((a, b) => {
@@ -59,31 +60,36 @@ export default function EntryPage() {
   const [sets, setSets] = useState<SetDraft[]>([{ games_a: null, games_b: null }]);
   const [nudge, setNudge] = useState(0);
   const [showAll, setShowAll] = useState(false);
-  /** The grid is for corrections. Collapsed, the score pad is above the fold. */
+  /**
+   * The grid is for corrections, so it starts shut. Collapsed, the line-up is
+   * one row and the score pad and the save bar both fit on a 390×844 screen
+   * without scrolling — which is the whole job of this screen.
+   */
   const [showPicker, setShowPicker] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
 
   const data = session.data;
   const everyone = useMemo(() => players.data ?? [], [players.data]);
+  const matches = useMemo(() => data?.matches ?? [], [data?.matches]);
 
-  /** Tonight's squad: whoever has played, then the rest of the team. */
-  const squad = useMemo<Player[]>(() => {
-    const tonight = data?.players ?? [];
+  /** Tonight's squad: whoever has already played, then the rest of the team. */
+  const squad = useMemo<PlayerOut[]>(() => {
+    const tonight = participants(matches);
     const tonightIds = new Set(tonight.map((p) => p.id));
-    const rest = everyone.filter((p) => !tonightIds.has(p.id) && (!p.is_guest || showAll));
-    return showAll ? [...tonight, ...rest] : [...tonight, ...rest.filter((p) => !p.is_guest)];
-  }, [data?.players, everyone, showAll]);
+    const rest = everyone.filter((p) => !tonightIds.has(p.id) && (showAll || !p.is_guest));
+    return [...tonight, ...rest];
+  }, [matches, everyone, showAll]);
 
   const playedTonight = useMemo(() => {
     const counts = new Map<string, number>();
-    for (const match of data?.matches ?? []) {
+    for (const match of matches) {
       for (const p of [...match.team_a, ...match.team_b]) {
         counts.set(p.id, (counts.get(p.id) ?? 0) + 1);
       }
     }
     return counts;
-  }, [data?.matches]);
+  }, [matches]);
 
   // The roster is sticky and a line-up is always on screen: the next match is
   // two taps on the score and one on save. Deriving it instead of writing it
@@ -97,13 +103,15 @@ export default function EntryPage() {
   const toggle = (playerId: string) => {
     setError(null);
     const current = picked ?? proposal;
-    if (current.includes(playerId)) {
-      setPicked(current.filter((x) => x !== playerId));
-    } else if (current.length >= 4) {
-      setPicked([...current.slice(1), playerId]);
-    } else {
-      setPicked([...current, playerId]);
-    }
+    const next = current.includes(playerId)
+      ? current.filter((x) => x !== playerId)
+      : current.length >= 4
+        ? [...current.slice(1), playerId]
+        : [...current, playerId];
+    setPicked(next);
+    // Four names is the whole job of the grid, so it folds itself back up and
+    // hands the screen to the score pad. One tap to reopen if that was wrong.
+    if (next.length === 4) setShowPicker(false);
   };
 
   const gamesA = sets.reduce((sum, set) => sum + (set.games_a ?? 0), 0);
@@ -127,12 +135,10 @@ export default function EntryPage() {
     createMatch
       .mutateAsync({
         session_id: id,
-        team_a_player1_id: selected[0],
-        team_a_player2_id: selected[1],
-        team_b_player1_id: selected[2],
-        team_b_player2_id: selected[3],
-        sets: sets.map((set, index) => ({
-          set_number: index + 1,
+        team_a: [selected[0], selected[1]],
+        team_b: [selected[2], selected[3]],
+        // `played_at` is stamped by the server so the replay order is its own.
+        sets: sets.map((set) => ({
           games_a: set.games_a ?? 0,
           games_b: set.games_b ?? 0,
         })),
@@ -152,7 +158,7 @@ export default function EntryPage() {
       });
   };
 
-  if (!me.isPending && !me.data?.player) {
+  if (!me.isPending && !me.data) {
     return (
       <div className="py-16 text-center">
         <p className="text-body font-semibold">Log ind for at indtaste kampe.</p>
@@ -165,7 +171,9 @@ export default function EntryPage() {
   }
 
   return (
-    <div className="pb-4">
+    /* Room at the bottom for the pinned save bar: it is out of the flow, so
+       the last row of the page has to leave it a place to stand. */
+    <div className="pb-24">
       <Link
         href={`/sessions/${id}`}
         className="mb-3 inline-flex items-center gap-1.5 text-[11px] font-semibold tracking-wide text-dim"
@@ -186,13 +194,13 @@ export default function EntryPage() {
         <>
           <header className="flex items-end justify-between gap-3">
             <div className="min-w-0">
-              <p className="eyebrow text-volt">Kamp {data.matches.length + 1}</p>
+              <p className="eyebrow text-volt">Kamp {matches.length + 1}</p>
               <h1 className="mt-1 truncate text-[22px] font-black tracking-[-0.03em]">
                 {formatDateLong(data.played_on)}
               </h1>
             </div>
             <span className="num shrink-0 text-[10px] tracking-[0.12em] text-dim">
-              {data.matches.length} GEMT
+              {matches.length} GEMT
             </span>
           </header>
 
@@ -218,6 +226,7 @@ export default function EntryPage() {
                 haptic("tap");
                 setShowPicker((value) => !value);
               }}
+              aria-expanded={showPicker}
               className="flex w-full items-center gap-2 rounded-card border border-line-soft bg-ink-850/60 px-3 py-2.5 text-left"
             >
               <span className="min-w-0 flex-1 truncate text-[13px] font-bold text-volt">
@@ -293,33 +302,11 @@ export default function EntryPage() {
             </div>
           </section>
 
-          <div className="sticky bottom-[calc(72px+var(--safe-b))] z-20 mt-4 rounded-card border border-line bg-ink-900/92 p-2.5 backdrop-blur-xl">
-            <div className="flex items-center justify-between px-1 pb-2">
-              <span className="text-[11px] text-mute">
-                {error ?? saved ?? `Partier i alt ${gamesA}–${gamesB}`}
-              </span>
-              <span className="num-tight text-[18px] font-black">
-                <span className="text-volt">{gamesA}</span>
-                <span className="px-1 text-dim">:</span>
-                <span className="text-chalk">{gamesB}</span>
-              </span>
-            </div>
-            <Button
-              variant="volt"
-              size="lg"
-              className="w-full"
-              disabled={createMatch.isPending}
-              onClick={save}
-            >
-              {createMatch.isPending ? "Gemmer…" : "Gem kamp"}
-            </Button>
-          </div>
-
-          {data.matches.length > 0 ? (
+          {matches.length > 0 ? (
             <section className="mt-6">
               <SectionHeader title="Gemt i aften" />
               <div className="space-y-1">
-                {data.matches.map((match, index) => (
+                {matches.map((match, index) => (
                   <div
                     key={match.id}
                     className="flex items-center gap-2 rounded-row bg-ink-850/60 px-3 py-2"
@@ -334,10 +321,7 @@ export default function EntryPage() {
                       {match.games_a}–{match.games_b}
                     </span>
                     <span className="num w-[38px] shrink-0 text-right text-[10px] text-dim">
-                      {delta(
-                        match.rating_changes.find((c) => c.player_id === match.team_a[0].id)?.delta ?? 0,
-                        0,
-                      )}
+                      {delta(match.deltas[match.team_a[0].id] ?? 0, 0)}
                     </span>
                   </div>
                 ))}
@@ -358,6 +342,39 @@ export default function EntryPage() {
               Luk aftenen
             </Button>
           ) : null}
+
+          {/* Pinned above the tab bar, clear of the round entry button that
+              pokes up out of it. Out of the flow on purpose: "Gem kamp" is
+              never a scroll away. While the grid is open it steps aside — the
+              grid is a full-height job of its own, and two competing surfaces
+              at the bottom of a 390-wide screen is how things end up on top of
+              each other. */}
+          <div
+            className={cn("fixed inset-x-0 z-20 px-4", showPicker ? "hidden" : "")}
+            style={{ bottom: "calc(88px + var(--safe-b))" }}
+          >
+            <div className="mx-auto w-full max-w-[520px] rounded-card border border-line bg-ink-900/92 p-2.5 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl">
+              <div className="flex items-center justify-between gap-2 px-1 pb-2">
+                <span className="min-w-0 flex-1 truncate text-[11px] text-mute">
+                  {error ?? saved ?? `Partier i alt ${gamesA}–${gamesB}`}
+                </span>
+                <span className="num-tight shrink-0 text-[18px] font-black">
+                  <span className="text-volt">{gamesA}</span>
+                  <span className="px-1 text-dim">:</span>
+                  <span className="text-chalk">{gamesB}</span>
+                </span>
+              </div>
+              <Button
+                variant="volt"
+                size="lg"
+                className="w-full"
+                disabled={createMatch.isPending}
+                onClick={save}
+              >
+                {createMatch.isPending ? "Gemmer…" : "Gem kamp"}
+              </Button>
+            </div>
+          </div>
         </>
       )}
     </div>

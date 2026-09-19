@@ -1,11 +1,11 @@
 import Link from "next/link";
-import type { RecapHighlight } from "@/lib/types";
+import type { SessionStanding } from "@/lib/session-stats";
 import { Delta } from "@/components/ui/delta";
 import { firstName, recordLine } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 /** Every player's rating movement across the evening, as a centre-out bar. */
-export function MovementBars({ standings }: { standings: RecapHighlight[] }) {
+export function MovementBars({ standings }: { standings: SessionStanding[] }) {
   if (standings.length === 0) return null;
   const max = Math.max(...standings.map((s) => Math.abs(s.delta)), 1);
 
@@ -22,12 +22,12 @@ export function MovementBars({ standings }: { standings: RecapHighlight[] }) {
           const up = row.delta >= 0;
           return (
             <Link
-              key={row.player.id}
-              href={`/players/${row.player.id}`}
+              key={row.player_id}
+              href={`/players/${row.player_id}`}
               className="flex items-center gap-2 py-1.5"
             >
               <span className="w-[74px] shrink-0 truncate text-[12px] font-semibold text-mute">
-                {firstName(row.player.name)}
+                {firstName(row.name)}
               </span>
               <span className="relative h-3 flex-1">
                 <span className="absolute inset-y-0 left-1/2 w-px bg-ink-600" aria-hidden />

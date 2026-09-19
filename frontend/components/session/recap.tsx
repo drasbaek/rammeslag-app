@@ -1,6 +1,7 @@
 import Link from "next/link";
-import type { RecapHighlight, SessionRecap } from "@/lib/types";
+import type { PlayerDeltaOut, RecapOut } from "@/lib/types";
 import { Delta } from "@/components/ui/delta";
+import { standingOf, type SessionStanding } from "@/lib/session-stats";
 import { firstName, recordLine } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -20,18 +21,21 @@ function roastFor(id: string): string {
 
 function HighlightCard({
   highlight,
+  standing,
   label,
   tone,
   icon,
 }: {
-  highlight: RecapHighlight;
+  highlight: PlayerDeltaOut;
+  /** The evening's record for this player, so the claim carries its sample. */
+  standing: SessionStanding | null;
   label: string;
   tone: "up" | "down";
   icon: React.ReactNode;
 }) {
   return (
     <Link
-      href={`/players/${highlight.player.id}`}
+      href={`/players/${highlight.player_id}`}
       className={cn(
         "card animate-rise relative overflow-hidden p-3",
         tone === "up" ? "border-win/25" : "border-loss/25",
@@ -49,13 +53,15 @@ function HighlightCard({
         <span className={cn("eyebrow", tone === "up" ? "text-win/80" : "text-loss/80")}>{label}</span>
       </div>
       <p className="relative mt-2 truncate text-[15px] font-extrabold tracking-tight">
-        {firstName(highlight.player.name)}
+        {firstName(highlight.name)}
       </p>
       <p className="relative mt-1">
         <Delta value={highlight.delta} className="text-stat" />
       </p>
       <p className="num relative mt-1 text-[10px] text-dim">
-        {recordLine(highlight.wins, highlight.losses, highlight.draws)} · {highlight.matches_played} kampe
+        {standing
+          ? `${recordLine(standing.wins, standing.losses, standing.draws)} · ${standing.matches} kampe`
+          : `rating ${Math.round(highlight.rating)}`}
       </p>
     </Link>
   );
@@ -85,10 +91,16 @@ function FallArrow() {
   );
 }
 
-function BundpropStrip({ highlight }: { highlight: RecapHighlight }) {
+function BundpropStrip({
+  highlight,
+  standing,
+}: {
+  highlight: PlayerDeltaOut;
+  standing: SessionStanding | null;
+}) {
   return (
     <Link
-      href={`/players/${highlight.player.id}`}
+      href={`/players/${highlight.player_id}`}
       className="bund-grain animate-rise mt-2 block overflow-hidden rounded-card border border-loss/25"
     >
       <div className="hazard h-[5px] w-full opacity-70" aria-hidden />
@@ -105,14 +117,16 @@ function BundpropStrip({ highlight }: { highlight: RecapHighlight }) {
           <span className="inline-block rounded-[4px] bg-loss px-1.5 py-[2px] text-[9px] font-black tracking-[0.16em] text-ink-950">
             AFTENENS BUNDPROP
           </span>
-          <p className="mt-1.5 truncate text-[16px] font-extrabold tracking-tight">{highlight.player.name}</p>
-          <p className="truncate text-[11px] italic text-loss/80">{roastFor(highlight.player.id)}</p>
+          <p className="mt-1.5 truncate text-[16px] font-extrabold tracking-tight">{highlight.name}</p>
+          <p className="truncate text-[11px] italic text-loss/80">{roastFor(highlight.player_id)}</p>
         </div>
 
         <div className="shrink-0 text-right">
           <Delta value={highlight.delta} className="text-stat-sm" />
           <p className="num mt-0.5 text-[10px] text-dim">
-            {recordLine(highlight.wins, highlight.losses, highlight.draws)} · {highlight.matches_played} kampe
+            {standing
+              ? `${recordLine(standing.wins, standing.losses, standing.draws)} · ${standing.matches} kampe`
+              : `rating ${Math.round(highlight.rating)}`}
           </p>
         </div>
       </div>
@@ -121,8 +135,14 @@ function BundpropStrip({ highlight }: { highlight: RecapHighlight }) {
 }
 
 /** The part that gets screenshotted into the group chat. */
-export function Recap({ recap }: { recap: SessionRecap }) {
-  if (!recap.rocket && !recap.faller && !recap.bundprop) return null;
+export function Recap({
+  recap,
+  standings,
+}: {
+  recap: RecapOut;
+  standings: SessionStanding[];
+}) {
+  if (!recap.biggest_riser && !recap.biggest_faller && !recap.bundprop) return null;
 
   return (
     <section className="mt-5">
@@ -132,15 +152,32 @@ export function Recap({ recap }: { recap: SessionRecap }) {
       </div>
 
       <div className="grid grid-cols-2 gap-2">
-        {recap.rocket ? (
-          <HighlightCard highlight={recap.rocket} label="Raket" tone="up" icon={<Rocket />} />
+        {recap.biggest_riser ? (
+          <HighlightCard
+            highlight={recap.biggest_riser}
+            standing={standingOf(standings, recap.biggest_riser.player_id)}
+            label="Raket"
+            tone="up"
+            icon={<Rocket />}
+          />
         ) : null}
-        {recap.faller ? (
-          <HighlightCard highlight={recap.faller} label="Fald" tone="down" icon={<FallArrow />} />
+        {recap.biggest_faller ? (
+          <HighlightCard
+            highlight={recap.biggest_faller}
+            standing={standingOf(standings, recap.biggest_faller.player_id)}
+            label="Fald"
+            tone="down"
+            icon={<FallArrow />}
+          />
         ) : null}
       </div>
 
-      {recap.bundprop ? <BundpropStrip highlight={recap.bundprop} /> : null}
+      {recap.bundprop ? (
+        <BundpropStrip
+          highlight={recap.bundprop}
+          standing={standingOf(standings, recap.bundprop.player_id)}
+        />
+      ) : null}
     </section>
   );
 }

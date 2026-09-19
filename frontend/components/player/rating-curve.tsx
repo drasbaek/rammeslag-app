@@ -11,7 +11,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { RatingPoint, Season } from "@/lib/types";
+import type { CurvePoint, SeasonOut } from "@/lib/types";
 import { formatDateShort, rating as formatRating, delta } from "@/lib/format";
 
 interface Row {
@@ -23,11 +23,12 @@ interface Row {
 function CurveTooltip({
   active,
   payload,
-  entryRating,
+  first,
 }: {
   active?: boolean;
   payload?: Array<{ payload: Row }>;
-  entryRating: number;
+  /** Rating after the first match — the earliest number this screen may show. */
+  first: number;
 }) {
   if (!active || !payload?.length) return null;
   const row = payload[0].payload;
@@ -35,11 +36,11 @@ function CurveTooltip({
     <div className="rounded-[8px] border border-line bg-ink-900/95 px-2.5 py-1.5 shadow-xl">
       <p className="num text-[15px] font-black leading-none text-volt">{formatRating(row.rating)}</p>
       <p className="num mt-1 text-[10px] leading-none text-dim">
-        {row.i === 0 ? "Indgangsrating" : `Kamp ${row.i}`} · {formatDateShort(row.played_at)}
+        Kamp {row.i} · {formatDateShort(row.played_at)}
       </p>
-      {row.i > 0 ? (
+      {row.i > 1 ? (
         <p className="num mt-0.5 text-[10px] leading-none text-mute">
-          {delta(row.rating - entryRating, 0)} siden start
+          {delta(row.rating - first, 0)} siden første kamp
         </p>
       ) : null}
     </div>
@@ -47,28 +48,24 @@ function CurveTooltip({
 }
 
 /**
- * Every match the player has played, in order. The dashed line is where they
- * entered the ladder — an admin's judgement call (docs/RATING.md), not 1000
- * for everybody, so it has to be on the chart.
+ * Every match the player has played, in order — `curve` is the rating after
+ * each one, oldest first.
+ *
+ * The line deliberately starts at the first match rather than at the entry
+ * rating. AGENTS.md: `entry_rating` is an admin's private judgement and never
+ * appears outside the admin player screen, so it is neither plotted here nor
+ * named in the tooltip.
  */
-export function RatingCurve({
-  curve,
-  entryRating,
-  season,
-}: {
-  curve: RatingPoint[];
-  entryRating: number;
-  season: Season | null;
-}) {
+export function RatingCurve({ curve, season }: { curve: CurvePoint[]; season: SeasonOut | null }) {
   const rows = useMemo<Row[]>(
-    () => curve.map((point, i) => ({ i, rating: point.rating, played_at: point.played_at })),
+    () => curve.map((point, i) => ({ i: i + 1, rating: point.rating, played_at: point.played_at })),
     [curve],
   );
 
   const seasonStart = useMemo(() => {
     if (!season) return null;
     const index = rows.findIndex((row) => row.played_at.slice(0, 10) >= season.starts_on);
-    return index > 0 ? index : null;
+    return index > 0 ? rows[index].i : null;
   }, [rows, season]);
 
   if (rows.length < 2) {
@@ -80,8 +77,8 @@ export function RatingCurve({
   }
 
   const values = rows.map((row) => row.rating);
-  const lo = Math.min(...values, entryRating);
-  const hi = Math.max(...values, entryRating);
+  const lo = Math.min(...values);
+  const hi = Math.max(...values);
   const pad = Math.max(14, (hi - lo) * 0.16);
 
   return (
@@ -107,19 +104,6 @@ export function RatingCurve({
             tickCount={4}
           />
 
-          <ReferenceLine
-            y={entryRating}
-            stroke="var(--color-ink-500)"
-            strokeDasharray="3 4"
-            label={{
-              value: `START ${Math.round(entryRating)}`,
-              position: "insideBottomRight",
-              fill: "var(--color-dim)",
-              fontSize: 9,
-              letterSpacing: "0.1em",
-            }}
-          />
-
           {seasonStart !== null ? (
             <ReferenceLine
               x={seasonStart}
@@ -137,7 +121,7 @@ export function RatingCurve({
 
           <Tooltip
             cursor={{ stroke: "var(--color-volt)", strokeWidth: 1, strokeOpacity: 0.4 }}
-            content={<CurveTooltip entryRating={entryRating} />}
+            content={<CurveTooltip first={values[0]} />}
           />
 
           <Area

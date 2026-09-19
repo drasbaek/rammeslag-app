@@ -1,12 +1,16 @@
 import Link from "next/link";
-import type { SessionSummary } from "@/lib/types";
-import { Avatar } from "@/components/ui/avatar";
+import type { SessionOut } from "@/lib/types";
 import { dayNumber, monthShort, weekdayShort, SESSION_TYPE_LABEL } from "@/lib/format";
 
-/** One evening. Not a match — the list is of nights out. */
-export function SessionRow({ session, index }: { session: SessionSummary; index: number }) {
-  const shown = session.players.slice(0, 4);
-  const rest = session.players.length - shown.length;
+/**
+ * One evening. Not a match — the list is of nights out.
+ *
+ * `GET /api/sessions` answers with a date, a type, a status and a match count;
+ * it does not list who turned up. So the row leads with the date block and
+ * closes on the match count instead of a stack of faces: the number is the
+ * honest headline, and it is the one the endpoint actually returns.
+ */
+export function SessionRow({ session, index }: { session: SessionOut; index: number }) {
   const open = session.status === "open";
 
   return (
@@ -24,12 +28,8 @@ export function SessionRow({ session, index }: { session: SessionSummary; index:
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
-          <span className="truncate text-body font-bold tracking-tight">
-            <span className="capitalize">{weekdayShort(session.played_on)}</span>
-            <span className="text-dim"> · </span>
-            <span className="font-semibold text-mute">
-              {session.match_count} {session.match_count === 1 ? "kamp" : "kampe"}
-            </span>
+          <span className="truncate text-body font-bold capitalize tracking-tight">
+            {weekdayShort(session.played_on)}
           </span>
           {open ? (
             <span className="shrink-0 rounded-[3px] bg-volt px-1.5 py-[1px] text-[9px] font-black tracking-[0.1em] text-volt-ink">
@@ -38,21 +38,21 @@ export function SessionRow({ session, index }: { session: SessionSummary; index:
           ) : null}
         </div>
         <p className="mt-1 truncate text-[11px] text-dim">
-          {session.type === "training" ? null : (
-            <span className="text-mute">{SESSION_TYPE_LABEL[session.type]} · </span>
-          )}
-          {session.note ?? `${session.players.length} spillere`}
+          <span className="text-mute">{SESSION_TYPE_LABEL[session.type]}</span>
+          {session.note ? ` · ${session.note}` : ""}
         </p>
       </div>
 
-      <div className="flex shrink-0 items-center">
-        <div className="flex -space-x-2">
-          {shown.map((player) => (
-            <Avatar key={player.id} name={player.name} size="xs" className="ring-2 ring-ink-950" />
-          ))}
-        </div>
-        {rest > 0 ? <span className="num ml-1.5 text-[10px] text-dim">+{rest}</span> : null}
+      <div className="flex shrink-0 flex-col items-end">
+        <span className="num-tight text-[19px] font-black leading-none">{session.match_count}</span>
+        <span className="mt-0.5 text-[9px] font-bold tracking-[0.1em] text-dim">
+          {session.match_count === 1 ? "KAMP" : "KAMPE"}
+        </span>
       </div>
+
+      <svg viewBox="0 0 8 12" className="h-3 w-2 shrink-0 text-ink-500" aria-hidden>
+        <path d="M1 1l5 5-5 5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+      </svg>
     </Link>
   );
 }

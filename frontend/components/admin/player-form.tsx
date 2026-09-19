@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useCreatePlayer, useUpdatePlayer } from "@/lib/queries";
 import { haptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
-import type { Player } from "@/lib/types";
+import type { PlayerOut } from "@/lib/types";
 
 const FIELD =
   "w-full rounded-row border border-line bg-ink-900 px-3 py-2.5 text-body text-chalk placeholder:text-dim focus:border-volt/60 focus:outline-none";
@@ -23,7 +23,7 @@ export function PlayerForm({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  player: Player | null;
+  player: PlayerOut | null;
 }) {
   const create = useCreatePlayer();
   const update = useUpdatePlayer();

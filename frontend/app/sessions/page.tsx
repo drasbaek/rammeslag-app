@@ -1,13 +1,44 @@
 "use client";
 
+import { useMemo } from "react";
 import { SessionRow } from "@/components/session/session-row";
 import { RowSkeletons } from "@/components/ui/skeleton";
-import { useSessions } from "@/lib/queries";
+import { useSeasons, useSessions } from "@/lib/queries";
+import type { SessionOut } from "@/lib/types";
+
+interface Group {
+  id: string;
+  name: string;
+  isCurrent: boolean;
+  sessions: SessionOut[];
+}
 
 export default function SessionsPage() {
   const sessions = useSessions();
-  const groups = sessions.data?.groups ?? [];
-  const total = groups.reduce((sum, group) => sum + group.sessions.length, 0);
+  const seasons = useSeasons();
+
+  /**
+   * `GET /api/sessions` is one flat list, newest first — the season only comes
+   * along as a ref on each row. The headings are a view, so they are folded
+   * here rather than asked for.
+   */
+  const groups = useMemo<Group[]>(() => {
+    const currentId = seasons.data?.find((season) => season.is_current)?.id ?? null;
+    const byId = new Map<string, Group>();
+    for (const session of sessions.data ?? []) {
+      const group = byId.get(session.season.id) ?? {
+        id: session.season.id,
+        name: session.season.name,
+        isCurrent: session.season.id === currentId,
+        sessions: [],
+      };
+      group.sessions.push(session);
+      byId.set(group.id, group);
+    }
+    return [...byId.values()];
+  }, [sessions.data, seasons.data]);
+
+  const total = sessions.data?.length ?? 0;
 
   return (
     <div>
@@ -26,12 +57,12 @@ export default function SessionsPage() {
       {groups.map((group) => {
         const matches = group.sessions.reduce((sum, session) => sum + session.match_count, 0);
         return (
-          <section key={group.season.id} className="mt-6">
+          <section key={group.id} className="mt-6">
             <div className="sticky top-14 z-20 -mx-4 flex items-center justify-between gap-3 bg-ink-950/90 px-5 py-2 backdrop-blur-xl">
               <div className="flex items-center gap-2">
                 <span className="h-3 w-[3px] rounded-full bg-volt" aria-hidden />
-                <h2 className="eyebrow text-mute">{group.season.name}</h2>
-                {group.season.is_current ? (
+                <h2 className="eyebrow text-mute">{group.name}</h2>
+                {group.isCurrent ? (
                   <span className="rounded-[3px] border border-volt/40 px-1 py-[1px] text-[9px] font-bold tracking-[0.1em] text-volt">
                     NU
                   </span>
