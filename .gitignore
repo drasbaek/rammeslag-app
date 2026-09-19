@@ -14,9 +14,12 @@ dist/
 downloads/
 eggs/
 .eggs/
-# Root-scoped: the Python template means build output here, but a bare
-# `lib/` also swallows frontend/lib/ -- the whole frontend library.
-/lib/
+# NOT `lib/` or `/lib/`. The Python template ships `lib/` to ignore
+# build output, but the Next.js app lives at the repo root, so that
+# pattern silently swallows lib/api.ts, lib/types.ts and every other
+# new file there. It has cost two broken builds: once as `lib/`
+# (matching frontend/lib/) and once as `/lib/` after the app moved up.
+# There is no Python build output at this root to protect.
 lib64/
 parts/
 sdist/
