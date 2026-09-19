@@ -95,10 +95,13 @@ jobs:
         run: npm --prefix frontend run lint
 
       - name: Typecheck
-        # --prefix tells npm where the package is, but `exec` still runs in the
-        # current directory, so tsc found no tsconfig and printed its help
-        # instead of checking anything. -p points it at the project.
-        run: npm --prefix frontend exec -- tsc --noEmit -p frontend
+        # Must run FROM frontend/, not with --prefix or -p. npm exec ignores
+        # --prefix for the working directory, and tsconfig's baseUrl (which
+        # the "@/*" aliases depend on) resolves against the invocation, so
+        # both other forms fail: one prints tsc's help, the other cannot
+        # resolve a single "@/lib/..." import.
+        working-directory: frontend
+        run: npx tsc --noEmit
 
       - name: Build
         run: npm --prefix frontend run build
