@@ -58,6 +58,9 @@ class LadderEntryOut(BaseModel):
     wins: int
     losses: int
     draws: int
+    career_wins: int
+    career_losses: int
+    career_draws: int
     form: list[str]
     active: bool
     provisional: bool = False

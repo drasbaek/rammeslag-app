@@ -350,3 +350,31 @@ def test_unknown_season_is_a_danish_404(client, db) -> None:
     response = client.get("/api/ladder?season=season-nope")
     assert response.status_code == 404
     assert response.json()["detail"] == "Sæsonen findes ikke."
+
+
+def test_career_record_ignores_the_season_scope() -> None:
+    """The row shows an all-time W-L-D. A season's 2-1-0 says much less about a
+    player than 31-15-3 does, so the career figures must survive season mode."""
+    autumn = [
+        row(f"a{i}", "sa", i * 10, ("p1", "p2"), ("p3", "p4"), [(6, 1)]) for i in range(1, 6)
+    ]
+    spring = [
+        row(f"b{i}", "sb", i * 10, ("p1", "p2"), ("p3", "p4"), [(1, 6)], base=SPRING)
+        for i in range(1, 3)
+    ]
+    rows = autumn + spring
+    players = _players()
+
+    all_time = {e.player_id: e for e in _ladder(rows, players).entries}
+    season = {
+        e.player_id: e
+        for e in _ladder(rows, players, window=day_bounds(*FORAAR[1:])).entries
+    }
+
+    # p1 won all five autumn matches and lost both spring ones.
+    assert (all_time["p1"].wins, all_time["p1"].losses) == (5, 2)
+    # In season mode the scoped record is spring only...
+    assert (season["p1"].wins, season["p1"].losses) == (0, 2)
+    # ...but the career record is the whole thing, in both modes.
+    assert (season["p1"].career_wins, season["p1"].career_losses) == (5, 2)
+    assert (all_time["p1"].career_wins, all_time["p1"].career_losses) == (5, 2)

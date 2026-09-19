@@ -108,6 +108,13 @@ class LadderEntry:
     wins: int
     losses: int
     draws: int
+    # Career W-L-D, ignoring the scope. On the all-time board these equal
+    # wins/losses/draws; on a season board they are the whole record, which is
+    # what the row shows -- a season's 2-1-0 says much less about a player than
+    # 31-15-3 does.
+    career_wins: int
+    career_losses: int
+    career_draws: int
     form: list[str]
     active: bool
     # Fewer than PROVISIONAL_MATCHES career matches: ranked, but the rating is
@@ -309,6 +316,9 @@ def build_ladder(
     for player_id in population:
         info = players.get(player_id) or PlayerInfo(id=player_id, name=player_id)
         wins, losses, draws = record_for(scope_rows, player_id)
+        career_wins, career_losses, career_draws = (
+            (wins, losses, draws) if window is None else record_for(all_internal, player_id)
+        )
         rank = ranks[player_id]
         previous_rank = previous_ranks.get(player_id)
         gained = (
@@ -327,6 +337,9 @@ def build_ladder(
                 matches_played=wins + losses + draws,
                 career_matches=career_now.get(player_id, 0),
                 wins=wins,
+                career_wins=career_wins,
+                career_losses=career_losses,
+                career_draws=career_draws,
                 losses=losses,
                 draws=draws,
                 form=form_for(scope_rows, player_id),
