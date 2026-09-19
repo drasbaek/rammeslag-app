@@ -153,7 +153,12 @@ def main() -> int:
     name_regex = (os.environ.get("REAL_NAME_REGEX") or "").strip()
     if name_regex:
         try:
-            names = re.compile(name_regex, re.IGNORECASE)
+            # Whole words only. A bare substring match means `Lau` fires on
+            # `launch` and `Oli` on `policy`, and a check that cries wolf on
+            # ordinary code is a check someone turns off.
+            names = re.compile(
+                rf"(?<![A-Za-zÀ-ÿ])(?:{name_regex})(?![A-Za-zÀ-ÿ])", re.IGNORECASE
+            )
         except re.error as exc:
             print(f"::error::REAL_NAME_REGEX is not a valid Python regex: {exc}")
             return 1
