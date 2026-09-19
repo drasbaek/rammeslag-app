@@ -28,9 +28,20 @@ UNKNOWN_PLAYER = "Din session er ikke gyldig længere. Log ind igen."
 
 
 def get_db() -> Iterator[DbSession]:
+    """A session per request, committed if the request succeeded.
+
+    Without the commit every write is silently discarded: services flush, so
+    the route sees its own object and returns 201, and then the session closes
+    and rolls the whole thing back. The API reports success and the database
+    never changes.
+    """
     db = get_sessionmaker()()
     try:
         yield db
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
     finally:
         db.close()
 
