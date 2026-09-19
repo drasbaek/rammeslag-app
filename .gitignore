@@ -216,3 +216,14 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ---- Rammeslag ----
+# Real match history with real player names. Never committed.
+# The pseudonymised fixture in fixtures/ is the committed equivalent.
+export/
+scripts/name_map.json
+
+# Local env
+.env
+.env.local
+.vercel/
