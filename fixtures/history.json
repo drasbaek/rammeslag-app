@@ -1,0 +1,4048 @@
+{
+  "exported_at": "2026-09-19T11:33:13.269222Z",
+  "source": "pseudonymised from export/padel_history.json",
+  "counts": {
+    "players": 28,
+    "matches": 98
+  },
+  "players": [
+    {
+      "id": "player-38386278",
+      "name": "Thor Skovgaard",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": true,
+      "registered_at": "2025-08-31T11:51:47.395000Z",
+      "first_match_at": "2025-08-31T18:08:07.076000Z",
+      "last_match_at": "2025-08-31T20:39:31.749000Z",
+      "matches_played": 3
+    },
+    {
+      "id": "player-0e14c7c6",
+      "name": "Ivan Friis",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": false,
+      "registered_at": "2025-08-25T16:32:41.652000Z",
+      "first_match_at": "2025-08-25T16:34:09.515000Z",
+      "last_match_at": "2026-03-16T16:44:36.860261Z",
+      "matches_played": 35
+    },
+    {
+      "id": "player-4d6040ac",
+      "name": "Henrik Hansen",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": false,
+      "registered_at": "2025-08-25T16:32:46.999000Z",
+      "first_match_at": "2025-08-25T16:34:31.652000Z",
+      "last_match_at": "2026-03-16T16:44:03.123380Z",
+      "matches_played": 49
+    },
+    {
+      "id": "player-276223b4",
+      "name": "Niels Nielsen",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": true,
+      "registered_at": "2025-09-21T12:12:59.236000Z",
+      "first_match_at": "2025-09-21T18:44:46.909000Z",
+      "last_match_at": "2025-09-21T18:46:55.668000Z",
+      "matches_played": 3
+    },
+    {
+      "id": "player-e3b73ccb",
+      "name": "Uffe Thomsen",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": true,
+      "registered_at": "2026-01-18T08:03:27.164508Z",
+      "first_match_at": "2026-01-18T20:11:07.620388Z",
+      "last_match_at": "2026-03-01T19:44:54.339927Z",
+      "matches_played": 9
+    },
+    {
+      "id": "player-ff5f1d49",
+      "name": "Lars Lundberg",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": true,
+      "registered_at": "2025-11-02T16:32:29.209000Z",
+      "first_match_at": "2025-11-02T19:22:26.621000Z",
+      "last_match_at": "2025-11-02T19:24:23.940000Z",
+      "matches_played": 3
+    },
+    {
+      "id": "player-174d80a5",
+      "name": "Gorm Gade",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": true,
+      "registered_at": "2025-09-07T09:59:03.079000Z",
+      "first_match_at": "2025-09-07T18:38:48.817000Z",
+      "last_match_at": "2026-01-12T19:32:12.177893Z",
+      "matches_played": 12
+    },
+    {
+      "id": "player-68a9c117",
+      "name": "Mikkel Madsen",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": false,
+      "registered_at": "2026-01-11T15:01:35.472604Z",
+      "first_match_at": "2026-01-12T19:28:28.081307Z",
+      "last_match_at": "2026-03-16T16:44:03.123380Z",
+      "matches_played": 18
+    },
+    {
+      "id": "player-cf25b5d1",
+      "name": "Klaus Hedegaard",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": false,
+      "registered_at": "2025-09-29T16:59:07.844000Z",
+      "first_match_at": "2025-09-29T17:00:53.563000Z",
+      "last_match_at": "2026-03-15T16:14:21.748576Z",
+      "matches_played": 27
+    },
+    {
+      "id": "player-dc078d70",
+      "name": "Bo Vestergaard",
+      "entry_elo": 1000.0,
+      "position": "right",
+      "is_guest": false,
+      "registered_at": "2025-08-25T16:32:52.016000Z",
+      "first_match_at": "2025-08-25T16:34:31.652000Z",
+      "last_match_at": "2026-03-16T16:44:03.123380Z",
+      "matches_played": 44
+    },
+    {
+      "id": "player-e40d5390",
+      "name": "Esben Eriksen",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": true,
+      "registered_at": "2026-02-08T15:10:09.186192Z",
+      "first_match_at": "2026-02-22T10:17:33.311699Z",
+      "last_match_at": "2026-02-22T10:19:51.767350Z",
+      "matches_played": 3
+    },
+    {
+      "id": "player-7ef787f5",
+      "name": "Valdemar Ulrich",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": false,
+      "registered_at": "2025-08-25T16:32:57.577000Z",
+      "first_match_at": "2025-08-25T16:34:09.515000Z",
+      "last_match_at": "2026-03-16T16:44:03.123380Z",
+      "matches_played": 20
+    },
+    {
+      "id": "player-26aafd43",
+      "name": "Rune Qvist",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": true,
+      "registered_at": "2025-09-21T12:13:10.421000Z",
+      "first_match_at": "2025-09-21T18:44:46.909000Z",
+      "last_match_at": "2025-09-21T18:46:55.668000Z",
+      "matches_played": 3
+    },
+    {
+      "id": "player-b4db21b2",
+      "name": "Palle Poulsen",
+      "entry_elo": 1000.0,
+      "position": "left",
+      "is_guest": true,
+      "registered_at": "2025-09-29T16:59:54.650000Z",
+      "first_match_at": "2025-09-29T17:00:53.563000Z",
+      "last_match_at": "2025-09-29T17:00:53.563000Z",
+      "matches_played": 1
+    },
+    {
+      "id": "player-deada6fb",
+      "name": "Bjarne Bundgaard",
+      "entry_elo": 1000.0,
+      "position": "right",
+      "is_guest": false,
+      "registered_at": "2025-08-25T16:33:07.471000Z",
+      "first_match_at": "2025-08-25T16:34:31.652000Z",
+      "last_match_at": "2026-03-16T16:44:36.860261Z",
+      "matches_played": 31
+    },
+    {
+      "id": "player-c431b994",
+      "name": "Aksel Agerskov",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": true,
+      "registered_at": "2025-08-25T16:33:13.786000Z",
+      "first_match_at": "2025-08-25T16:34:31.652000Z",
+      "last_match_at": "2025-08-25T16:35:08.969000Z",
+      "matches_played": 2
+    },
+    {
+      "id": "player-05ebbfd2",
+      "name": "Erik Winther",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": true,
+      "registered_at": "2025-11-16T16:28:44.265000Z",
+      "first_match_at": "2025-11-16T19:37:10.406000Z",
+      "last_match_at": "2025-11-16T19:39:53.699000Z",
+      "matches_played": 3
+    },
+    {
+      "id": "player-551dbbf0",
+      "name": "Jeppe Jensen",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": true,
+      "registered_at": "2026-02-22T14:48:49.791576Z",
+      "first_match_at": "2026-03-01T06:38:07.623355Z",
+      "last_match_at": "2026-03-01T06:40:44.269512Z",
+      "matches_played": 3
+    },
+    {
+      "id": "player-4443994a",
+      "name": "Helge Dahl",
+      "entry_elo": 1100.0,
+      "position": "both",
+      "is_guest": true,
+      "registered_at": "2026-02-22T15:17:25.075033Z",
+      "first_match_at": "2026-03-01T06:38:07.623355Z",
+      "last_match_at": "2026-03-01T06:40:44.269512Z",
+      "matches_played": 3
+    },
+    {
+      "id": "player-695367f9",
+      "name": "Carl Kragh",
+      "entry_elo": 1000.0,
+      "position": "left",
+      "is_guest": true,
+      "registered_at": "2025-08-31T05:47:48.545000Z",
+      "first_match_at": "2025-08-31T18:07:35.472000Z",
+      "last_match_at": "2025-09-07T18:42:27.509000Z",
+      "matches_played": 6
+    },
+    {
+      "id": "player-d7f8ab03",
+      "name": "Svend Riis",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": true,
+      "registered_at": "2026-02-08T15:09:24.041705Z",
+      "first_match_at": "2026-02-22T10:16:49.027680Z",
+      "last_match_at": "2026-02-22T10:19:51.767350Z",
+      "matches_played": 3
+    },
+    {
+      "id": "player-7496ab40",
+      "name": "Ole Olesen",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": false,
+      "registered_at": "2025-08-25T16:33:22.078000Z",
+      "first_match_at": "2025-08-25T16:34:09.515000Z",
+      "last_match_at": "2026-03-16T16:44:36.860261Z",
+      "matches_played": 33
+    },
+    {
+      "id": "player-ecfa70a1",
+      "name": "Gustav Bech",
+      "entry_elo": 1000.0,
+      "position": "right",
+      "is_guest": true,
+      "registered_at": "2025-08-31T05:47:12.088000Z",
+      "first_match_at": "2025-08-31T18:07:35.472000Z",
+      "last_match_at": "2025-08-31T20:38:56.541000Z",
+      "matches_played": 3
+    },
+    {
+      "id": "player-de57d3f8",
+      "name": "Finn Fisker",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": true,
+      "registered_at": "2025-10-26T16:01:45.996000Z",
+      "first_match_at": "2025-10-28T18:27:15.751000Z",
+      "last_match_at": "2025-10-28T18:29:48.300000Z",
+      "matches_played": 3
+    },
+    {
+      "id": "player-0bf6e48d",
+      "name": "Karsten Knudsen",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": false,
+      "registered_at": "2025-10-26T16:02:05.141000Z",
+      "first_match_at": "2025-10-28T18:27:15.751000Z",
+      "last_match_at": "2026-03-01T19:44:24.865629Z",
+      "matches_played": 20
+    },
+    {
+      "id": "player-89e469b7",
+      "name": "Joakim Greve",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": true,
+      "registered_at": "2025-09-07T09:59:11.629000Z",
+      "first_match_at": "2025-09-07T18:39:34.322000Z",
+      "last_match_at": "2025-09-07T18:41:53.798000Z",
+      "matches_played": 3
+    },
+    {
+      "id": "player-96a7286a",
+      "name": "Ib Ipsen",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": true,
+      "registered_at": "2025-09-29T16:59:38.288000Z",
+      "first_match_at": "2025-09-29T17:01:38.751000Z",
+      "last_match_at": "2025-09-29T17:02:33.308000Z",
+      "matches_played": 2
+    },
+    {
+      "id": "player-9d06de2b",
+      "name": "Dennis Damgaard",
+      "entry_elo": 1000.0,
+      "position": "both",
+      "is_guest": false,
+      "registered_at": "2025-08-25T16:33:29.194000Z",
+      "first_match_at": "2025-08-25T16:34:09.515000Z",
+      "last_match_at": "2026-03-16T16:44:36.860261Z",
+      "matches_played": 47
+    }
+  ],
+  "matches": [
+    {
+      "id": "match-8f3831c6",
+      "match_order": 1,
+      "played_at": "2025-08-25T16:34:09.515000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 7,
+          "score_b": 5
+        },
+        {
+          "score_a": 4,
+          "score_b": 3
+        }
+      ],
+      "games_a": 11,
+      "games_b": 8
+    },
+    {
+      "id": "match-a924bfbe",
+      "match_order": 2,
+      "played_at": "2025-08-25T16:34:31.652000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-c431b994",
+          "name": "Aksel Agerskov"
+        },
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 4,
+          "score_b": 5
+        }
+      ],
+      "games_a": 6,
+      "games_b": 11
+    },
+    {
+      "id": "match-520857eb",
+      "match_order": 3,
+      "played_at": "2025-08-25T16:35:08.969000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        },
+        {
+          "id": "player-c431b994",
+          "name": "Aksel Agerskov"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 3
+        },
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 4,
+          "score_b": 0
+        }
+      ],
+      "games_a": 12,
+      "games_b": 9
+    },
+    {
+      "id": "match-e1fb1ae6",
+      "match_order": 4,
+      "played_at": "2025-08-25T16:35:32.691000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        },
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 3,
+          "score_b": 6
+        },
+        {
+          "score_a": 6,
+          "score_b": 4
+        }
+      ],
+      "games_a": 9,
+      "games_b": 10
+    },
+    {
+      "id": "match-b05cc41c",
+      "match_order": 5,
+      "played_at": "2025-08-31T18:07:35.472000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-695367f9",
+          "name": "Carl Kragh"
+        },
+        {
+          "id": "player-ecfa70a1",
+          "name": "Gustav Bech"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 3
+        },
+        {
+          "score_a": 2,
+          "score_b": 3
+        }
+      ],
+      "games_a": 8,
+      "games_b": 6
+    },
+    {
+      "id": "match-5fda4aa8",
+      "match_order": 6,
+      "played_at": "2025-08-31T18:08:07.076000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        },
+        {
+          "id": "player-38386278",
+          "name": "Thor Skovgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 4
+        },
+        {
+          "score_a": 3,
+          "score_b": 5
+        }
+      ],
+      "games_a": 9,
+      "games_b": 9
+    },
+    {
+      "id": "match-b68985df",
+      "match_order": 7,
+      "played_at": "2025-08-31T18:09:10.448000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-695367f9",
+          "name": "Carl Kragh"
+        },
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 1,
+          "score_b": 6
+        },
+        {
+          "score_a": 2,
+          "score_b": 6
+        }
+      ],
+      "games_a": 3,
+      "games_b": 12
+    },
+    {
+      "id": "match-f2e531ac",
+      "match_order": 8,
+      "played_at": "2025-08-31T20:38:07.949000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-ecfa70a1",
+          "name": "Gustav Bech"
+        },
+        {
+          "id": "player-38386278",
+          "name": "Thor Skovgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 5,
+          "score_b": 7
+        }
+      ],
+      "games_a": 5,
+      "games_b": 7
+    },
+    {
+      "id": "match-72994a81",
+      "match_order": 9,
+      "played_at": "2025-08-31T20:38:56.541000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-ecfa70a1",
+          "name": "Gustav Bech"
+        },
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 7,
+          "score_b": 5
+        },
+        {
+          "score_a": 2,
+          "score_b": 4
+        }
+      ],
+      "games_a": 9,
+      "games_b": 9
+    },
+    {
+      "id": "match-a192b565",
+      "match_order": 10,
+      "played_at": "2025-08-31T20:39:31.749000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-695367f9",
+          "name": "Carl Kragh"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        },
+        {
+          "id": "player-38386278",
+          "name": "Thor Skovgaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 1
+        },
+        {
+          "score_a": 7,
+          "score_b": 6
+        }
+      ],
+      "games_a": 13,
+      "games_b": 7
+    },
+    {
+      "id": "match-4bfad2f7",
+      "match_order": 11,
+      "played_at": "2025-09-07T18:38:48.817000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-174d80a5",
+          "name": "Gorm Gade"
+        },
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 3,
+          "score_b": 3
+        }
+      ],
+      "games_a": 5,
+      "games_b": 9
+    },
+    {
+      "id": "match-2476658c",
+      "match_order": 12,
+      "played_at": "2025-09-07T18:39:34.322000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-695367f9",
+          "name": "Carl Kragh"
+        },
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-89e469b7",
+          "name": "Joakim Greve"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 7,
+          "score_b": 5
+        }
+      ],
+      "games_a": 7,
+      "games_b": 5
+    },
+    {
+      "id": "match-e96b83d5",
+      "match_order": 13,
+      "played_at": "2025-09-07T18:40:30.670000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        },
+        {
+          "id": "player-695367f9",
+          "name": "Carl Kragh"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-174d80a5",
+          "name": "Gorm Gade"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 0,
+          "score_b": 6
+        },
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 0,
+          "score_b": 2
+        }
+      ],
+      "games_a": 2,
+      "games_b": 14
+    },
+    {
+      "id": "match-0e595eef",
+      "match_order": 14,
+      "played_at": "2025-09-07T18:41:11.963000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        },
+        {
+          "id": "player-89e469b7",
+          "name": "Joakim Greve"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 2
+        },
+        {
+          "score_a": 3,
+          "score_b": 4
+        }
+      ],
+      "games_a": 9,
+      "games_b": 6
+    },
+    {
+      "id": "match-ac428679",
+      "match_order": 15,
+      "played_at": "2025-09-07T18:41:53.798000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-89e469b7",
+          "name": "Joakim Greve"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 3,
+          "score_b": 4
+        }
+      ],
+      "games_a": 5,
+      "games_b": 10
+    },
+    {
+      "id": "match-1b53dad9",
+      "match_order": 16,
+      "played_at": "2025-09-07T18:42:27.509000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-174d80a5",
+          "name": "Gorm Gade"
+        },
+        {
+          "id": "player-695367f9",
+          "name": "Carl Kragh"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        },
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 4,
+          "score_b": 2
+        }
+      ],
+      "games_a": 6,
+      "games_b": 8
+    },
+    {
+      "id": "match-9e4d0a5e",
+      "match_order": 17,
+      "played_at": "2025-09-21T18:44:08.288000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 4,
+          "score_b": 6
+        },
+        {
+          "score_a": 2,
+          "score_b": 4
+        }
+      ],
+      "games_a": 6,
+      "games_b": 10
+    },
+    {
+      "id": "match-166263dd",
+      "match_order": 18,
+      "played_at": "2025-09-21T18:44:46.909000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        },
+        {
+          "id": "player-174d80a5",
+          "name": "Gorm Gade"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-26aafd43",
+          "name": "Rune Qvist"
+        },
+        {
+          "id": "player-276223b4",
+          "name": "Niels Nielsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 4
+        },
+        {
+          "score_a": 2,
+          "score_b": 3
+        }
+      ],
+      "games_a": 8,
+      "games_b": 7
+    },
+    {
+      "id": "match-4c3bfadf",
+      "match_order": 19,
+      "played_at": "2025-09-21T18:45:19.612000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-174d80a5",
+          "name": "Gorm Gade"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 4,
+          "score_b": 5
+        }
+      ],
+      "games_a": 6,
+      "games_b": 11
+    },
+    {
+      "id": "match-db8ad180",
+      "match_order": 20,
+      "played_at": "2025-09-21T18:45:52.012000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-26aafd43",
+          "name": "Rune Qvist"
+        },
+        {
+          "id": "player-276223b4",
+          "name": "Niels Nielsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 3,
+          "score_b": 6
+        }
+      ],
+      "games_a": 5,
+      "games_b": 12
+    },
+    {
+      "id": "match-e96980f7",
+      "match_order": 21,
+      "played_at": "2025-09-21T18:46:22.494000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-174d80a5",
+          "name": "Gorm Gade"
+        },
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        },
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 4
+        },
+        {
+          "score_a": 4,
+          "score_b": 2
+        }
+      ],
+      "games_a": 10,
+      "games_b": 6
+    },
+    {
+      "id": "match-b064bcc7",
+      "match_order": 22,
+      "played_at": "2025-09-21T18:46:55.668000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-26aafd43",
+          "name": "Rune Qvist"
+        },
+        {
+          "id": "player-276223b4",
+          "name": "Niels Nielsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 3,
+          "score_b": 6
+        },
+        {
+          "score_a": 6,
+          "score_b": 4
+        }
+      ],
+      "games_a": 9,
+      "games_b": 10
+    },
+    {
+      "id": "match-de7511a9",
+      "match_order": 23,
+      "played_at": "2025-09-29T17:00:53.563000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-b4db21b2",
+          "name": "Palle Poulsen"
+        },
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 0
+        },
+        {
+          "score_a": 7,
+          "score_b": 6
+        }
+      ],
+      "games_a": 13,
+      "games_b": 6
+    },
+    {
+      "id": "match-79d3ad34",
+      "match_order": 24,
+      "played_at": "2025-09-29T17:01:38.751000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        },
+        {
+          "id": "player-96a7286a",
+          "name": "Ib Ipsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 3
+        },
+        {
+          "score_a": 6,
+          "score_b": 1
+        },
+        {
+          "score_a": 6,
+          "score_b": 2
+        }
+      ],
+      "games_a": 18,
+      "games_b": 6
+    },
+    {
+      "id": "match-aa6a7a25",
+      "match_order": 25,
+      "played_at": "2025-09-29T17:02:01.566000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 3
+        }
+      ],
+      "games_a": 6,
+      "games_b": 3
+    },
+    {
+      "id": "match-256c96ec",
+      "match_order": 26,
+      "played_at": "2025-09-29T17:02:33.308000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        },
+        {
+          "id": "player-96a7286a",
+          "name": "Ib Ipsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 1
+        }
+      ],
+      "games_a": 6,
+      "games_b": 1
+    },
+    {
+      "id": "match-9f279460",
+      "match_order": 27,
+      "played_at": "2025-10-28T18:27:15.751000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        },
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-de57d3f8",
+          "name": "Finn Fisker"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 1
+        },
+        {
+          "score_a": 6,
+          "score_b": 3
+        }
+      ],
+      "games_a": 12,
+      "games_b": 4
+    },
+    {
+      "id": "match-1865232c",
+      "match_order": 28,
+      "played_at": "2025-10-28T18:27:45.502000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 4,
+          "score_b": 6
+        },
+        {
+          "score_a": 4,
+          "score_b": 2
+        }
+      ],
+      "games_a": 8,
+      "games_b": 8
+    },
+    {
+      "id": "match-a830cd24",
+      "match_order": 29,
+      "played_at": "2025-10-28T18:28:12.559000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        },
+        {
+          "id": "player-de57d3f8",
+          "name": "Finn Fisker"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 4
+        },
+        {
+          "score_a": 3,
+          "score_b": 3
+        }
+      ],
+      "games_a": 9,
+      "games_b": 7
+    },
+    {
+      "id": "match-e23c07da",
+      "match_order": 30,
+      "played_at": "2025-10-28T18:28:52.341000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 7,
+          "score_b": 5
+        },
+        {
+          "score_a": 1,
+          "score_b": 3
+        }
+      ],
+      "games_a": 8,
+      "games_b": 8
+    },
+    {
+      "id": "match-fbc07581",
+      "match_order": 31,
+      "played_at": "2025-10-28T18:29:19.666000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 7,
+          "score_b": 6
+        },
+        {
+          "score_a": 2,
+          "score_b": 1
+        }
+      ],
+      "games_a": 9,
+      "games_b": 7
+    },
+    {
+      "id": "match-0b26872b",
+      "match_order": 32,
+      "played_at": "2025-10-28T18:29:48.300000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-de57d3f8",
+          "name": "Finn Fisker"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        },
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 3,
+          "score_b": 5
+        }
+      ],
+      "games_a": 5,
+      "games_b": 11
+    },
+    {
+      "id": "match-cebbf089",
+      "match_order": 33,
+      "played_at": "2025-11-02T19:21:57.496000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        },
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 5,
+          "score_b": 7
+        },
+        {
+          "score_a": 3,
+          "score_b": 1
+        }
+      ],
+      "games_a": 8,
+      "games_b": 8
+    },
+    {
+      "id": "match-843cd1b4",
+      "match_order": 34,
+      "played_at": "2025-11-02T19:22:26.621000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-ff5f1d49",
+          "name": "Lars Lundberg"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-174d80a5",
+          "name": "Gorm Gade"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 2,
+          "score_b": 4
+        }
+      ],
+      "games_a": 4,
+      "games_b": 10
+    },
+    {
+      "id": "match-084c0b6f",
+      "match_order": 35,
+      "played_at": "2025-11-02T19:23:03.090000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-174d80a5",
+          "name": "Gorm Gade"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 7,
+          "score_b": 5
+        }
+      ],
+      "games_a": 7,
+      "games_b": 5
+    },
+    {
+      "id": "match-5aca0157",
+      "match_order": 36,
+      "played_at": "2025-11-02T19:23:28.004000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-ff5f1d49",
+          "name": "Lars Lundberg"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 7,
+          "score_b": 6
+        }
+      ],
+      "games_a": 7,
+      "games_b": 6
+    },
+    {
+      "id": "match-d7c391c7",
+      "match_order": 37,
+      "played_at": "2025-11-02T19:23:53.371000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 1
+        },
+        {
+          "score_a": 6,
+          "score_b": 1
+        }
+      ],
+      "games_a": 12,
+      "games_b": 2
+    },
+    {
+      "id": "match-3fc10fcb",
+      "match_order": 38,
+      "played_at": "2025-11-02T19:24:23.940000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-174d80a5",
+          "name": "Gorm Gade"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-ff5f1d49",
+          "name": "Lars Lundberg"
+        },
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 2
+        },
+        {
+          "score_a": 2,
+          "score_b": 4
+        }
+      ],
+      "games_a": 8,
+      "games_b": 6
+    },
+    {
+      "id": "match-9fdee2af",
+      "match_order": 39,
+      "played_at": "2025-11-16T19:37:10.406000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        },
+        {
+          "id": "player-05ebbfd2",
+          "name": "Erik Winther"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 3
+        },
+        {
+          "score_a": 1,
+          "score_b": 5
+        }
+      ],
+      "games_a": 7,
+      "games_b": 8
+    },
+    {
+      "id": "match-0dec8abe",
+      "match_order": 40,
+      "played_at": "2025-11-16T19:37:41.420000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 3
+        },
+        {
+          "score_a": 3,
+          "score_b": 6
+        }
+      ],
+      "games_a": 9,
+      "games_b": 9
+    },
+    {
+      "id": "match-c7d893ed",
+      "match_order": 41,
+      "played_at": "2025-11-16T19:38:09.905000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        },
+        {
+          "id": "player-05ebbfd2",
+          "name": "Erik Winther"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 4,
+          "score_b": 2
+        }
+      ],
+      "games_a": 6,
+      "games_b": 8
+    },
+    {
+      "id": "match-0a6db523",
+      "match_order": 42,
+      "played_at": "2025-11-16T19:38:43.126000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 2
+        },
+        {
+          "score_a": 4,
+          "score_b": 2
+        }
+      ],
+      "games_a": 10,
+      "games_b": 4
+    },
+    {
+      "id": "match-c1b43908",
+      "match_order": 43,
+      "played_at": "2025-11-16T19:39:17.967000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        },
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 3
+        },
+        {
+          "score_a": 6,
+          "score_b": 1
+        }
+      ],
+      "games_a": 12,
+      "games_b": 4
+    },
+    {
+      "id": "match-220ee9ef",
+      "match_order": 44,
+      "played_at": "2025-11-16T19:39:53.699000Z",
+      "season_id": "season-1",
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-05ebbfd2",
+          "name": "Erik Winther"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 6,
+          "score_b": 1
+        },
+        {
+          "score_a": 1,
+          "score_b": 0
+        }
+      ],
+      "games_a": 9,
+      "games_b": 7
+    },
+    {
+      "id": "match-a71c7274",
+      "match_order": 45,
+      "played_at": "2026-01-12T19:27:19.747353Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 4
+        },
+        {
+          "score_a": 3,
+          "score_b": 2
+        }
+      ],
+      "games_a": 9,
+      "games_b": 6
+    },
+    {
+      "id": "match-aae4a309",
+      "match_order": 46,
+      "played_at": "2026-01-12T19:28:28.081307Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-174d80a5",
+          "name": "Gorm Gade"
+        },
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 0,
+          "score_b": 6
+        },
+        {
+          "score_a": 3,
+          "score_b": 6
+        }
+      ],
+      "games_a": 3,
+      "games_b": 12
+    },
+    {
+      "id": "match-9ead5429",
+      "match_order": 47,
+      "played_at": "2026-01-12T19:29:27.872950Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 3,
+          "score_b": 6
+        },
+        {
+          "score_a": 2,
+          "score_b": 4
+        }
+      ],
+      "games_a": 5,
+      "games_b": 10
+    },
+    {
+      "id": "match-7607f728",
+      "match_order": 48,
+      "played_at": "2026-01-12T19:30:24.953602Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-174d80a5",
+          "name": "Gorm Gade"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 2
+        },
+        {
+          "score_a": 3,
+          "score_b": 4
+        }
+      ],
+      "games_a": 9,
+      "games_b": 6
+    },
+    {
+      "id": "match-1349da6b",
+      "match_order": 49,
+      "played_at": "2026-01-12T19:31:23.416904Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 2
+        },
+        {
+          "score_a": 6,
+          "score_b": 3
+        },
+        {
+          "score_a": 0,
+          "score_b": 1
+        }
+      ],
+      "games_a": 12,
+      "games_b": 6
+    },
+    {
+      "id": "match-61bc2d16",
+      "match_order": 50,
+      "played_at": "2026-01-12T19:32:12.177893Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        },
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-174d80a5",
+          "name": "Gorm Gade"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 7,
+          "score_b": 6
+        }
+      ],
+      "games_a": 7,
+      "games_b": 6
+    },
+    {
+      "id": "match-251c7796",
+      "match_order": 51,
+      "played_at": "2026-01-18T20:11:07.620388Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-e3b73ccb",
+          "name": "Uffe Thomsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 2
+        },
+        {
+          "score_a": 4,
+          "score_b": 4
+        }
+      ],
+      "games_a": 10,
+      "games_b": 6
+    },
+    {
+      "id": "match-603e1100",
+      "match_order": 52,
+      "played_at": "2026-01-18T20:12:31.355110Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        },
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        },
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 1
+        },
+        {
+          "score_a": 6,
+          "score_b": 4
+        }
+      ],
+      "games_a": 12,
+      "games_b": 5
+    },
+    {
+      "id": "match-65530b45",
+      "match_order": 53,
+      "played_at": "2026-01-18T20:13:34.393248Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-e3b73ccb",
+          "name": "Uffe Thomsen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        },
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 7
+        }
+      ],
+      "games_a": 6,
+      "games_b": 7
+    },
+    {
+      "id": "match-d429a3c8",
+      "match_order": 54,
+      "played_at": "2026-01-18T20:14:35.776406Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 2
+        },
+        {
+          "score_a": 5,
+          "score_b": 3
+        }
+      ],
+      "games_a": 11,
+      "games_b": 5
+    },
+    {
+      "id": "match-6bacbac7",
+      "match_order": 55,
+      "played_at": "2026-01-18T20:15:32.612078Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 7
+        }
+      ],
+      "games_a": 6,
+      "games_b": 7
+    },
+    {
+      "id": "match-35af1c3e",
+      "match_order": 56,
+      "played_at": "2026-01-18T20:16:32.846181Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        },
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-e3b73ccb",
+          "name": "Uffe Thomsen"
+        },
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 7
+        },
+        {
+          "score_a": 1,
+          "score_b": 4
+        }
+      ],
+      "games_a": 7,
+      "games_b": 11
+    },
+    {
+      "id": "match-35f003dc",
+      "match_order": 57,
+      "played_at": "2026-01-26T06:17:39.173864Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        },
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 1,
+          "score_b": 6
+        },
+        {
+          "score_a": 0,
+          "score_b": 6
+        },
+        {
+          "score_a": 1,
+          "score_b": 2
+        }
+      ],
+      "games_a": 2,
+      "games_b": 14
+    },
+    {
+      "id": "match-cbc39f48",
+      "match_order": 58,
+      "played_at": "2026-01-26T06:18:26.976939Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 2
+        },
+        {
+          "score_a": 6,
+          "score_b": 2
+        },
+        {
+          "score_a": 2,
+          "score_b": 0
+        }
+      ],
+      "games_a": 14,
+      "games_b": 4
+    },
+    {
+      "id": "match-60a1b814",
+      "match_order": 59,
+      "played_at": "2026-01-26T06:19:26.593112Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 3,
+          "score_b": 4
+        }
+      ],
+      "games_a": 5,
+      "games_b": 10
+    },
+    {
+      "id": "match-07df5ee8",
+      "match_order": 60,
+      "played_at": "2026-01-26T06:20:15.236242Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        },
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 1,
+          "score_b": 6
+        },
+        {
+          "score_a": 1,
+          "score_b": 6
+        }
+      ],
+      "games_a": 2,
+      "games_b": 12
+    },
+    {
+      "id": "match-be5ced48",
+      "match_order": 61,
+      "played_at": "2026-01-26T06:20:58.603117Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 1
+        },
+        {
+          "score_a": 3,
+          "score_b": 4
+        }
+      ],
+      "games_a": 9,
+      "games_b": 5
+    },
+    {
+      "id": "match-8d699898",
+      "match_order": 62,
+      "played_at": "2026-01-26T06:21:40.717586Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 3
+        },
+        {
+          "score_a": 4,
+          "score_b": 2
+        }
+      ],
+      "games_a": 10,
+      "games_b": 5
+    },
+    {
+      "id": "match-2371f3b1",
+      "match_order": 63,
+      "played_at": "2026-02-01T20:12:48.690524Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        },
+        {
+          "id": "player-e3b73ccb",
+          "name": "Uffe Thomsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 2
+        },
+        {
+          "score_a": 6,
+          "score_b": 0
+        }
+      ],
+      "games_a": 12,
+      "games_b": 2
+    },
+    {
+      "id": "match-e78ef412",
+      "match_order": 64,
+      "played_at": "2026-02-01T20:13:19.547516Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        },
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 7
+        },
+        {
+          "score_a": 2,
+          "score_b": 1
+        }
+      ],
+      "games_a": 8,
+      "games_b": 8
+    },
+    {
+      "id": "match-8e602cc0",
+      "match_order": 65,
+      "played_at": "2026-02-01T20:13:48.568542Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        },
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 7
+        }
+      ],
+      "games_a": 6,
+      "games_b": 7
+    },
+    {
+      "id": "match-033005da",
+      "match_order": 66,
+      "played_at": "2026-02-01T20:14:22.530635Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-e3b73ccb",
+          "name": "Uffe Thomsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 3
+        },
+        {
+          "score_a": 3,
+          "score_b": 1
+        }
+      ],
+      "games_a": 9,
+      "games_b": 4
+    },
+    {
+      "id": "match-036993d7",
+      "match_order": 67,
+      "played_at": "2026-02-01T20:15:05.307015Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 4
+        },
+        {
+          "score_a": 2,
+          "score_b": 3
+        }
+      ],
+      "games_a": 8,
+      "games_b": 7
+    },
+    {
+      "id": "match-7374d37d",
+      "match_order": 68,
+      "played_at": "2026-02-01T20:15:35.244618Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-e3b73ccb",
+          "name": "Uffe Thomsen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 3
+        },
+        {
+          "score_a": 6,
+          "score_b": 3
+        }
+      ],
+      "games_a": 12,
+      "games_b": 6
+    },
+    {
+      "id": "match-ae118ed5",
+      "match_order": 69,
+      "played_at": "2026-02-22T10:16:49.027680Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        },
+        {
+          "id": "player-d7f8ab03",
+          "name": "Svend Riis"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 3,
+          "score_b": 6
+        },
+        {
+          "score_a": 1,
+          "score_b": 1
+        }
+      ],
+      "games_a": 6,
+      "games_b": 13
+    },
+    {
+      "id": "match-c2ff9895",
+      "match_order": 70,
+      "played_at": "2026-02-22T10:17:33.311699Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-e40d5390",
+          "name": "Esben Eriksen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 2
+        },
+        {
+          "score_a": 5,
+          "score_b": 4
+        }
+      ],
+      "games_a": 11,
+      "games_b": 6
+    },
+    {
+      "id": "match-0d68e8c1",
+      "match_order": 71,
+      "played_at": "2026-02-22T10:18:05.022029Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-d7f8ab03",
+          "name": "Svend Riis"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 1
+        },
+        {
+          "score_a": 4,
+          "score_b": 2
+        }
+      ],
+      "games_a": 10,
+      "games_b": 3
+    },
+    {
+      "id": "match-aa9f2042",
+      "match_order": 72,
+      "played_at": "2026-02-22T10:18:40.038984Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        },
+        {
+          "id": "player-e40d5390",
+          "name": "Esben Eriksen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        },
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 1,
+          "score_b": 6
+        },
+        {
+          "score_a": 1,
+          "score_b": 6
+        },
+        {
+          "score_a": 1,
+          "score_b": 1
+        }
+      ],
+      "games_a": 3,
+      "games_b": 13
+    },
+    {
+      "id": "match-94056038",
+      "match_order": 73,
+      "played_at": "2026-02-22T10:19:11.648490Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 3
+        },
+        {
+          "score_a": 4,
+          "score_b": 4
+        }
+      ],
+      "games_a": 10,
+      "games_b": 7
+    },
+    {
+      "id": "match-53f12fe5",
+      "match_order": 74,
+      "played_at": "2026-02-22T10:19:51.767350Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        },
+        {
+          "id": "player-e40d5390",
+          "name": "Esben Eriksen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-d7f8ab03",
+          "name": "Svend Riis"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 2,
+          "score_b": 2
+        }
+      ],
+      "games_a": 6,
+      "games_b": 14
+    },
+    {
+      "id": "match-5a62f858",
+      "match_order": 75,
+      "played_at": "2026-03-01T06:37:27.364333Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 1,
+          "score_b": 6
+        },
+        {
+          "score_a": 3,
+          "score_b": 2
+        }
+      ],
+      "games_a": 4,
+      "games_b": 8
+    },
+    {
+      "id": "match-f9c5ef52",
+      "match_order": 76,
+      "played_at": "2026-03-01T06:38:07.623355Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-4443994a",
+          "name": "Helge Dahl"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-551dbbf0",
+          "name": "Jeppe Jensen"
+        },
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 2
+        },
+        {
+          "score_a": 6,
+          "score_b": 3
+        },
+        {
+          "score_a": 3,
+          "score_b": 1
+        }
+      ],
+      "games_a": 15,
+      "games_b": 6
+    },
+    {
+      "id": "match-3cedf613",
+      "match_order": 77,
+      "played_at": "2026-03-01T06:38:48.600825Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-551dbbf0",
+          "name": "Jeppe Jensen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        },
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 4
+        },
+        {
+          "score_a": 1,
+          "score_b": 2
+        }
+      ],
+      "games_a": 7,
+      "games_b": 6
+    },
+    {
+      "id": "match-a368d3cc",
+      "match_order": 78,
+      "played_at": "2026-03-01T06:39:29.217137Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-4443994a",
+          "name": "Helge Dahl"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 3,
+          "score_b": 2
+        }
+      ],
+      "games_a": 5,
+      "games_b": 8
+    },
+    {
+      "id": "match-4b278b71",
+      "match_order": 79,
+      "played_at": "2026-03-01T06:40:00.438745Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 1,
+          "score_b": 6
+        },
+        {
+          "score_a": 5,
+          "score_b": 4
+        }
+      ],
+      "games_a": 6,
+      "games_b": 10
+    },
+    {
+      "id": "match-eec32af9",
+      "match_order": 80,
+      "played_at": "2026-03-01T06:40:44.269512Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        },
+        {
+          "id": "player-551dbbf0",
+          "name": "Jeppe Jensen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-4443994a",
+          "name": "Helge Dahl"
+        },
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 1,
+          "score_b": 6
+        },
+        {
+          "score_a": 6,
+          "score_b": 4
+        },
+        {
+          "score_a": 1,
+          "score_b": 3
+        }
+      ],
+      "games_a": 8,
+      "games_b": 13
+    },
+    {
+      "id": "match-421a95b9",
+      "match_order": 81,
+      "played_at": "2026-03-01T19:42:10.222964Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 4,
+          "score_b": 6
+        },
+        {
+          "score_a": 4,
+          "score_b": 4
+        }
+      ],
+      "games_a": 8,
+      "games_b": 10
+    },
+    {
+      "id": "match-f63bc2f5",
+      "match_order": 82,
+      "played_at": "2026-03-01T19:42:52.639652Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-e3b73ccb",
+          "name": "Uffe Thomsen"
+        },
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 4
+        },
+        {
+          "score_a": 4,
+          "score_b": 3
+        }
+      ],
+      "games_a": 10,
+      "games_b": 7
+    },
+    {
+      "id": "match-0acff39e",
+      "match_order": 83,
+      "played_at": "2026-03-01T19:43:18.607299Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-e3b73ccb",
+          "name": "Uffe Thomsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 4,
+          "score_b": 6
+        },
+        {
+          "score_a": 1,
+          "score_b": 2
+        }
+      ],
+      "games_a": 5,
+      "games_b": 8
+    },
+    {
+      "id": "match-2c946561",
+      "match_order": 84,
+      "played_at": "2026-03-01T19:43:53.105702Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        },
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 3
+        },
+        {
+          "score_a": 2,
+          "score_b": 2
+        }
+      ],
+      "games_a": 8,
+      "games_b": 5
+    },
+    {
+      "id": "match-95a3bcbe",
+      "match_order": 85,
+      "played_at": "2026-03-01T19:44:24.865629Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0bf6e48d",
+          "name": "Karsten Knudsen"
+        },
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 1
+        },
+        {
+          "score_a": 6,
+          "score_b": 4
+        }
+      ],
+      "games_a": 12,
+      "games_b": 5
+    },
+    {
+      "id": "match-7edfc6ce",
+      "match_order": 86,
+      "played_at": "2026-03-01T19:44:54.339927Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-e3b73ccb",
+          "name": "Uffe Thomsen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        },
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 7,
+          "score_b": 6
+        }
+      ],
+      "games_a": 7,
+      "games_b": 6
+    },
+    {
+      "id": "match-237d9bff",
+      "match_order": 87,
+      "played_at": "2026-03-15T16:12:04.693790Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 3
+        },
+        {
+          "score_a": 6,
+          "score_b": 1
+        }
+      ],
+      "games_a": 12,
+      "games_b": 4
+    },
+    {
+      "id": "match-af34e7b2",
+      "match_order": 88,
+      "played_at": "2026-03-15T16:12:36.259368Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        },
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 3
+        },
+        {
+          "score_a": 2,
+          "score_b": 2
+        }
+      ],
+      "games_a": 8,
+      "games_b": 5
+    },
+    {
+      "id": "match-99411e39",
+      "match_order": 89,
+      "played_at": "2026-03-15T16:13:08.358292Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        },
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 4,
+          "score_b": 6
+        },
+        {
+          "score_a": 1,
+          "score_b": 2
+        }
+      ],
+      "games_a": 5,
+      "games_b": 8
+    },
+    {
+      "id": "match-a1811412",
+      "match_order": 90,
+      "played_at": "2026-03-15T16:13:54.603440Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        },
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 3,
+          "score_b": 6
+        },
+        {
+          "score_a": 3,
+          "score_b": 3
+        }
+      ],
+      "games_a": 6,
+      "games_b": 9
+    },
+    {
+      "id": "match-29f33993",
+      "match_order": 91,
+      "played_at": "2026-03-15T16:14:21.748576Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-cf25b5d1",
+          "name": "Klaus Hedegaard"
+        },
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        },
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 1
+        },
+        {
+          "score_a": 6,
+          "score_b": 3
+        }
+      ],
+      "games_a": 12,
+      "games_b": 4
+    },
+    {
+      "id": "match-36933e1b",
+      "match_order": 92,
+      "played_at": "2026-03-15T16:14:51.953077Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 4,
+          "score_b": 6
+        },
+        {
+          "score_a": 5,
+          "score_b": 1
+        }
+      ],
+      "games_a": 9,
+      "games_b": 7
+    },
+    {
+      "id": "match-5ebe19de",
+      "match_order": 93,
+      "played_at": "2026-03-16T16:41:37.217839Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 1,
+          "score_b": 6
+        },
+        {
+          "score_a": 5,
+          "score_b": 3
+        }
+      ],
+      "games_a": 6,
+      "games_b": 9
+    },
+    {
+      "id": "match-2db41edf",
+      "match_order": 94,
+      "played_at": "2026-03-16T16:42:16.406950Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        },
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 2,
+          "score_b": 6
+        },
+        {
+          "score_a": 5,
+          "score_b": 3
+        }
+      ],
+      "games_a": 7,
+      "games_b": 9
+    },
+    {
+      "id": "match-5c39aa8c",
+      "match_order": 95,
+      "played_at": "2026-03-16T16:42:44.555259Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 4
+        },
+        {
+          "score_a": 1,
+          "score_b": 2
+        }
+      ],
+      "games_a": 7,
+      "games_b": 6
+    },
+    {
+      "id": "match-76aaef47",
+      "match_order": 96,
+      "played_at": "2026-03-16T16:43:17.237567Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 3
+        },
+        {
+          "score_a": 1,
+          "score_b": 3
+        }
+      ],
+      "games_a": 7,
+      "games_b": 6
+    },
+    {
+      "id": "match-4a038de1",
+      "match_order": 97,
+      "played_at": "2026-03-16T16:44:03.123380Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-4d6040ac",
+          "name": "Henrik Hansen"
+        },
+        {
+          "id": "player-68a9c117",
+          "name": "Mikkel Madsen"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-7ef787f5",
+          "name": "Valdemar Ulrich"
+        },
+        {
+          "id": "player-dc078d70",
+          "name": "Bo Vestergaard"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 6
+        }
+      ],
+      "games_a": 6,
+      "games_b": 6
+    },
+    {
+      "id": "match-e7da21f6",
+      "match_order": 98,
+      "played_at": "2026-03-16T16:44:36.860261Z",
+      "season_id": null,
+      "team_a": [
+        {
+          "id": "player-9d06de2b",
+          "name": "Dennis Damgaard"
+        },
+        {
+          "id": "player-deada6fb",
+          "name": "Bjarne Bundgaard"
+        }
+      ],
+      "team_b": [
+        {
+          "id": "player-0e14c7c6",
+          "name": "Ivan Friis"
+        },
+        {
+          "id": "player-7496ab40",
+          "name": "Ole Olesen"
+        }
+      ],
+      "sets": [
+        {
+          "score_a": 6,
+          "score_b": 1
+        },
+        {
+          "score_a": 4,
+          "score_b": 6
+        },
+        {
+          "score_a": 1,
+          "score_b": 2
+        }
+      ],
+      "games_a": 11,
+      "games_b": 9
+    }
+  ]
+}
