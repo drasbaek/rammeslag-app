@@ -1,0 +1,169 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    # `edited` matters: the rating-fixture guard reads the PR body, so editing
+    # the body to explain a fixture change must be able to turn CI green.
+    types: [opened, synchronize, reopened, edited, ready_for_review]
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: backend - pytest + ruff
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: "backend/pyproject.toml"
+
+      - name: Pin Python
+        run: uv python install 3.12
+
+      - name: Sync dependencies
+        run: uv sync --directory backend --extra dev
+
+      - name: Lint
+        run: uv run --directory backend ruff check .
+
+      # The golden test is the contract with the team's rating history. If it
+      # disappears, the repo has quietly lost its safety net, so treat a
+      # missing file as a failure rather than as "nothing to run".
+      - name: The golden fixture test must exist
+        run: |
+          if [ ! -f backend/tests/test_rating_golden.py ]; then
+            echo "::error file=backend/tests/test_rating_golden.py::backend/tests/test_rating_golden.py is missing."
+            echo "This test replays fixtures/history.json through the pure rating engine and"
+            echo "asserts the result equals fixtures/expected_ratings.json. Without it nothing"
+            echo "stops a rating change from silently rewriting the team's history."
+            exit 1
+          fi
+
+      - name: Golden fixture test
+        run: uv run --directory backend pytest tests/test_rating_golden.py -q
+
+      - name: Full test suite
+        run: uv run --directory backend pytest -q
+
+  frontend:
+    name: frontend - lint + typecheck + build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Cache npm downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json', 'frontend/package.json') }}
+          restore-keys: npm-${{ runner.os }}-
+
+      - name: Cache Next.js build cache
+        uses: actions/cache@v4
+        with:
+          path: frontend/.next/cache
+          key: next-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            next-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json') }}-
+            next-${{ runner.os }}-
+
+      - name: Install
+        run: |
+          if [ -f frontend/package-lock.json ]; then
+            npm --prefix frontend ci
+          else
+            echo "::warning::No frontend/package-lock.json - falling back to npm install."
+            npm --prefix frontend install
+          fi
+
+      - name: Lint
+        run: npm --prefix frontend run lint
+
+      - name: Typecheck
+        run: npm --prefix frontend exec -- tsc --noEmit
+
+      - name: Build
+        run: npm --prefix frontend run build
+
+  rating-fixture-guard:
+    # Hard rule 3 in AGENTS.md, made mechanical. This is the most important
+    # job in this file: a silent diff in fixtures/expected_ratings.json
+    # rewrites the team's real rating history.
+    name: rating fixture guard - a changed fixture must be explained
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Did fixtures/expected_ratings.json change?
+        id: fixture
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if git diff --quiet "$BASE_SHA" HEAD -- fixtures/expected_ratings.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "fixtures/expected_ratings.json is untouched. Nothing to explain."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Show the rating diff in human terms
+        if: steps.fixture.outputs.changed == 'true'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git show "$BASE_SHA:fixtures/expected_ratings.json" > /tmp/expected_before.json 2>/dev/null || echo '{}' > /tmp/expected_before.json
+          python .github/scripts/rating_diff.py /tmp/expected_before.json fixtures/expected_ratings.json | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: The PR body must explain who moved and why
+        if: steps.fixture.outputs.changed == 'true'
+        env:
+          # Passed through the environment on purpose. The PR body is
+          # attacker-controlled text on a public repo and must never be
+          # interpolated into a shell command.
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: python .github/scripts/check_fixture_explained.py /tmp/expected_before.json fixtures/expected_ratings.json
+
+  no-real-data:
+    name: no real data - export/ and real names stay out
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Scan the diff
+        env:
+          # Optional repository secret. A case-insensitive Python regex that
+          # matches the real player names, e.g. "(Anders|Mikkel|Søren)".
+          # Set it with:  gh secret set REAL_NAME_REGEX
+          # The scanner never prints a matched line, only file:line, so the
+          # names cannot leak through this public repo's CI logs.
+          REAL_NAME_REGEX: ${{ secrets.REAL_NAME_REGEX }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: python .github/scripts/check_no_real_data.py

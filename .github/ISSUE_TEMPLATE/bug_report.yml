@@ -1,0 +1,85 @@
+name: Bug
+description: Something is wrong with what the app does now.
+title: "fix: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A bug report an agent can act on needs the same three things a feature
+        does: **what**, **where**, and **how we know it is fixed**. The extra
+        one here is a way to reproduce it.
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happens
+      description: The actual behaviour. Screenshot welcome, phone-sized preferred.
+      placeholder: >-
+        The ladder row for a player with a long name pushes the rating numeral
+        off the right edge on my phone. I have to scroll sideways to see it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should happen instead
+    validations:
+      required: true
+
+  - type: input
+    id: where
+    attributes:
+      label: Where
+      description: Screen, route or endpoint.
+      placeholder: "/ (ladder), or GET /api/ladder?season=all"
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      value: |
+        1. 
+        2. 
+        3. 
+    validations:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: Device and viewport
+      description: >-
+        Most of this app's bugs are 390px bugs. Say if you saw it on a phone.
+      placeholder: "iPhone 15, Safari, 390x844"
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: How we know it is fixed
+      description: >-
+        Checkboxes, and where possible the regression test that should exist
+        afterwards.
+      value: |
+        - [ ] 
+        - [ ] A test covers this so it cannot come back
+        - [ ] Verified at 390x844 on the preview deployment
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: rating
+    attributes:
+      label: Does this involve ratings?
+      options:
+        - label: >-
+            A rating number is displayed wrong, but the stored history is
+            fine (a display bug).
+        - label: >-
+            I think the computed ratings themselves are wrong. (Then this is
+            serious: reference docs/RATING.md, say which rule you believe is
+            misimplemented, and expect the fix to regenerate
+            fixtures/expected_ratings.json with an explanation.)
