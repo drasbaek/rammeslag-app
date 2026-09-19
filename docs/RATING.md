@@ -141,8 +141,8 @@ status is editable, because guests become members.
   under `PROVISIONAL_MATCHES` is flagged `provisional` so the UI can say the
   number is still settling — but they keep their rank.
 
-Guest matches always feed the engine. 54% of historical matches involve a
-guest, so excluding them would discard most of the evidence. This is a
+Guest matches always feed the engine. A third of historical matches involve
+a guest, so excluding them would discard a large part of the evidence. This is a
 presentation filter and must never change what `compute()` is fed.
 
 ## Derived views
@@ -152,5 +152,16 @@ presentation filter and must never change what `compute()` is fed.
 **Season standing** ranks players by rating gained within a season's date
 range. The all-time rating never resets.
 
-**Active** means the player has appeared in a match in the current season.
-The main ladder shows active players; everyone else remains viewable.
+A season standing covers only players who **played at least one match that
+season**. This is not the activity filter the section above forbids: that
+rule governs the all-time ladder, where a member who missed a season still
+belongs. A season board is about that season, and a member who did not play
+has no performance in it — listing them on 0.0 would rank them above
+everyone who turned up and lost.
+
+**The default ladder view is all-time**, not the current season. At the
+start of a season the season board is empty, and the all-time rating is the
+number that always means something.
+
+**Active** is a display flag only: the player has appeared in a match in the
+current season. It marks a row; it never filters one out.

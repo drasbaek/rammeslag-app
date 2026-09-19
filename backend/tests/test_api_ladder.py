@@ -133,8 +133,11 @@ def test_a_member_who_never_played_is_still_on_the_ladder() -> None:
     assert by_id["sofa"].form == []
 
 
-def test_a_member_who_missed_the_season_still_appears_in_season_mode() -> None:
-    """docs/RATING.md: "A member who missed a season still appears"."""
+def test_a_member_who_missed_the_season_is_absent_from_that_season_board() -> None:
+    """docs/RATING.md: a season standing covers only players who played that
+    season. The no-activity-filter rule governs the all-time ladder; a member
+    who did not play has no season performance, and listing them on 0.0 gain
+    would rank them above everyone who turned up and lost."""
     autumn = [
         row(f"a{i}", "sa", i * 10, ("p1", "p2"), ("p3", "p4"), [(6, 1)]) for i in range(1, 6)
     ]
@@ -146,12 +149,11 @@ def test_a_member_who_missed_the_season_still_appears_in_season_mode() -> None:
     spring_ladder = _ladder(rows, _players(GUEST), window=day_bounds(*FORAAR[1:]))
     by_id = {e.player_id: e for e in spring_ladder.entries}
 
-    # p4 only played in the autumn. They are still ranked, on zero gain.
-    assert "p4" in by_id
-    assert by_id["p4"].matches_played == 0
-    assert by_id["p4"].rating_gained == pytest.approx(0.0)
-    # ...and their all-time rating still shows, because it never resets.
-    assert by_id["p4"].rating != 0.0
+    # p4 only played in the autumn, so they are not on the spring board.
+    assert "p4" not in by_id
+    # ...but they are still on the all-time ladder, which never resets.
+    all_time = _ladder(rows, _players(GUEST))
+    assert "p4" in {e.player_id for e in all_time.entries}
     # The guest played all spring and is still hidden by default.
     assert GUEST not in by_id
 

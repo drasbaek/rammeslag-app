@@ -239,8 +239,10 @@ def build_ladder(
     **The only filter is ``is_guest``** (docs/RATING.md, "Who appears on the
     ladder"). Members are the team and the ranking is theirs; guests are
     included only when the caller asks. There is deliberately no activity
-    filter in either mode: a member who missed a whole season still appears,
-    with the zero gain that says so.
+    filter on the all-time ladder: a member who missed a whole season still
+    appears there. A season standing is different -- it covers only players who
+    played at least one match inside the window, because a member who did not
+    play has no season to be ranked on.
 
     Guest matches always stay in the replay -- more than half the history
     involves a guest, so removing them would change the members' ratings. This
@@ -256,9 +258,14 @@ def build_ladder(
     all_internal = internal_rows(rows)
     scope_rows = rows_within(all_internal, *window) if window else list(all_internal)
 
-    # Every known player, in both modes. Season mode changes what the ranking
-    # measures, never who is measured.
     population = {pid for pid in players if include_guests or not _is_guest(players, pid)}
+    if window is not None:
+        # A season board is about that season. A member who did not play has no
+        # performance in it, and listing them on 0.0 gain would rank them above
+        # everyone who turned up and lost. This is not the activity filter that
+        # docs/RATING.md forbids -- that rule governs the all-time ladder, where
+        # a member who missed a season still belongs.
+        population &= players_in(scope_rows)
     hidden_guests = 0 if include_guests else sum(1 for info in players.values() if info.is_guest)
 
     active = active_ids if active_ids is not None else set()
@@ -573,11 +580,16 @@ def active_player_ids(rows: Sequence[MatchRow], current: Season | None) -> set[s
 
 
 def resolve_ladder_season(db: DbSession, season: str | None) -> Season | None:
-    """``all`` -> None (all-time). An id -> that season. Omitted -> current season."""
-    if season == "all":
+    """``all`` or omitted -> None (all-time). An id -> that season.
+    ``current`` -> whichever season today falls in.
+
+    All-time is the default because at the start of a season the season board
+    is empty, while the all-time rating always means something.
+    """
+    if season in (None, "", "all"):
         return None
     seasons = season_service.list_seasons(db)
-    if season in (None, "", "current"):
+    if season == "current":
         return season_service.pick_current_season(seasons, datetime.now(UTC).date())
     for candidate in seasons:
         if candidate.id == season:
