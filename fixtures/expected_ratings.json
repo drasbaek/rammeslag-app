@@ -1,0 +1,2427 @@
+{
+  "generated_from": "fixtures/history.json",
+  "constants": {
+    "SEED_RATING": 1000.0,
+    "K_STANDARD": 20.0,
+    "K_PROVISIONAL": 40.0,
+    "PROVISIONAL_MATCHES": 5,
+    "MOV_SCALE": 1.0,
+    "ELO_SCALE": 400.0
+  },
+  "counts": {
+    "players": 28,
+    "matches": 98
+  },
+  "ladder": [
+    {
+      "rank": 1,
+      "player_id": "player-cf25b5d1",
+      "name": "Klaus Hedegaard",
+      "is_guest": false,
+      "matches_played": 27,
+      "entry_rating": 1100.0,
+      "rating": 1303.691650636147
+    },
+    {
+      "rank": 2,
+      "player_id": "player-4443994a",
+      "name": "Helge Dahl",
+      "is_guest": true,
+      "matches_played": 3,
+      "entry_rating": 1100.0,
+      "rating": 1161.5891192285098
+    },
+    {
+      "rank": 3,
+      "player_id": "player-9d06de2b",
+      "name": "Dennis Damgaard",
+      "is_guest": false,
+      "matches_played": 47,
+      "entry_rating": 1000.0,
+      "rating": 1079.2292175469065
+    },
+    {
+      "rank": 4,
+      "player_id": "player-0e14c7c6",
+      "name": "Ivan Friis",
+      "is_guest": false,
+      "matches_played": 35,
+      "entry_rating": 1000.0,
+      "rating": 1074.343339127163
+    },
+    {
+      "rank": 5,
+      "player_id": "player-174d80a5",
+      "name": "Gorm Gade",
+      "is_guest": false,
+      "matches_played": 12,
+      "entry_rating": 1000.0,
+      "rating": 1072.8885428981089
+    },
+    {
+      "rank": 6,
+      "player_id": "player-4d6040ac",
+      "name": "Henrik Hansen",
+      "is_guest": false,
+      "matches_played": 49,
+      "entry_rating": 1000.0,
+      "rating": 1064.9935774519902
+    },
+    {
+      "rank": 7,
+      "player_id": "player-0bf6e48d",
+      "name": "Karsten Knudsen",
+      "is_guest": false,
+      "matches_played": 20,
+      "entry_rating": 1000.0,
+      "rating": 1032.907022860296
+    },
+    {
+      "rank": 8,
+      "player_id": "player-7ef787f5",
+      "name": "Valdemar Ulrich",
+      "is_guest": false,
+      "matches_played": 20,
+      "entry_rating": 1000.0,
+      "rating": 1031.1712095483158
+    },
+    {
+      "rank": 9,
+      "player_id": "player-b4db21b2",
+      "name": "Palle Poulsen",
+      "is_guest": true,
+      "matches_played": 1,
+      "entry_rating": 1000.0,
+      "rating": 1023.2217274571664
+    },
+    {
+      "rank": 10,
+      "player_id": "player-05ebbfd2",
+      "name": "Erik Winther",
+      "is_guest": true,
+      "matches_played": 3,
+      "entry_rating": 1000.0,
+      "rating": 1022.0687610404306
+    },
+    {
+      "rank": 11,
+      "player_id": "player-26aafd43",
+      "name": "Rune Qvist",
+      "is_guest": true,
+      "matches_played": 3,
+      "entry_rating": 1000.0,
+      "rating": 1020.6082780476322
+    },
+    {
+      "rank": 12,
+      "player_id": "player-276223b4",
+      "name": "Niels Nielsen",
+      "is_guest": true,
+      "matches_played": 3,
+      "entry_rating": 1000.0,
+      "rating": 1020.6082780476322
+    },
+    {
+      "rank": 13,
+      "player_id": "player-c431b994",
+      "name": "Aksel Agerskov",
+      "is_guest": true,
+      "matches_played": 2,
+      "entry_rating": 1000.0,
+      "rating": 1002.592828197193
+    },
+    {
+      "rank": 14,
+      "player_id": "player-89e469b7",
+      "name": "Joakim Greve",
+      "is_guest": true,
+      "matches_played": 3,
+      "entry_rating": 1000.0,
+      "rating": 989.214092560628
+    },
+    {
+      "rank": 15,
+      "player_id": "player-68a9c117",
+      "name": "Mikkel Madsen",
+      "is_guest": false,
+      "matches_played": 18,
+      "entry_rating": 1000.0,
+      "rating": 985.7583592678734
+    },
+    {
+      "rank": 16,
+      "player_id": "player-551dbbf0",
+      "name": "Jeppe Jensen",
+      "is_guest": true,
+      "matches_played": 3,
+      "entry_rating": 1000.0,
+      "rating": 983.4620468580888
+    },
+    {
+      "rank": 17,
+      "player_id": "player-e3b73ccb",
+      "name": "Uffe Thomsen",
+      "is_guest": false,
+      "matches_played": 9,
+      "entry_rating": 1000.0,
+      "rating": 978.6927580229785
+    },
+    {
+      "rank": 18,
+      "player_id": "player-d7f8ab03",
+      "name": "Svend Riis",
+      "is_guest": true,
+      "matches_played": 3,
+      "entry_rating": 1000.0,
+      "rating": 977.3761294160541
+    },
+    {
+      "rank": 19,
+      "player_id": "player-e40d5390",
+      "name": "Esben Eriksen",
+      "is_guest": true,
+      "matches_played": 3,
+      "entry_rating": 1000.0,
+      "rating": 973.7725296682274
+    },
+    {
+      "rank": 20,
+      "player_id": "player-7496ab40",
+      "name": "Ole Olesen",
+      "is_guest": false,
+      "matches_played": 33,
+      "entry_rating": 1000.0,
+      "rating": 953.8279870935363
+    },
+    {
+      "rank": 21,
+      "player_id": "player-ecfa70a1",
+      "name": "Gustav Bech",
+      "is_guest": true,
+      "matches_played": 3,
+      "entry_rating": 1000.0,
+      "rating": 950.1057739313569
+    },
+    {
+      "rank": 22,
+      "player_id": "player-695367f9",
+      "name": "Carl Kragh",
+      "is_guest": false,
+      "matches_played": 6,
+      "entry_rating": 1000.0,
+      "rating": 949.3559356806277
+    },
+    {
+      "rank": 23,
+      "player_id": "player-38386278",
+      "name": "Thor Skovgaard",
+      "is_guest": true,
+      "matches_played": 3,
+      "entry_rating": 1000.0,
+      "rating": 947.332235712626
+    },
+    {
+      "rank": 24,
+      "player_id": "player-ff5f1d49",
+      "name": "Lars Lundberg",
+      "is_guest": true,
+      "matches_played": 3,
+      "entry_rating": 1000.0,
+      "rating": 935.3783106551484
+    },
+    {
+      "rank": 25,
+      "player_id": "player-de57d3f8",
+      "name": "Finn Fisker",
+      "is_guest": true,
+      "matches_played": 3,
+      "entry_rating": 1000.0,
+      "rating": 921.3808436708779
+    },
+    {
+      "rank": 26,
+      "player_id": "player-deada6fb",
+      "name": "Bjarne Bundgaard",
+      "is_guest": false,
+      "matches_played": 31,
+      "entry_rating": 1000.0,
+      "rating": 916.4143977786296
+    },
+    {
+      "rank": 27,
+      "player_id": "player-96a7286a",
+      "name": "Ib Ipsen",
+      "is_guest": true,
+      "matches_played": 2,
+      "entry_rating": 800.0,
+      "rating": 758.2963287144316
+    },
+    {
+      "rank": 28,
+      "player_id": "player-dc078d70",
+      "name": "Bo Vestergaard",
+      "is_guest": false,
+      "matches_played": 44,
+      "entry_rating": 900.0,
+      "rating": 722.1295554429461
+    }
+  ],
+  "history": [
+    {
+      "match_id": "match-8f3831c6",
+      "played_at": "2025-08-25T16:34:09.515000+00:00",
+      "verdict": {
+        "player-0e14c7c6": "W",
+        "player-7496ab40": "W",
+        "player-9d06de2b": "L",
+        "player-7ef787f5": "L"
+      },
+      "deltas": {
+        "player-0e14c7c6": 23.157894736842106,
+        "player-7496ab40": 23.157894736842106,
+        "player-9d06de2b": -23.157894736842106,
+        "player-7ef787f5": -23.157894736842106
+      },
+      "ratings_after": {
+        "player-0e14c7c6": 1023.1578947368421,
+        "player-7496ab40": 1023.1578947368421,
+        "player-9d06de2b": 976.8421052631579,
+        "player-7ef787f5": 976.8421052631579
+      }
+    },
+    {
+      "match_id": "match-a924bfbe",
+      "played_at": "2025-08-25T16:34:31.652000+00:00",
+      "verdict": {
+        "player-4d6040ac": "L",
+        "player-dc078d70": "L",
+        "player-c431b994": "W",
+        "player-deada6fb": "W"
+      },
+      "deltas": {
+        "player-4d6040ac": -22.183085687095552,
+        "player-dc078d70": -22.183085687095552,
+        "player-c431b994": 22.183085687095552,
+        "player-deada6fb": 22.183085687095552
+      },
+      "ratings_after": {
+        "player-4d6040ac": 977.8169143129045,
+        "player-dc078d70": 877.8169143129045,
+        "player-c431b994": 1022.1830856870955,
+        "player-deada6fb": 1022.1830856870955
+      }
+    },
+    {
+      "match_id": "match-520857eb",
+      "played_at": "2025-08-25T16:35:08.969000+00:00",
+      "verdict": {
+        "player-0e14c7c6": "W",
+        "player-9d06de2b": "W",
+        "player-dc078d70": "L",
+        "player-c431b994": "L"
+      },
+      "deltas": {
+        "player-0e14c7c6": 19.590257489902562,
+        "player-9d06de2b": 19.590257489902562,
+        "player-dc078d70": -19.590257489902562,
+        "player-c431b994": -19.590257489902562
+      },
+      "ratings_after": {
+        "player-0e14c7c6": 1042.7481522267447,
+        "player-9d06de2b": 996.4323627530605,
+        "player-dc078d70": 858.2266568230019,
+        "player-c431b994": 1002.592828197193
+      }
+    },
+    {
+      "match_id": "match-e1fb1ae6",
+      "played_at": "2025-08-25T16:35:32.691000+00:00",
+      "verdict": {
+        "player-4d6040ac": "L",
+        "player-7496ab40": "L",
+        "player-deada6fb": "W",
+        "player-7ef787f5": "W"
+      },
+      "deltas": {
+        "player-4d6040ac": -21.111699339384913,
+        "player-7496ab40": -21.111699339384913,
+        "player-deada6fb": 21.111699339384913,
+        "player-7ef787f5": 21.111699339384913
+      },
+      "ratings_after": {
+        "player-4d6040ac": 956.7052149735196,
+        "player-7496ab40": 1002.0461953974572,
+        "player-deada6fb": 1043.2947850264804,
+        "player-7ef787f5": 997.9538046025428
+      }
+    },
+    {
+      "match_id": "match-b05cc41c",
+      "played_at": "2025-08-31T18:07:35.472000+00:00",
+      "verdict": {
+        "player-4d6040ac": "W",
+        "player-9d06de2b": "W",
+        "player-695367f9": "L",
+        "player-ecfa70a1": "L"
+      },
+      "deltas": {
+        "player-4d6040ac": 24.396306011146493,
+        "player-9d06de2b": 24.396306011146493,
+        "player-695367f9": -24.396306011146493,
+        "player-ecfa70a1": -24.396306011146493
+      },
+      "ratings_after": {
+        "player-4d6040ac": 981.1015209846661,
+        "player-9d06de2b": 1020.828668764207,
+        "player-695367f9": 975.6036939888535,
+        "player-ecfa70a1": 975.6036939888535
+      }
+    },
+    {
+      "match_id": "match-5fda4aa8",
+      "played_at": "2025-08-31T18:08:07.076000+00:00",
+      "verdict": {
+        "player-deada6fb": "D",
+        "player-38386278": "D",
+        "player-0e14c7c6": "D",
+        "player-dc078d70": "D"
+      },
+      "deltas": {
+        "player-deada6fb": -4.0399645217609415,
+        "player-38386278": -4.0399645217609415,
+        "player-0e14c7c6": 4.0399645217609415,
+        "player-dc078d70": 4.0399645217609415
+      },
+      "ratings_after": {
+        "player-deada6fb": 1039.2548205047194,
+        "player-38386278": 995.9600354782391,
+        "player-0e14c7c6": 1046.7881167485057,
+        "player-dc078d70": 862.2666213447628
+      }
+    },
+    {
+      "match_id": "match-b68985df",
+      "played_at": "2025-08-31T18:09:10.448000+00:00",
+      "verdict": {
+        "player-695367f9": "L",
+        "player-deada6fb": "L",
+        "player-4d6040ac": "W",
+        "player-0e14c7c6": "W"
+      },
+      "deltas": {
+        "player-695367f9": -31.399964937337675,
+        "player-deada6fb": -31.399964937337675,
+        "player-4d6040ac": 31.39996493733767,
+        "player-0e14c7c6": 31.39996493733767
+      },
+      "ratings_after": {
+        "player-695367f9": 944.2037290515158,
+        "player-deada6fb": 1007.8548555673817,
+        "player-4d6040ac": 1012.5014859220038,
+        "player-0e14c7c6": 1078.1880816858434
+      }
+    },
+    {
+      "match_id": "match-f2e531ac",
+      "played_at": "2025-08-31T20:38:07.949000+00:00",
+      "verdict": {
+        "player-ecfa70a1": "L",
+        "player-38386278": "L",
+        "player-9d06de2b": "W",
+        "player-dc078d70": "W"
+      },
+      "deltas": {
+        "player-ecfa70a1": -26.288099617848953,
+        "player-38386278": -26.288099617848953,
+        "player-9d06de2b": 26.288099617848953,
+        "player-dc078d70": 26.288099617848953
+      },
+      "ratings_after": {
+        "player-ecfa70a1": 949.3155943710045,
+        "player-38386278": 969.6719358603901,
+        "player-9d06de2b": 1047.1167683820559,
+        "player-dc078d70": 888.5547209626118
+      }
+    },
+    {
+      "match_id": "match-72994a81",
+      "played_at": "2025-08-31T20:38:56.541000+00:00",
+      "verdict": {
+        "player-deada6fb": "D",
+        "player-9d06de2b": "D",
+        "player-ecfa70a1": "D",
+        "player-0e14c7c6": "D"
+      },
+      "deltas": {
+        "player-deada6fb": -0.7901795603523887,
+        "player-9d06de2b": -0.7901795603523887,
+        "player-ecfa70a1": 0.7901795603523887,
+        "player-0e14c7c6": 0.7901795603523887
+      },
+      "ratings_after": {
+        "player-deada6fb": 1007.0646760070293,
+        "player-9d06de2b": 1046.3265888217034,
+        "player-ecfa70a1": 950.1057739313569,
+        "player-0e14c7c6": 1078.9782612461959
+      }
+    },
+    {
+      "match_id": "match-a192b565",
+      "played_at": "2025-08-31T20:39:31.749000+00:00",
+      "verdict": {
+        "player-4d6040ac": "W",
+        "player-695367f9": "W",
+        "player-dc078d70": "L",
+        "player-38386278": "L"
+      },
+      "deltas": {
+        "player-4d6040ac": 22.33970014776415,
+        "player-695367f9": 22.33970014776415,
+        "player-dc078d70": -22.33970014776415,
+        "player-38386278": -22.33970014776415
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1034.841186069768,
+        "player-695367f9": 966.5434291992799,
+        "player-dc078d70": 866.2150208148477,
+        "player-38386278": 947.332235712626
+      }
+    },
+    {
+      "match_id": "match-4bfad2f7",
+      "played_at": "2025-09-07T18:38:48.817000+00:00",
+      "verdict": {
+        "player-4d6040ac": "L",
+        "player-9d06de2b": "L",
+        "player-174d80a5": "W",
+        "player-0e14c7c6": "W"
+      },
+      "deltas": {
+        "player-4d6040ac": -12.897655109963713,
+        "player-9d06de2b": -12.897655109963713,
+        "player-174d80a5": 25.795310219927426,
+        "player-0e14c7c6": 12.897655109963713
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1021.9435309598042,
+        "player-9d06de2b": 1033.4289337117395,
+        "player-174d80a5": 1025.7953102199274,
+        "player-0e14c7c6": 1091.8759163561597
+      }
+    },
+    {
+      "match_id": "match-2476658c",
+      "played_at": "2025-09-07T18:39:34.322000+00:00",
+      "verdict": {
+        "player-695367f9": "W",
+        "player-deada6fb": "W",
+        "player-89e469b7": "L",
+        "player-dc078d70": "L"
+      },
+      "deltas": {
+        "player-695367f9": 19.7555824874219,
+        "player-deada6fb": 9.87779124371095,
+        "player-89e469b7": -19.7555824874219,
+        "player-dc078d70": -9.87779124371095
+      },
+      "ratings_after": {
+        "player-695367f9": 986.2990116867018,
+        "player-deada6fb": 1016.9424672507403,
+        "player-89e469b7": 980.2444175125781,
+        "player-dc078d70": 856.3372295711367
+      }
+    },
+    {
+      "match_id": "match-e96b83d5",
+      "played_at": "2025-09-07T18:40:30.670000+00:00",
+      "verdict": {
+        "player-dc078d70": "L",
+        "player-695367f9": "L",
+        "player-174d80a5": "W",
+        "player-9d06de2b": "W"
+      },
+      "deltas": {
+        "player-dc078d70": -12.2153764261182,
+        "player-695367f9": -24.4307528522364,
+        "player-174d80a5": 24.4307528522364,
+        "player-9d06de2b": 12.2153764261182
+      },
+      "ratings_after": {
+        "player-dc078d70": 844.1218531450186,
+        "player-695367f9": 961.8682588344653,
+        "player-174d80a5": 1050.2260630721637,
+        "player-9d06de2b": 1045.6443101378577
+      }
+    },
+    {
+      "match_id": "match-0e595eef",
+      "played_at": "2025-09-07T18:41:11.963000+00:00",
+      "verdict": {
+        "player-0e14c7c6": "W",
+        "player-4d6040ac": "W",
+        "player-deada6fb": "L",
+        "player-89e469b7": "L"
+      },
+      "deltas": {
+        "player-0e14c7c6": 10.004531257487201,
+        "player-4d6040ac": 10.004531257487201,
+        "player-deada6fb": -10.004531257487201,
+        "player-89e469b7": -20.009062514974403
+      },
+      "ratings_after": {
+        "player-0e14c7c6": 1101.880447613647,
+        "player-4d6040ac": 1031.9480622172914,
+        "player-deada6fb": 1006.9379359932531,
+        "player-89e469b7": 960.2353549976037
+      }
+    },
+    {
+      "match_id": "match-ac428679",
+      "played_at": "2025-09-07T18:41:53.798000+00:00",
+      "verdict": {
+        "player-deada6fb": "L",
+        "player-9d06de2b": "L",
+        "player-4d6040ac": "W",
+        "player-89e469b7": "W"
+      },
+      "deltas": {
+        "player-deada6fb": -14.48936878151217,
+        "player-9d06de2b": -14.48936878151217,
+        "player-4d6040ac": 14.48936878151217,
+        "player-89e469b7": 28.97873756302434
+      },
+      "ratings_after": {
+        "player-deada6fb": 992.4485672117409,
+        "player-9d06de2b": 1031.1549413563455,
+        "player-4d6040ac": 1046.4374309988036,
+        "player-89e469b7": 989.214092560628
+      }
+    },
+    {
+      "match_id": "match-1b53dad9",
+      "played_at": "2025-09-07T18:42:27.509000+00:00",
+      "verdict": {
+        "player-174d80a5": "L",
+        "player-695367f9": "L",
+        "player-dc078d70": "W",
+        "player-0e14c7c6": "W"
+      },
+      "deltas": {
+        "player-174d80a5": -25.02464630767541,
+        "player-695367f9": -12.512323153837706,
+        "player-dc078d70": 12.512323153837706,
+        "player-0e14c7c6": 12.512323153837706
+      },
+      "ratings_after": {
+        "player-174d80a5": 1025.2014167644884,
+        "player-695367f9": 949.3559356806277,
+        "player-dc078d70": 856.6341762988562,
+        "player-0e14c7c6": 1114.3927707674848
+      }
+    },
+    {
+      "match_id": "match-9e4d0a5e",
+      "played_at": "2025-09-21T18:44:08.288000+00:00",
+      "verdict": {
+        "player-dc078d70": "L",
+        "player-7496ab40": "L",
+        "player-4d6040ac": "W",
+        "player-9d06de2b": "W"
+      },
+      "deltas": {
+        "player-dc078d70": -8.687313433054564,
+        "player-7496ab40": -17.37462686610913,
+        "player-4d6040ac": 8.687313433054566,
+        "player-9d06de2b": 8.687313433054566
+      },
+      "ratings_after": {
+        "player-dc078d70": 847.9468628658017,
+        "player-7496ab40": 984.671568531348,
+        "player-4d6040ac": 1055.1247444318583,
+        "player-9d06de2b": 1039.8422547894002
+      }
+    },
+    {
+      "match_id": "match-166263dd",
+      "played_at": "2025-09-21T18:44:46.909000+00:00",
+      "verdict": {
+        "player-deada6fb": "W",
+        "player-174d80a5": "W",
+        "player-26aafd43": "L",
+        "player-276223b4": "L"
+      },
+      "deltas": {
+        "player-deada6fb": 10.39578765265247,
+        "player-174d80a5": 20.79157530530494,
+        "player-26aafd43": -20.79157530530494,
+        "player-276223b4": -20.79157530530494
+      },
+      "ratings_after": {
+        "player-deada6fb": 1002.8443548643933,
+        "player-174d80a5": 1045.9929920697932,
+        "player-26aafd43": 979.208424694695,
+        "player-276223b4": 979.208424694695
+      }
+    },
+    {
+      "match_id": "match-4c3bfadf",
+      "played_at": "2025-09-21T18:45:19.612000+00:00",
+      "verdict": {
+        "player-4d6040ac": "L",
+        "player-7496ab40": "L",
+        "player-9d06de2b": "W",
+        "player-174d80a5": "W"
+      },
+      "deltas": {
+        "player-4d6040ac": -12.08500670088567,
+        "player-7496ab40": -24.17001340177134,
+        "player-9d06de2b": 12.085006700885671,
+        "player-174d80a5": 24.170013401771342
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1043.0397377309725,
+        "player-7496ab40": 960.5015551295767,
+        "player-9d06de2b": 1051.927261490286,
+        "player-174d80a5": 1070.1630054715645
+      }
+    },
+    {
+      "match_id": "match-db8ad180",
+      "played_at": "2025-09-21T18:45:52.012000+00:00",
+      "verdict": {
+        "player-deada6fb": "L",
+        "player-dc078d70": "L",
+        "player-26aafd43": "W",
+        "player-276223b4": "W"
+      },
+      "deltas": {
+        "player-deada6fb": -11.948344142357097,
+        "player-dc078d70": -11.948344142357097,
+        "player-26aafd43": 23.89668828471419,
+        "player-276223b4": 23.89668828471419
+      },
+      "ratings_after": {
+        "player-deada6fb": 990.8960107220362,
+        "player-dc078d70": 835.9985187234446,
+        "player-26aafd43": 1003.1051129794092,
+        "player-276223b4": 1003.1051129794092
+      }
+    },
+    {
+      "match_id": "match-e96980f7",
+      "played_at": "2025-09-21T18:46:22.494000+00:00",
+      "verdict": {
+        "player-174d80a5": "W",
+        "player-4d6040ac": "W",
+        "player-7496ab40": "L",
+        "player-deada6fb": "L"
+      },
+      "deltas": {
+        "player-174d80a5": 9.640787050117487,
+        "player-4d6040ac": 9.640787050117487,
+        "player-7496ab40": -19.281574100234973,
+        "player-deada6fb": -9.640787050117487
+      },
+      "ratings_after": {
+        "player-174d80a5": 1079.803792521682,
+        "player-4d6040ac": 1052.68052478109,
+        "player-7496ab40": 941.2199810293417,
+        "player-deada6fb": 981.2552236719187
+      }
+    },
+    {
+      "match_id": "match-b064bcc7",
+      "played_at": "2025-09-21T18:46:55.668000+00:00",
+      "verdict": {
+        "player-9d06de2b": "L",
+        "player-dc078d70": "L",
+        "player-26aafd43": "W",
+        "player-276223b4": "W"
+      },
+      "deltas": {
+        "player-9d06de2b": -8.751582534111494,
+        "player-dc078d70": -8.751582534111494,
+        "player-26aafd43": 17.50316506822299,
+        "player-276223b4": 17.50316506822299
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1043.1756789561744,
+        "player-dc078d70": 827.246936189333,
+        "player-26aafd43": 1020.6082780476322,
+        "player-276223b4": 1020.6082780476322
+      }
+    },
+    {
+      "match_id": "match-de7511a9",
+      "played_at": "2025-09-29T17:00:53.563000+00:00",
+      "verdict": {
+        "player-b4db21b2": "W",
+        "player-cf25b5d1": "W",
+        "player-4d6040ac": "L",
+        "player-7496ab40": "L"
+      },
+      "deltas": {
+        "player-b4db21b2": 23.22172745716639,
+        "player-cf25b5d1": 23.22172745716639,
+        "player-4d6040ac": -11.610863728583196,
+        "player-7496ab40": -11.610863728583196
+      },
+      "ratings_after": {
+        "player-b4db21b2": 1023.2217274571664,
+        "player-cf25b5d1": 1123.2217274571665,
+        "player-4d6040ac": 1041.069661052507,
+        "player-7496ab40": 929.6091173007585
+      }
+    },
+    {
+      "match_id": "match-79d3ad34",
+      "played_at": "2025-09-29T17:01:38.751000+00:00",
+      "verdict": {
+        "player-9d06de2b": "W",
+        "player-dc078d70": "W",
+        "player-deada6fb": "L",
+        "player-96a7286a": "L"
+      },
+      "deltas": {
+        "player-9d06de2b": 13.085663140888489,
+        "player-dc078d70": 13.085663140888489,
+        "player-deada6fb": -13.085663140888489,
+        "player-96a7286a": -26.171326281776977
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1056.2613420970629,
+        "player-dc078d70": 840.3325993302216,
+        "player-deada6fb": 968.1695605310301,
+        "player-96a7286a": 773.8286737182231
+      }
+    },
+    {
+      "match_id": "match-aa6a7a25",
+      "played_at": "2025-09-29T17:02:01.566000+00:00",
+      "verdict": {
+        "player-4d6040ac": "W",
+        "player-9d06de2b": "W",
+        "player-cf25b5d1": "L",
+        "player-dc078d70": "L"
+      },
+      "deltas": {
+        "player-4d6040ac": 10.797648888428657,
+        "player-9d06de2b": 10.797648888428657,
+        "player-cf25b5d1": -21.595297776857315,
+        "player-dc078d70": -10.797648888428657
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1051.8673099409357,
+        "player-9d06de2b": 1067.0589909854916,
+        "player-cf25b5d1": 1101.6264296803092,
+        "player-dc078d70": 829.534950441793
+      }
+    },
+    {
+      "match_id": "match-256c96ec",
+      "played_at": "2025-09-29T17:02:33.308000+00:00",
+      "verdict": {
+        "player-9d06de2b": "W",
+        "player-cf25b5d1": "W",
+        "player-deada6fb": "L",
+        "player-96a7286a": "L"
+      },
+      "deltas": {
+        "player-9d06de2b": 7.766172501895724,
+        "player-cf25b5d1": 15.532345003791448,
+        "player-deada6fb": -7.766172501895724,
+        "player-96a7286a": -15.532345003791448
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1074.8251634873873,
+        "player-cf25b5d1": 1117.1587746841008,
+        "player-deada6fb": 960.4033880291344,
+        "player-96a7286a": 758.2963287144316
+      }
+    },
+    {
+      "match_id": "match-9f279460",
+      "played_at": "2025-10-28T18:27:15.751000+00:00",
+      "verdict": {
+        "player-7496ab40": "W",
+        "player-0bf6e48d": "W",
+        "player-de57d3f8": "L",
+        "player-dc078d70": "L"
+      },
+      "deltas": {
+        "player-7496ab40": 12.854538186827853,
+        "player-0bf6e48d": 25.709076373655705,
+        "player-de57d3f8": -25.709076373655705,
+        "player-dc078d70": -12.854538186827853
+      },
+      "ratings_after": {
+        "player-7496ab40": 942.4636554875864,
+        "player-0bf6e48d": 1025.7090763736558,
+        "player-de57d3f8": 974.2909236263442,
+        "player-dc078d70": 816.6804122549651
+      }
+    },
+    {
+      "match_id": "match-1865232c",
+      "played_at": "2025-10-28T18:27:45.502000+00:00",
+      "verdict": {
+        "player-9d06de2b": "D",
+        "player-4d6040ac": "D",
+        "player-0e14c7c6": "D",
+        "player-deada6fb": "D"
+      },
+      "deltas": {
+        "player-9d06de2b": -0.7454624995548698,
+        "player-4d6040ac": -0.7454624995548698,
+        "player-0e14c7c6": 0.7454624995548698,
+        "player-deada6fb": 0.7454624995548698
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1074.0797009878324,
+        "player-4d6040ac": 1051.1218474413809,
+        "player-0e14c7c6": 1115.1382332670396,
+        "player-deada6fb": 961.1488505286892
+      }
+    },
+    {
+      "match_id": "match-a830cd24",
+      "played_at": "2025-10-28T18:28:12.559000+00:00",
+      "verdict": {
+        "player-4d6040ac": "W",
+        "player-0e14c7c6": "W",
+        "player-deada6fb": "L",
+        "player-de57d3f8": "L"
+      },
+      "deltas": {
+        "player-4d6040ac": 7.644648822283463,
+        "player-0e14c7c6": 7.644648822283463,
+        "player-deada6fb": -7.644648822283463,
+        "player-de57d3f8": -15.289297644566926
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1058.7664962636643,
+        "player-0e14c7c6": 1122.782882089323,
+        "player-deada6fb": 953.5042017064058,
+        "player-de57d3f8": 959.0016259817774
+      }
+    },
+    {
+      "match_id": "match-e23c07da",
+      "played_at": "2025-10-28T18:28:52.341000+00:00",
+      "verdict": {
+        "player-9d06de2b": "D",
+        "player-7496ab40": "D",
+        "player-0bf6e48d": "D",
+        "player-dc078d70": "D"
+      },
+      "deltas": {
+        "player-9d06de2b": -2.4550848973221373,
+        "player-7496ab40": -2.4550848973221373,
+        "player-0bf6e48d": 4.910169794644275,
+        "player-dc078d70": 2.4550848973221373
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1071.6246160905102,
+        "player-7496ab40": 940.0085705902643,
+        "player-0bf6e48d": 1030.6192461683,
+        "player-dc078d70": 819.1354971522871
+      }
+    },
+    {
+      "match_id": "match-fbc07581",
+      "played_at": "2025-10-28T18:29:19.666000+00:00",
+      "verdict": {
+        "player-4d6040ac": "W",
+        "player-7496ab40": "W",
+        "player-0e14c7c6": "L",
+        "player-dc078d70": "L"
+      },
+      "deltas": {
+        "player-4d6040ac": 10.331536112679098,
+        "player-7496ab40": 10.331536112679098,
+        "player-0e14c7c6": -10.331536112679098,
+        "player-dc078d70": -10.331536112679098
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1069.0980323763433,
+        "player-7496ab40": 950.3401067029434,
+        "player-0e14c7c6": 1112.451345976644,
+        "player-dc078d70": 808.803961039608
+      }
+    },
+    {
+      "match_id": "match-0b26872b",
+      "played_at": "2025-10-28T18:29:48.300000+00:00",
+      "verdict": {
+        "player-9d06de2b": "L",
+        "player-de57d3f8": "L",
+        "player-dc078d70": "W",
+        "player-deada6fb": "W"
+      },
+      "deltas": {
+        "player-9d06de2b": -18.810391155449746,
+        "player-de57d3f8": -37.62078231089949,
+        "player-dc078d70": 18.810391155449746,
+        "player-deada6fb": 18.810391155449746
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1052.8142249350606,
+        "player-de57d3f8": 921.3808436708779,
+        "player-dc078d70": 827.6143521950578,
+        "player-deada6fb": 972.3145928618555
+      }
+    },
+    {
+      "match_id": "match-cebbf089",
+      "played_at": "2025-11-02T19:21:57.496000+00:00",
+      "verdict": {
+        "player-4d6040ac": "D",
+        "player-9d06de2b": "D",
+        "player-7ef787f5": "D",
+        "player-0bf6e48d": "D"
+      },
+      "deltas": {
+        "player-4d6040ac": -1.335238035769517,
+        "player-9d06de2b": -1.335238035769517,
+        "player-7ef787f5": 2.670476071539034,
+        "player-0bf6e48d": 2.670476071539034
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1067.762794340574,
+        "player-9d06de2b": 1051.4789868992912,
+        "player-7ef787f5": 1000.6242806740819,
+        "player-0bf6e48d": 1033.289722239839
+      }
+    },
+    {
+      "match_id": "match-843cd1b4",
+      "played_at": "2025-11-02T19:22:26.621000+00:00",
+      "verdict": {
+        "player-0e14c7c6": "L",
+        "player-ff5f1d49": "L",
+        "player-cf25b5d1": "W",
+        "player-174d80a5": "W"
+      },
+      "deltas": {
+        "player-0e14c7c6": -12.556781637238807,
+        "player-ff5f1d49": -25.113563274477613,
+        "player-cf25b5d1": 25.113563274477613,
+        "player-174d80a5": 12.556781637238807
+      },
+      "ratings_after": {
+        "player-0e14c7c6": 1099.8945643394052,
+        "player-ff5f1d49": 974.8864367255223,
+        "player-cf25b5d1": 1142.2723379585784,
+        "player-174d80a5": 1092.3605741589208
+      }
+    },
+    {
+      "match_id": "match-084c0b6f",
+      "played_at": "2025-11-02T19:23:03.090000+00:00",
+      "verdict": {
+        "player-cf25b5d1": "W",
+        "player-0bf6e48d": "W",
+        "player-0e14c7c6": "L",
+        "player-174d80a5": "L"
+      },
+      "deltas": {
+        "player-cf25b5d1": 23.893768510047117,
+        "player-0bf6e48d": 23.893768510047117,
+        "player-0e14c7c6": -11.946884255023559,
+        "player-174d80a5": -11.946884255023559
+      },
+      "ratings_after": {
+        "player-cf25b5d1": 1166.1661064686255,
+        "player-0bf6e48d": 1057.183490749886,
+        "player-0e14c7c6": 1087.9476800843815,
+        "player-174d80a5": 1080.4136899038972
+      }
+    },
+    {
+      "match_id": "match-5aca0157",
+      "played_at": "2025-11-02T19:23:28.004000+00:00",
+      "verdict": {
+        "player-4d6040ac": "W",
+        "player-7ef787f5": "W",
+        "player-ff5f1d49": "L",
+        "player-9d06de2b": "L"
+      },
+      "deltas": {
+        "player-4d6040ac": 10.118764866571933,
+        "player-7ef787f5": 20.237529733143866,
+        "player-ff5f1d49": -20.237529733143866,
+        "player-9d06de2b": -10.118764866571933
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1077.8815592071458,
+        "player-7ef787f5": 1020.8618104072258,
+        "player-ff5f1d49": 954.6489069923784,
+        "player-9d06de2b": 1041.3602220327193
+      }
+    },
+    {
+      "match_id": "match-d7c391c7",
+      "played_at": "2025-11-02T19:23:53.371000+00:00",
+      "verdict": {
+        "player-4d6040ac": "W",
+        "player-cf25b5d1": "W",
+        "player-0e14c7c6": "L",
+        "player-7ef787f5": "L"
+      },
+      "deltas": {
+        "player-4d6040ac": 13.84795342589033,
+        "player-cf25b5d1": 13.84795342589033,
+        "player-0e14c7c6": -13.84795342589033,
+        "player-7ef787f5": -27.69590685178066
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1091.7295126330362,
+        "player-cf25b5d1": 1180.0140598945159,
+        "player-0e14c7c6": 1074.0997266584911,
+        "player-7ef787f5": 993.1659035554451
+      }
+    },
+    {
+      "match_id": "match-3fc10fcb",
+      "played_at": "2025-11-02T19:24:23.940000+00:00",
+      "verdict": {
+        "player-9d06de2b": "W",
+        "player-174d80a5": "W",
+        "player-ff5f1d49": "L",
+        "player-0bf6e48d": "L"
+      },
+      "deltas": {
+        "player-9d06de2b": 9.635298168615034,
+        "player-174d80a5": 9.635298168615034,
+        "player-ff5f1d49": -19.270596337230067,
+        "player-0bf6e48d": -19.270596337230067
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1050.9955202013343,
+        "player-174d80a5": 1090.0489880725122,
+        "player-ff5f1d49": 935.3783106551484,
+        "player-0bf6e48d": 1037.912894412656
+      }
+    },
+    {
+      "match_id": "match-9fdee2af",
+      "played_at": "2025-11-16T19:37:10.406000+00:00",
+      "verdict": {
+        "player-9d06de2b": "L",
+        "player-0bf6e48d": "L",
+        "player-7ef787f5": "W",
+        "player-05ebbfd2": "W"
+      },
+      "deltas": {
+        "player-9d06de2b": -12.127138054696442,
+        "player-0bf6e48d": -12.127138054696442,
+        "player-7ef787f5": 12.127138054696442,
+        "player-05ebbfd2": 24.254276109392883
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1038.868382146638,
+        "player-0bf6e48d": 1025.7857563579596,
+        "player-7ef787f5": 1005.2930416101415,
+        "player-05ebbfd2": 1024.2542761093928
+      }
+    },
+    {
+      "match_id": "match-0dec8abe",
+      "played_at": "2025-11-16T19:37:41.420000+00:00",
+      "verdict": {
+        "player-4d6040ac": "D",
+        "player-7496ab40": "D",
+        "player-cf25b5d1": "D",
+        "player-dc078d70": "D"
+      },
+      "deltas": {
+        "player-4d6040ac": -0.49524333029918877,
+        "player-7496ab40": -0.49524333029918877,
+        "player-cf25b5d1": 0.49524333029918877,
+        "player-dc078d70": 0.49524333029918877
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1091.234269302737,
+        "player-7496ab40": 949.8448633726442,
+        "player-cf25b5d1": 1180.509303224815,
+        "player-dc078d70": 828.109595525357
+      }
+    },
+    {
+      "match_id": "match-c7d893ed",
+      "played_at": "2025-11-16T19:38:09.905000+00:00",
+      "verdict": {
+        "player-4d6040ac": "L",
+        "player-9d06de2b": "L",
+        "player-0bf6e48d": "W",
+        "player-05ebbfd2": "W"
+      },
+      "deltas": {
+        "player-4d6040ac": -12.739567983735913,
+        "player-9d06de2b": -12.739567983735913,
+        "player-0bf6e48d": 12.739567983735913,
+        "player-05ebbfd2": 25.479135967471827
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1078.494701319001,
+        "player-9d06de2b": 1026.128814162902,
+        "player-0bf6e48d": 1038.5253243416955,
+        "player-05ebbfd2": 1049.7334120768646
+      }
+    },
+    {
+      "match_id": "match-0a6db523",
+      "played_at": "2025-11-16T19:38:43.126000+00:00",
+      "verdict": {
+        "player-cf25b5d1": "W",
+        "player-7496ab40": "W",
+        "player-7ef787f5": "L",
+        "player-dc078d70": "L"
+      },
+      "deltas": {
+        "player-cf25b5d1": 8.527110265307652,
+        "player-7496ab40": 8.527110265307652,
+        "player-7ef787f5": -8.527110265307652,
+        "player-dc078d70": -8.527110265307652
+      },
+      "ratings_after": {
+        "player-cf25b5d1": 1189.0364134901226,
+        "player-7496ab40": 958.3719736379519,
+        "player-7ef787f5": 996.7659313448338,
+        "player-dc078d70": 819.5824852600493
+      }
+    },
+    {
+      "match_id": "match-c1b43908",
+      "played_at": "2025-11-16T19:39:17.967000+00:00",
+      "verdict": {
+        "player-cf25b5d1": "W",
+        "player-4d6040ac": "W",
+        "player-7ef787f5": "L",
+        "player-0bf6e48d": "L"
+      },
+      "deltas": {
+        "player-cf25b5d1": 10.165386849596263,
+        "player-4d6040ac": 10.165386849596263,
+        "player-7ef787f5": -10.165386849596263,
+        "player-0bf6e48d": -10.165386849596263
+      },
+      "ratings_after": {
+        "player-cf25b5d1": 1199.2018003397188,
+        "player-4d6040ac": 1088.6600881685972,
+        "player-7ef787f5": 986.6005444952375,
+        "player-0bf6e48d": 1028.3599374920993
+      }
+    },
+    {
+      "match_id": "match-220ee9ef",
+      "played_at": "2025-11-16T19:39:53.699000+00:00",
+      "verdict": {
+        "player-9d06de2b": "W",
+        "player-dc078d70": "W",
+        "player-05ebbfd2": "L",
+        "player-7496ab40": "L"
+      },
+      "deltas": {
+        "player-9d06de2b": 13.832325518217015,
+        "player-dc078d70": 13.832325518217015,
+        "player-05ebbfd2": -27.66465103643403,
+        "player-7496ab40": -13.832325518217015
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1039.961139681119,
+        "player-dc078d70": 833.4148107782663,
+        "player-05ebbfd2": 1022.0687610404306,
+        "player-7496ab40": 944.5396481197349
+      }
+    },
+    {
+      "match_id": "match-a71c7274",
+      "played_at": "2026-01-12T19:27:19.747353+00:00",
+      "verdict": {
+        "player-9d06de2b": "W",
+        "player-4d6040ac": "W",
+        "player-cf25b5d1": "L",
+        "player-dc078d70": "L"
+      },
+      "deltas": {
+        "player-9d06de2b": 10.352528369332111,
+        "player-4d6040ac": 10.352528369332111,
+        "player-cf25b5d1": -10.352528369332111,
+        "player-dc078d70": -10.352528369332111
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1050.313668050451,
+        "player-4d6040ac": 1099.0126165379293,
+        "player-cf25b5d1": 1188.8492719703868,
+        "player-dc078d70": 823.0622824089342
+      }
+    },
+    {
+      "match_id": "match-aae4a309",
+      "played_at": "2026-01-12T19:28:28.081307+00:00",
+      "verdict": {
+        "player-174d80a5": "L",
+        "player-deada6fb": "L",
+        "player-68a9c117": "W",
+        "player-7496ab40": "W"
+      },
+      "deltas": {
+        "player-174d80a5": -18.6872911154968,
+        "player-deada6fb": -18.6872911154968,
+        "player-68a9c117": 37.3745822309936,
+        "player-7496ab40": 18.6872911154968
+      },
+      "ratings_after": {
+        "player-174d80a5": 1071.3616969570155,
+        "player-deada6fb": 953.6273017463587,
+        "player-68a9c117": 1037.3745822309936,
+        "player-7496ab40": 963.2269392352317
+      }
+    },
+    {
+      "match_id": "match-9ead5429",
+      "played_at": "2026-01-12T19:29:27.872950+00:00",
+      "verdict": {
+        "player-68a9c117": "L",
+        "player-dc078d70": "L",
+        "player-cf25b5d1": "W",
+        "player-deada6fb": "W"
+      },
+      "deltas": {
+        "player-68a9c117": -16.40065432518558,
+        "player-dc078d70": -8.20032716259279,
+        "player-cf25b5d1": 8.20032716259279,
+        "player-deada6fb": 8.20032716259279
+      },
+      "ratings_after": {
+        "player-68a9c117": 1020.9739279058081,
+        "player-dc078d70": 814.8619552463414,
+        "player-cf25b5d1": 1197.0495991329797,
+        "player-deada6fb": 961.8276289089515
+      }
+    },
+    {
+      "match_id": "match-7607f728",
+      "played_at": "2026-01-12T19:30:24.953602+00:00",
+      "verdict": {
+        "player-9d06de2b": "W",
+        "player-174d80a5": "W",
+        "player-4d6040ac": "L",
+        "player-7496ab40": "L"
+      },
+      "deltas": {
+        "player-9d06de2b": 10.976075811115269,
+        "player-174d80a5": 10.976075811115269,
+        "player-4d6040ac": -10.976075811115269,
+        "player-7496ab40": -10.976075811115269
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1061.2897438615664,
+        "player-174d80a5": 1082.337772768131,
+        "player-4d6040ac": 1088.0365407268139,
+        "player-7496ab40": 952.2508634241165
+      }
+    },
+    {
+      "match_id": "match-1349da6b",
+      "played_at": "2026-01-12T19:31:23.416904+00:00",
+      "verdict": {
+        "player-4d6040ac": "W",
+        "player-cf25b5d1": "W",
+        "player-9d06de2b": "L",
+        "player-7496ab40": "L"
+      },
+      "deltas": {
+        "player-4d6040ac": 8.372838041892857,
+        "player-cf25b5d1": 8.372838041892857,
+        "player-9d06de2b": -8.372838041892857,
+        "player-7496ab40": -8.372838041892857
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1096.4093787687068,
+        "player-cf25b5d1": 1205.4224371748726,
+        "player-9d06de2b": 1052.9169058196735,
+        "player-7496ab40": 943.8780253822237
+      }
+    },
+    {
+      "match_id": "match-61bc2d16",
+      "played_at": "2026-01-12T19:32:12.177893+00:00",
+      "verdict": {
+        "player-68a9c117": "W",
+        "player-deada6fb": "W",
+        "player-174d80a5": "L",
+        "player-dc078d70": "L"
+      },
+      "deltas": {
+        "player-68a9c117": 18.89845974004416,
+        "player-deada6fb": 9.44922987002208,
+        "player-174d80a5": -9.44922987002208,
+        "player-dc078d70": -9.44922987002208
+      },
+      "ratings_after": {
+        "player-68a9c117": 1039.8723876458523,
+        "player-deada6fb": 971.2768587789736,
+        "player-174d80a5": 1072.8885428981089,
+        "player-dc078d70": 805.4127253763193
+      }
+    },
+    {
+      "match_id": "match-251c7796",
+      "played_at": "2026-01-18T20:11:07.620388+00:00",
+      "verdict": {
+        "player-4d6040ac": "W",
+        "player-9d06de2b": "W",
+        "player-0e14c7c6": "L",
+        "player-e3b73ccb": "L"
+      },
+      "deltas": {
+        "player-4d6040ac": 11.152015599253323,
+        "player-9d06de2b": 11.152015599253323,
+        "player-0e14c7c6": -11.152015599253323,
+        "player-e3b73ccb": -22.304031198506646
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1107.56139436796,
+        "player-9d06de2b": 1064.0689214189267,
+        "player-0e14c7c6": 1062.947711059238,
+        "player-e3b73ccb": 977.6959688014933
+      }
+    },
+    {
+      "match_id": "match-603e1100",
+      "played_at": "2026-01-18T20:12:31.355110+00:00",
+      "verdict": {
+        "player-deada6fb": "W",
+        "player-0bf6e48d": "W",
+        "player-dc078d70": "L",
+        "player-7ef787f5": "L"
+      },
+      "deltas": {
+        "player-deada6fb": 10.02058136516836,
+        "player-0bf6e48d": 10.02058136516836,
+        "player-dc078d70": -10.02058136516836,
+        "player-7ef787f5": -10.02058136516836
+      },
+      "ratings_after": {
+        "player-deada6fb": 981.297440144142,
+        "player-0bf6e48d": 1038.3805188572676,
+        "player-dc078d70": 795.3921440111509,
+        "player-7ef787f5": 976.5799631300691
+      }
+    },
+    {
+      "match_id": "match-65530b45",
+      "played_at": "2026-01-18T20:13:34.393248+00:00",
+      "verdict": {
+        "player-4d6040ac": "L",
+        "player-e3b73ccb": "L",
+        "player-deada6fb": "W",
+        "player-7ef787f5": "W"
+      },
+      "deltas": {
+        "player-4d6040ac": -12.7215668371424,
+        "player-e3b73ccb": -25.4431336742848,
+        "player-deada6fb": 12.7215668371424,
+        "player-7ef787f5": 12.7215668371424
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1094.8398275308177,
+        "player-e3b73ccb": 952.2528351272085,
+        "player-deada6fb": 994.0190069812844,
+        "player-7ef787f5": 989.3015299672115
+      }
+    },
+    {
+      "match_id": "match-d429a3c8",
+      "played_at": "2026-01-18T20:14:35.776406+00:00",
+      "verdict": {
+        "player-9d06de2b": "W",
+        "player-0e14c7c6": "W",
+        "player-0bf6e48d": "L",
+        "player-dc078d70": "L"
+      },
+      "deltas": {
+        "player-9d06de2b": 8.268918964768034,
+        "player-0e14c7c6": 8.268918964768034,
+        "player-0bf6e48d": -8.268918964768034,
+        "player-dc078d70": -8.268918964768034
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1072.3378403836948,
+        "player-0e14c7c6": 1071.216630024006,
+        "player-0bf6e48d": 1030.1115998924995,
+        "player-dc078d70": 787.1232250463829
+      }
+    },
+    {
+      "match_id": "match-6bacbac7",
+      "played_at": "2026-01-18T20:15:32.612078+00:00",
+      "verdict": {
+        "player-4d6040ac": "L",
+        "player-deada6fb": "L",
+        "player-9d06de2b": "W",
+        "player-0bf6e48d": "W"
+      },
+      "deltas": {
+        "player-4d6040ac": -10.558628119189475,
+        "player-deada6fb": -10.558628119189475,
+        "player-9d06de2b": 10.558628119189475,
+        "player-0bf6e48d": 10.558628119189475
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1084.2811994116282,
+        "player-deada6fb": 983.4603788620949,
+        "player-9d06de2b": 1082.8964685028843,
+        "player-0bf6e48d": 1040.670228011689
+      }
+    },
+    {
+      "match_id": "match-35af1c3e",
+      "played_at": "2026-01-18T20:16:32.846181+00:00",
+      "verdict": {
+        "player-dc078d70": "L",
+        "player-0e14c7c6": "L",
+        "player-e3b73ccb": "W",
+        "player-7ef787f5": "W"
+      },
+      "deltas": {
+        "player-dc078d70": -10.76550336932977,
+        "player-0e14c7c6": -10.76550336932977,
+        "player-e3b73ccb": 21.531006738659535,
+        "player-7ef787f5": 10.765503369329767
+      },
+      "ratings_after": {
+        "player-dc078d70": 776.3577216770532,
+        "player-0e14c7c6": 1060.4511266546763,
+        "player-e3b73ccb": 973.7838418658681,
+        "player-7ef787f5": 1000.0670333365413
+      }
+    },
+    {
+      "match_id": "match-35f003dc",
+      "played_at": "2026-01-26T06:17:39.173864+00:00",
+      "verdict": {
+        "player-4d6040ac": "L",
+        "player-dc078d70": "L",
+        "player-0bf6e48d": "W",
+        "player-0e14c7c6": "W"
+      },
+      "deltas": {
+        "player-4d6040ac": -11.674314230705196,
+        "player-dc078d70": -11.674314230705196,
+        "player-0bf6e48d": 11.674314230705194,
+        "player-0e14c7c6": 11.674314230705194
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1072.606885180923,
+        "player-dc078d70": 764.6834074463479,
+        "player-0bf6e48d": 1052.3445422423943,
+        "player-0e14c7c6": 1072.1254408853815
+      }
+    },
+    {
+      "match_id": "match-cbc39f48",
+      "played_at": "2026-01-26T06:18:26.976939+00:00",
+      "verdict": {
+        "player-cf25b5d1": "W",
+        "player-7496ab40": "W",
+        "player-9d06de2b": "L",
+        "player-68a9c117": "L"
+      },
+      "deltas": {
+        "player-cf25b5d1": 14.961901004012397,
+        "player-7496ab40": 14.961901004012397,
+        "player-9d06de2b": -14.961901004012397,
+        "player-68a9c117": -29.923802008024794
+      },
+      "ratings_after": {
+        "player-cf25b5d1": 1220.384338178885,
+        "player-7496ab40": 958.839926386236,
+        "player-9d06de2b": 1067.934567498872,
+        "player-68a9c117": 1009.9485856378275
+      }
+    },
+    {
+      "match_id": "match-60a1b814",
+      "played_at": "2026-01-26T06:19:26.593112+00:00",
+      "verdict": {
+        "player-4d6040ac": "L",
+        "player-dc078d70": "L",
+        "player-cf25b5d1": "W",
+        "player-7496ab40": "W"
+      },
+      "deltas": {
+        "player-4d6040ac": -7.255096595073774,
+        "player-dc078d70": -7.255096595073774,
+        "player-cf25b5d1": 7.2550965950737725,
+        "player-7496ab40": 7.2550965950737725
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1065.3517885858491,
+        "player-dc078d70": 757.4283108512742,
+        "player-cf25b5d1": 1227.6394347739588,
+        "player-7496ab40": 966.0950229813097
+      }
+    },
+    {
+      "match_id": "match-07df5ee8",
+      "played_at": "2026-01-26T06:20:15.236242+00:00",
+      "verdict": {
+        "player-9d06de2b": "L",
+        "player-68a9c117": "L",
+        "player-0bf6e48d": "W",
+        "player-0e14c7c6": "W"
+      },
+      "deltas": {
+        "player-9d06de2b": -15.995253142353633,
+        "player-68a9c117": -31.990506284707266,
+        "player-0bf6e48d": 15.995253142353633,
+        "player-0e14c7c6": 15.995253142353633
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1051.9393143565183,
+        "player-68a9c117": 977.9580793531202,
+        "player-0bf6e48d": 1068.339795384748,
+        "player-0e14c7c6": 1088.1206940277352
+      }
+    },
+    {
+      "match_id": "match-be5ced48",
+      "played_at": "2026-01-26T06:20:58.603117+00:00",
+      "verdict": {
+        "player-4d6040ac": "W",
+        "player-dc078d70": "W",
+        "player-9d06de2b": "L",
+        "player-68a9c117": "L"
+      },
+      "deltas": {
+        "player-4d6040ac": 16.57981941120335,
+        "player-dc078d70": 16.57981941120335,
+        "player-9d06de2b": -16.57981941120335,
+        "player-68a9c117": -16.57981941120335
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1081.9316079970524,
+        "player-dc078d70": 774.0081302624776,
+        "player-9d06de2b": 1035.359494945315,
+        "player-68a9c117": 961.3782599419168
+      }
+    },
+    {
+      "match_id": "match-8d699898",
+      "played_at": "2026-01-26T06:21:40.717586+00:00",
+      "verdict": {
+        "player-cf25b5d1": "W",
+        "player-7496ab40": "W",
+        "player-0e14c7c6": "L",
+        "player-0bf6e48d": "L"
+      },
+      "deltas": {
+        "player-cf25b5d1": 12.618797841698838,
+        "player-7496ab40": 12.618797841698838,
+        "player-0e14c7c6": -12.618797841698838,
+        "player-0bf6e48d": -12.618797841698838
+      },
+      "ratings_after": {
+        "player-cf25b5d1": 1240.2582326156576,
+        "player-7496ab40": 978.7138208230086,
+        "player-0e14c7c6": 1075.5018961860364,
+        "player-0bf6e48d": 1055.7209975430492
+      }
+    },
+    {
+      "match_id": "match-2371f3b1",
+      "played_at": "2026-02-01T20:12:48.690524+00:00",
+      "verdict": {
+        "player-0e14c7c6": "W",
+        "player-7ef787f5": "W",
+        "player-dc078d70": "L",
+        "player-e3b73ccb": "L"
+      },
+      "deltas": {
+        "player-0e14c7c6": 9.607215634072137,
+        "player-7ef787f5": 9.607215634072137,
+        "player-dc078d70": -9.607215634072137,
+        "player-e3b73ccb": -19.214431268144274
+      },
+      "ratings_after": {
+        "player-0e14c7c6": 1085.1091118201086,
+        "player-7ef787f5": 1009.6742489706135,
+        "player-dc078d70": 764.4009146284054,
+        "player-e3b73ccb": 954.5694105977238
+      }
+    },
+    {
+      "match_id": "match-e78ef412",
+      "played_at": "2026-02-01T20:13:19.547516+00:00",
+      "verdict": {
+        "player-4d6040ac": "D",
+        "player-9d06de2b": "D",
+        "player-7496ab40": "D",
+        "player-cf25b5d1": "D"
+      },
+      "deltas": {
+        "player-4d6040ac": 1.4529507659944108,
+        "player-9d06de2b": 1.4529507659944108,
+        "player-7496ab40": -1.4529507659944096,
+        "player-cf25b5d1": -1.4529507659944096
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1083.384558763047,
+        "player-9d06de2b": 1036.8124457113095,
+        "player-7496ab40": 977.2608700570142,
+        "player-cf25b5d1": 1238.805281849663
+      }
+    },
+    {
+      "match_id": "match-8e602cc0",
+      "played_at": "2026-02-01T20:13:48.568542+00:00",
+      "verdict": {
+        "player-dc078d70": "L",
+        "player-7ef787f5": "L",
+        "player-4d6040ac": "W",
+        "player-7496ab40": "W"
+      },
+      "deltas": {
+        "player-dc078d70": -6.563682775531633,
+        "player-7ef787f5": -6.563682775531633,
+        "player-4d6040ac": 6.563682775531634,
+        "player-7496ab40": 6.563682775531634
+      },
+      "ratings_after": {
+        "player-dc078d70": 757.8372318528737,
+        "player-7ef787f5": 1003.1105661950818,
+        "player-4d6040ac": 1089.9482415385785,
+        "player-7496ab40": 983.8245528325459
+      }
+    },
+    {
+      "match_id": "match-033005da",
+      "played_at": "2026-02-01T20:14:22.530635+00:00",
+      "verdict": {
+        "player-cf25b5d1": "W",
+        "player-9d06de2b": "W",
+        "player-0e14c7c6": "L",
+        "player-e3b73ccb": "L"
+      },
+      "deltas": {
+        "player-cf25b5d1": 9.317491382723514,
+        "player-9d06de2b": 9.317491382723514,
+        "player-0e14c7c6": -9.317491382723514,
+        "player-e3b73ccb": -18.634982765447027
+      },
+      "ratings_after": {
+        "player-cf25b5d1": 1248.1227732323866,
+        "player-9d06de2b": 1046.129937094033,
+        "player-0e14c7c6": 1075.791620437385,
+        "player-e3b73ccb": 935.9344278322768
+      }
+    },
+    {
+      "match_id": "match-036993d7",
+      "played_at": "2026-02-01T20:15:05.307015+00:00",
+      "verdict": {
+        "player-0e14c7c6": "W",
+        "player-9d06de2b": "W",
+        "player-4d6040ac": "L",
+        "player-7ef787f5": "L"
+      },
+      "deltas": {
+        "player-0e14c7c6": 10.22386171295127,
+        "player-9d06de2b": 10.22386171295127,
+        "player-4d6040ac": -10.22386171295127,
+        "player-7ef787f5": -10.22386171295127
+      },
+      "ratings_after": {
+        "player-0e14c7c6": 1086.0154821503363,
+        "player-9d06de2b": 1056.3537988069843,
+        "player-4d6040ac": 1079.7243798256272,
+        "player-7ef787f5": 992.8867044821305
+      }
+    },
+    {
+      "match_id": "match-7374d37d",
+      "played_at": "2026-02-01T20:15:35.244618+00:00",
+      "verdict": {
+        "player-cf25b5d1": "W",
+        "player-e3b73ccb": "W",
+        "player-7496ab40": "L",
+        "player-dc078d70": "L"
+      },
+      "deltas": {
+        "player-cf25b5d1": 5.831735303958049,
+        "player-e3b73ccb": 5.831735303958049,
+        "player-7496ab40": -5.831735303958049,
+        "player-dc078d70": -5.831735303958049
+      },
+      "ratings_after": {
+        "player-cf25b5d1": 1253.9545085363447,
+        "player-e3b73ccb": 941.7661631362348,
+        "player-7496ab40": 977.9928175285879,
+        "player-dc078d70": 752.0054965489157
+      }
+    },
+    {
+      "match_id": "match-ae118ed5",
+      "played_at": "2026-02-22T10:16:49.027680+00:00",
+      "verdict": {
+        "player-7496ab40": "L",
+        "player-d7f8ab03": "L",
+        "player-4d6040ac": "W",
+        "player-0bf6e48d": "W"
+      },
+      "deltas": {
+        "player-7496ab40": -10.635472305168676,
+        "player-d7f8ab03": -21.270944610337352,
+        "player-4d6040ac": 10.635472305168676,
+        "player-0bf6e48d": 10.635472305168676
+      },
+      "ratings_after": {
+        "player-7496ab40": 967.3573452234192,
+        "player-d7f8ab03": 978.7290553896627,
+        "player-4d6040ac": 1090.3598521307958,
+        "player-0bf6e48d": 1066.3564698482178
+      }
+    },
+    {
+      "match_id": "match-c2ff9895",
+      "played_at": "2026-02-22T10:17:33.311699+00:00",
+      "verdict": {
+        "player-cf25b5d1": "W",
+        "player-e40d5390": "W",
+        "player-0e14c7c6": "L",
+        "player-dc078d70": "L"
+      },
+      "deltas": {
+        "player-cf25b5d1": 6.004242103125808,
+        "player-e40d5390": 12.008484206251616,
+        "player-0e14c7c6": -6.004242103125808,
+        "player-dc078d70": -6.004242103125808
+      },
+      "ratings_after": {
+        "player-cf25b5d1": 1259.9587506394705,
+        "player-e40d5390": 1012.0084842062516,
+        "player-0e14c7c6": 1080.0112400472105,
+        "player-dc078d70": 746.00125444579
+      }
+    },
+    {
+      "match_id": "match-0d68e8c1",
+      "played_at": "2026-02-22T10:18:05.022029+00:00",
+      "verdict": {
+        "player-cf25b5d1": "W",
+        "player-0e14c7c6": "W",
+        "player-4d6040ac": "L",
+        "player-d7f8ab03": "L"
+      },
+      "deltas": {
+        "player-cf25b5d1": 9.673646365108983,
+        "player-0e14c7c6": 9.673646365108983,
+        "player-4d6040ac": -9.673646365108983,
+        "player-d7f8ab03": -19.347292730217966
+      },
+      "ratings_after": {
+        "player-cf25b5d1": 1269.6323970045794,
+        "player-0e14c7c6": 1089.6848864123194,
+        "player-4d6040ac": 1080.686205765687,
+        "player-d7f8ab03": 959.3817626594447
+      }
+    },
+    {
+      "match_id": "match-aa9f2042",
+      "played_at": "2026-02-22T10:18:40.038984+00:00",
+      "verdict": {
+        "player-dc078d70": "L",
+        "player-e40d5390": "L",
+        "player-7496ab40": "W",
+        "player-0bf6e48d": "W"
+      },
+      "deltas": {
+        "player-dc078d70": -10.120793890707391,
+        "player-e40d5390": -20.241587781414783,
+        "player-7496ab40": 10.120793890707391,
+        "player-0bf6e48d": 10.120793890707391
+      },
+      "ratings_after": {
+        "player-dc078d70": 735.8804605550825,
+        "player-e40d5390": 991.7668964248369,
+        "player-7496ab40": 977.4781391141266,
+        "player-0bf6e48d": 1076.477263738925
+      }
+    },
+    {
+      "match_id": "match-94056038",
+      "played_at": "2026-02-22T10:19:11.648490+00:00",
+      "verdict": {
+        "player-0e14c7c6": "W",
+        "player-4d6040ac": "W",
+        "player-0bf6e48d": "L",
+        "player-dc078d70": "L"
+      },
+      "deltas": {
+        "player-0e14c7c6": 6.188183096864859,
+        "player-4d6040ac": 6.188183096864859,
+        "player-0bf6e48d": -6.188183096864859,
+        "player-dc078d70": -6.188183096864859
+      },
+      "ratings_after": {
+        "player-0e14c7c6": 1095.8730695091842,
+        "player-4d6040ac": 1086.8743888625518,
+        "player-0bf6e48d": 1070.2890806420603,
+        "player-dc078d70": 729.6922774582177
+      }
+    },
+    {
+      "match_id": "match-53f12fe5",
+      "played_at": "2026-02-22T10:19:51.767350+00:00",
+      "verdict": {
+        "player-7496ab40": "L",
+        "player-e40d5390": "L",
+        "player-cf25b5d1": "W",
+        "player-d7f8ab03": "W"
+      },
+      "deltas": {
+        "player-7496ab40": -8.997183378304703,
+        "player-e40d5390": -17.994366756609406,
+        "player-cf25b5d1": 8.997183378304701,
+        "player-d7f8ab03": 17.994366756609402
+      },
+      "ratings_after": {
+        "player-7496ab40": 968.4809557358219,
+        "player-e40d5390": 973.7725296682274,
+        "player-cf25b5d1": 1278.6295803828841,
+        "player-d7f8ab03": 977.3761294160541
+      }
+    },
+    {
+      "match_id": "match-5a62f858",
+      "played_at": "2026-03-01T06:37:27.364333+00:00",
+      "verdict": {
+        "player-9d06de2b": "L",
+        "player-deada6fb": "L",
+        "player-4d6040ac": "W",
+        "player-7496ab40": "W"
+      },
+      "deltas": {
+        "player-9d06de2b": -13.03517588534887,
+        "player-deada6fb": -13.03517588534887,
+        "player-4d6040ac": 13.03517588534887,
+        "player-7496ab40": 13.03517588534887
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1043.3186229216353,
+        "player-deada6fb": 970.425202976746,
+        "player-4d6040ac": 1099.9095647479007,
+        "player-7496ab40": 981.5161316211708
+      }
+    },
+    {
+      "match_id": "match-f9c5ef52",
+      "played_at": "2026-03-01T06:38:07.623355+00:00",
+      "verdict": {
+        "player-cf25b5d1": "W",
+        "player-4443994a": "W",
+        "player-551dbbf0": "L",
+        "player-68a9c117": "L"
+      },
+      "deltas": {
+        "player-cf25b5d1": 6.608771425649114,
+        "player-4443994a": 13.217542851298228,
+        "player-551dbbf0": -13.217542851298228,
+        "player-68a9c117": -6.608771425649114
+      },
+      "ratings_after": {
+        "player-cf25b5d1": 1285.2383518085333,
+        "player-4443994a": 1113.2175428512983,
+        "player-551dbbf0": 986.7824571487017,
+        "player-68a9c117": 954.7694885162676
+      }
+    },
+    {
+      "match_id": "match-3cedf613",
+      "played_at": "2026-03-01T06:38:48.600825+00:00",
+      "verdict": {
+        "player-4d6040ac": "W",
+        "player-551dbbf0": "W",
+        "player-7496ab40": "L",
+        "player-68a9c117": "L"
+      },
+      "deltas": {
+        "player-4d6040ac": 8.4739414482072,
+        "player-551dbbf0": 16.9478828964144,
+        "player-7496ab40": -8.4739414482072,
+        "player-68a9c117": -8.4739414482072
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1108.3835061961079,
+        "player-551dbbf0": 1003.7303400451161,
+        "player-7496ab40": 973.0421901729635,
+        "player-68a9c117": 946.2955470680604
+      }
+    },
+    {
+      "match_id": "match-a368d3cc",
+      "played_at": "2026-03-01T06:39:29.217137+00:00",
+      "verdict": {
+        "player-cf25b5d1": "L",
+        "player-deada6fb": "L",
+        "player-9d06de2b": "W",
+        "player-4443994a": "W"
+      },
+      "deltas": {
+        "player-cf25b5d1": -14.051641595092075,
+        "player-deada6fb": -14.051641595092075,
+        "player-9d06de2b": 14.051641595092075,
+        "player-4443994a": 28.10328319018415
+      },
+      "ratings_after": {
+        "player-cf25b5d1": 1271.186710213441,
+        "player-deada6fb": 956.373561381654,
+        "player-9d06de2b": 1057.3702645167275,
+        "player-4443994a": 1141.3208260414824
+      }
+    },
+    {
+      "match_id": "match-4b278b71",
+      "played_at": "2026-03-01T06:40:00.438745+00:00",
+      "verdict": {
+        "player-4d6040ac": "L",
+        "player-9d06de2b": "L",
+        "player-cf25b5d1": "W",
+        "player-7496ab40": "W"
+      },
+      "deltas": {
+        "player-4d6040ac": -11.094286333883101,
+        "player-9d06de2b": -11.094286333883101,
+        "player-cf25b5d1": 11.094286333883103,
+        "player-7496ab40": 11.094286333883103
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1097.2892198622249,
+        "player-9d06de2b": 1046.2759781828445,
+        "player-cf25b5d1": 1282.280996547324,
+        "player-7496ab40": 984.1364765068466
+      }
+    },
+    {
+      "match_id": "match-eec32af9",
+      "played_at": "2026-03-01T06:40:44.269512+00:00",
+      "verdict": {
+        "player-deada6fb": "L",
+        "player-551dbbf0": "L",
+        "player-4443994a": "W",
+        "player-68a9c117": "W"
+      },
+      "deltas": {
+        "player-deada6fb": -10.13414659351367,
+        "player-551dbbf0": -20.26829318702734,
+        "player-4443994a": 20.26829318702734,
+        "player-68a9c117": 10.13414659351367
+      },
+      "ratings_after": {
+        "player-deada6fb": 946.2394147881403,
+        "player-551dbbf0": 983.4620468580888,
+        "player-4443994a": 1161.5891192285098,
+        "player-68a9c117": 956.4296936615741
+      }
+    },
+    {
+      "match_id": "match-421a95b9",
+      "played_at": "2026-03-01T19:42:10.222964+00:00",
+      "verdict": {
+        "player-4d6040ac": "L",
+        "player-deada6fb": "L",
+        "player-0e14c7c6": "W",
+        "player-dc078d70": "W"
+      },
+      "deltas": {
+        "player-4d6040ac": -14.486401363317325,
+        "player-deada6fb": -14.486401363317325,
+        "player-0e14c7c6": 14.486401363317325,
+        "player-dc078d70": 14.486401363317325
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1082.8028184989075,
+        "player-deada6fb": 931.7530134248229,
+        "player-0e14c7c6": 1110.3594708725016,
+        "player-dc078d70": 744.1786788215351
+      }
+    },
+    {
+      "match_id": "match-f63bc2f5",
+      "played_at": "2026-03-01T19:42:52.639652+00:00",
+      "verdict": {
+        "player-e3b73ccb": "W",
+        "player-68a9c117": "W",
+        "player-9d06de2b": "L",
+        "player-0bf6e48d": "L"
+      },
+      "deltas": {
+        "player-e3b73ccb": 15.344779767360492,
+        "player-68a9c117": 15.344779767360492,
+        "player-9d06de2b": -15.344779767360492,
+        "player-0bf6e48d": -15.344779767360492
+      },
+      "ratings_after": {
+        "player-e3b73ccb": 957.1109429035953,
+        "player-68a9c117": 971.7744734289346,
+        "player-9d06de2b": 1030.931198415484,
+        "player-0bf6e48d": 1054.9443008746998
+      }
+    },
+    {
+      "match_id": "match-0acff39e",
+      "played_at": "2026-03-01T19:43:18.607299+00:00",
+      "verdict": {
+        "player-0e14c7c6": "L",
+        "player-4d6040ac": "L",
+        "player-9d06de2b": "W",
+        "player-e3b73ccb": "W"
+      },
+      "deltas": {
+        "player-0e14c7c6": -15.83884491877897,
+        "player-4d6040ac": -15.83884491877897,
+        "player-9d06de2b": 15.83884491877897,
+        "player-e3b73ccb": 15.83884491877897
+      },
+      "ratings_after": {
+        "player-0e14c7c6": 1094.5206259537226,
+        "player-4d6040ac": 1066.9639735801286,
+        "player-9d06de2b": 1046.770043334263,
+        "player-e3b73ccb": 972.9497878223742
+      }
+    },
+    {
+      "match_id": "match-2c946561",
+      "played_at": "2026-03-01T19:43:53.105702+00:00",
+      "verdict": {
+        "player-deada6fb": "W",
+        "player-68a9c117": "W",
+        "player-0bf6e48d": "L",
+        "player-dc078d70": "L"
+      },
+      "deltas": {
+        "player-deada6fb": 10.4722505497738,
+        "player-68a9c117": 10.4722505497738,
+        "player-0bf6e48d": -10.4722505497738,
+        "player-dc078d70": -10.4722505497738
+      },
+      "ratings_after": {
+        "player-deada6fb": 942.2252639745967,
+        "player-68a9c117": 982.2467239787084,
+        "player-0bf6e48d": 1044.472050324926,
+        "player-dc078d70": 733.7064282717613
+      }
+    },
+    {
+      "match_id": "match-95a3bcbe",
+      "played_at": "2026-03-01T19:44:24.865629+00:00",
+      "verdict": {
+        "player-4d6040ac": "W",
+        "player-9d06de2b": "W",
+        "player-0bf6e48d": "L",
+        "player-deada6fb": "L"
+      },
+      "deltas": {
+        "player-4d6040ac": 11.565027464629923,
+        "player-9d06de2b": 11.565027464629923,
+        "player-0bf6e48d": -11.565027464629923,
+        "player-deada6fb": -11.565027464629923
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1078.5290010447586,
+        "player-9d06de2b": 1058.335070798893,
+        "player-0bf6e48d": 1032.907022860296,
+        "player-deada6fb": 930.6602365099668
+      }
+    },
+    {
+      "match_id": "match-7edfc6ce",
+      "played_at": "2026-03-01T19:44:54.339927+00:00",
+      "verdict": {
+        "player-0e14c7c6": "W",
+        "player-e3b73ccb": "W",
+        "player-dc078d70": "L",
+        "player-68a9c117": "L"
+      },
+      "deltas": {
+        "player-0e14c7c6": 5.742970200604256,
+        "player-e3b73ccb": 5.742970200604256,
+        "player-dc078d70": -5.742970200604256,
+        "player-68a9c117": -5.742970200604256
+      },
+      "ratings_after": {
+        "player-0e14c7c6": 1100.263596154327,
+        "player-e3b73ccb": 978.6927580229785,
+        "player-dc078d70": 727.963458071157,
+        "player-68a9c117": 976.503753778104
+      }
+    },
+    {
+      "match_id": "match-237d9bff",
+      "played_at": "2026-03-15T16:12:04.693790+00:00",
+      "verdict": {
+        "player-0e14c7c6": "W",
+        "player-9d06de2b": "W",
+        "player-4d6040ac": "L",
+        "player-7496ab40": "L"
+      },
+      "deltas": {
+        "player-0e14c7c6": 12.942173303922162,
+        "player-9d06de2b": 12.942173303922162,
+        "player-4d6040ac": -12.942173303922162,
+        "player-7496ab40": -12.942173303922162
+      },
+      "ratings_after": {
+        "player-0e14c7c6": 1113.205769458249,
+        "player-9d06de2b": 1071.277244102815,
+        "player-4d6040ac": 1065.5868277408365,
+        "player-7496ab40": 971.1943032029245
+      }
+    },
+    {
+      "match_id": "match-af34e7b2",
+      "played_at": "2026-03-15T16:12:36.259368+00:00",
+      "verdict": {
+        "player-cf25b5d1": "W",
+        "player-68a9c117": "W",
+        "player-dc078d70": "L",
+        "player-7ef787f5": "L"
+      },
+      "deltas": {
+        "player-cf25b5d1": 4.315862330789586,
+        "player-68a9c117": 4.315862330789586,
+        "player-dc078d70": -4.315862330789586,
+        "player-7ef787f5": -4.315862330789586
+      },
+      "ratings_after": {
+        "player-cf25b5d1": 1286.5968588781136,
+        "player-68a9c117": 980.8196161088937,
+        "player-dc078d70": 723.6475957403674,
+        "player-7ef787f5": 988.5708421513409
+      }
+    },
+    {
+      "match_id": "match-99411e39",
+      "played_at": "2026-03-15T16:13:08.358292+00:00",
+      "verdict": {
+        "player-9d06de2b": "L",
+        "player-4d6040ac": "L",
+        "player-7ef787f5": "W",
+        "player-cf25b5d1": "W"
+      },
+      "deltas": {
+        "player-9d06de2b": -9.889874927111876,
+        "player-4d6040ac": -9.889874927111876,
+        "player-7ef787f5": 9.889874927111874,
+        "player-cf25b5d1": 9.889874927111874
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1061.3873691757033,
+        "player-4d6040ac": 1055.6969528137247,
+        "player-7ef787f5": 998.4607170784528,
+        "player-cf25b5d1": 1296.4867338052254
+      }
+    },
+    {
+      "match_id": "match-a1811412",
+      "played_at": "2026-03-15T16:13:54.603440+00:00",
+      "verdict": {
+        "player-dc078d70": "L",
+        "player-68a9c117": "L",
+        "player-0e14c7c6": "W",
+        "player-7496ab40": "W"
+      },
+      "deltas": {
+        "player-dc078d70": -6.022878244814716,
+        "player-68a9c117": -6.022878244814716,
+        "player-0e14c7c6": 6.022878244814716,
+        "player-7496ab40": 6.022878244814716
+      },
+      "ratings_after": {
+        "player-dc078d70": 717.6247174955527,
+        "player-68a9c117": 974.796737864079,
+        "player-0e14c7c6": 1119.2286477030639,
+        "player-7496ab40": 977.2171814477392
+      }
+    },
+    {
+      "match_id": "match-29f33993",
+      "played_at": "2026-03-15T16:14:21.748576+00:00",
+      "verdict": {
+        "player-cf25b5d1": "W",
+        "player-4d6040ac": "W",
+        "player-7496ab40": "L",
+        "player-68a9c117": "L"
+      },
+      "deltas": {
+        "player-cf25b5d1": 7.204916830921501,
+        "player-4d6040ac": 7.204916830921501,
+        "player-7496ab40": -7.204916830921501,
+        "player-68a9c117": -7.204916830921501
+      },
+      "ratings_after": {
+        "player-cf25b5d1": 1303.691650636147,
+        "player-4d6040ac": 1062.9018696446462,
+        "player-7496ab40": 970.0122646168177,
+        "player-68a9c117": 967.5918210331574
+      }
+    },
+    {
+      "match_id": "match-36933e1b",
+      "played_at": "2026-03-15T16:14:51.953077+00:00",
+      "verdict": {
+        "player-9d06de2b": "W",
+        "player-7ef787f5": "W",
+        "player-0e14c7c6": "L",
+        "player-dc078d70": "L"
+      },
+      "deltas": {
+        "player-9d06de2b": 7.7587400725092355,
+        "player-7ef787f5": 7.7587400725092355,
+        "player-0e14c7c6": -7.7587400725092355,
+        "player-dc078d70": -7.7587400725092355
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1069.1461092482125,
+        "player-7ef787f5": 1006.2194571509621,
+        "player-0e14c7c6": 1111.4699076305546,
+        "player-dc078d70": 709.8659774230434
+      }
+    },
+    {
+      "match_id": "match-5ebe19de",
+      "played_at": "2026-03-16T16:41:37.217839+00:00",
+      "verdict": {
+        "player-0e14c7c6": "L",
+        "player-deada6fb": "L",
+        "player-4d6040ac": "W",
+        "player-dc078d70": "W"
+      },
+      "deltas": {
+        "player-0e14c7c6": -16.431923265493822,
+        "player-deada6fb": -16.431923265493822,
+        "player-4d6040ac": 16.431923265493822,
+        "player-dc078d70": 16.431923265493822
+      },
+      "ratings_after": {
+        "player-0e14c7c6": 1095.0379843650608,
+        "player-deada6fb": 914.2283132444729,
+        "player-4d6040ac": 1079.3337929101401,
+        "player-dc078d70": 726.2979006885373
+      }
+    },
+    {
+      "match_id": "match-2db41edf",
+      "played_at": "2026-03-16T16:42:16.406950+00:00",
+      "verdict": {
+        "player-9d06de2b": "L",
+        "player-7496ab40": "L",
+        "player-68a9c117": "W",
+        "player-7ef787f5": "W"
+      },
+      "deltas": {
+        "player-9d06de2b": -12.304864964164242,
+        "player-7496ab40": -12.304864964164242,
+        "player-68a9c117": 12.304864964164242,
+        "player-7ef787f5": 12.304864964164242
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1056.8412442840483,
+        "player-7496ab40": 957.7073996526534,
+        "player-68a9c117": 979.8966859973217,
+        "player-7ef787f5": 1018.5243221151263
+      }
+    },
+    {
+      "match_id": "match-5c39aa8c",
+      "played_at": "2026-03-16T16:42:44.555259+00:00",
+      "verdict": {
+        "player-9d06de2b": "W",
+        "player-68a9c117": "W",
+        "player-4d6040ac": "L",
+        "player-deada6fb": "L"
+      },
+      "deltas": {
+        "player-9d06de2b": 10.100944364350815,
+        "player-68a9c117": 10.100944364350815,
+        "player-4d6040ac": -10.100944364350815,
+        "player-deada6fb": -10.100944364350815
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1066.9421886483992,
+        "player-68a9c117": 989.9976303616725,
+        "player-4d6040ac": 1069.2328485457892,
+        "player-deada6fb": 904.1273688801222
+      }
+    },
+    {
+      "match_id": "match-76aaef47",
+      "played_at": "2026-03-16T16:43:17.237567+00:00",
+      "verdict": {
+        "player-7ef787f5": "W",
+        "player-7496ab40": "W",
+        "player-0e14c7c6": "L",
+        "player-dc078d70": "L"
+      },
+      "deltas": {
+        "player-7ef787f5": 8.407616339390348,
+        "player-7496ab40": 8.407616339390348,
+        "player-0e14c7c6": -8.407616339390348,
+        "player-dc078d70": -8.407616339390348
+      },
+      "ratings_after": {
+        "player-7ef787f5": 1026.9319384545167,
+        "player-7496ab40": 966.1150159920437,
+        "player-0e14c7c6": 1086.6303680256704,
+        "player-dc078d70": 717.890284349147
+      }
+    },
+    {
+      "match_id": "match-4a038de1",
+      "played_at": "2026-03-16T16:44:03.123380+00:00",
+      "verdict": {
+        "player-4d6040ac": "D",
+        "player-68a9c117": "D",
+        "player-7ef787f5": "D",
+        "player-dc078d70": "D"
+      },
+      "deltas": {
+        "player-4d6040ac": -4.239271093799104,
+        "player-68a9c117": -4.239271093799104,
+        "player-7ef787f5": 4.239271093799104,
+        "player-dc078d70": 4.239271093799104
+      },
+      "ratings_after": {
+        "player-4d6040ac": 1064.9935774519902,
+        "player-68a9c117": 985.7583592678734,
+        "player-7ef787f5": 1031.1712095483158,
+        "player-dc078d70": 722.1295554429461
+      }
+    },
+    {
+      "match_id": "match-e7da21f6",
+      "played_at": "2026-03-16T16:44:36.860261+00:00",
+      "verdict": {
+        "player-9d06de2b": "W",
+        "player-deada6fb": "W",
+        "player-0e14c7c6": "L",
+        "player-7496ab40": "L"
+      },
+      "deltas": {
+        "player-9d06de2b": 12.287028898507351,
+        "player-deada6fb": 12.287028898507351,
+        "player-0e14c7c6": -12.287028898507351,
+        "player-7496ab40": -12.287028898507351
+      },
+      "ratings_after": {
+        "player-9d06de2b": 1079.2292175469065,
+        "player-deada6fb": 916.4143977786296,
+        "player-0e14c7c6": 1074.343339127163,
+        "player-7496ab40": 953.8279870935363
+      }
+    }
+  ]
+}

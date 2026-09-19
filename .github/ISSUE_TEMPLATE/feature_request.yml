@@ -1,0 +1,102 @@
+name: Feature
+description: Something the app should do that it does not do yet.
+title: "feat: "
+labels: ["feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Written so an agent can start work from this issue alone. Three things
+        make that possible: **what**, **where**, and **how we know it is done**.
+        Vague issues produce vague PRs and you review them anyway.
+
+        Label this `agent` once it is complete and Claude Code opens a PR.
+        Only @drasbaek can do that.
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What
+      description: >-
+        The behaviour, in one paragraph, from the player's side. Not the
+        implementation.
+      placeholder: >-
+        The session detail screen should show a recap line naming the biggest
+        upset of the session: the match where the losing team's average rating
+        was highest above the winners'.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where
+      description: Which part of the app. Pick the closest one.
+      multiple: true
+      options:
+        - Ladder screen
+        - Session list / session detail
+        - Register a match
+        - Player profile and stats
+        - Bødekasse
+        - Backend module (new vertical slice)
+        - Backend module (existing)
+        - Rating engine or constants
+        - Infrastructure / CI / deploy
+    validations:
+      required: true
+
+  - type: input
+    id: paths
+    attributes:
+      label: Files or routes, if you already know
+      description: Saves the agent a search. Leave blank if you do not know.
+      placeholder: "frontend/app/sessions/[id]/page.tsx, backend/src/rammeslag/modules/sessions/service.py"
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: >-
+        One checkbox per observable fact. The agent checks these off and the
+        reviewer verifies them. "Looks good" is not a criterion.
+      value: |
+        - [ ] 
+        - [ ] 
+        - [ ] Nothing overflows horizontally at 390x844
+        - [ ] Every new user-visible string is Danish
+        - [ ] Any stat shown states its sample size
+    validations:
+      required: true
+
+  - type: textarea
+    id: copy
+    attributes:
+      label: Danish copy
+      description: >-
+        The exact strings a player will read, if you have them. Hardcoded, no
+        i18n layer. If you leave this blank the agent will invent them and you
+        will end up rewriting them.
+      placeholder: |
+        Dagens overraskelse
+        Ingen overraskelser i dag
+
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Explicitly out of scope
+      description: The most useful box on this form. It is what keeps the PR small.
+      placeholder: >-
+        Do not touch the rating engine. Do not add a filter UI. Do not change
+        the ladder.
+
+  - type: checkboxes
+    id: rating
+    attributes:
+      label: Rating impact
+      options:
+        - label: >-
+            This change cannot alter any player's rating. (If it can, uncheck
+            this and say in the description which constant or rule moves. The
+            PR will have to regenerate fixtures/expected_ratings.json and
+            explain the diff.)

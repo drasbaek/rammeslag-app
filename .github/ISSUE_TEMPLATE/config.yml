@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Rules an agent must follow
+    url: https://github.com/drasbaek/rammeslag-app/blob/main/AGENTS.md
+    about: AGENTS.md is the single source of truth. Read it before filing work for an agent.
+  - name: How the rating actually works
+    url: https://github.com/drasbaek/rammeslag-app/blob/main/docs/RATING.md
+    about: Before filing "my rating looks wrong", check the specification.
