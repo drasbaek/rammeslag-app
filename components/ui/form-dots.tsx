@@ -1,10 +1,15 @@
 import type { Verdict } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
+/**
+ * Three states, three colours. A draw is amber rather than grey: grey is what
+ * an empty slot uses, and a night that ended level is not a night that was
+ * never played.
+ */
 const TONE: Record<Verdict, string> = {
   W: "bg-win/90",
   L: "bg-loss/85",
-  D: "bg-draw/70",
+  D: "bg-draw/90",
 };
 
 const LABEL: Record<Verdict, string> = {

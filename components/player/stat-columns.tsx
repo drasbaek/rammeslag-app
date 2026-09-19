@@ -66,7 +66,7 @@ function Column({
                 ? "text-win"
                 : stats.rating_gained < -0.05
                   ? "text-loss"
-                  : "text-draw"
+                  : "text-flat"
             }
           />
           <Line label="V–N–U" value={recordLine(stats.wins, stats.losses, stats.draws)} />

@@ -10,6 +10,6 @@ export function Delta({
   decimals?: number;
   className?: string;
 }) {
-  const tone = value > 0.05 ? "text-win" : value < -0.05 ? "text-loss" : "text-draw";
+  const tone = value > 0.05 ? "text-win" : value < -0.05 ? "text-loss" : "text-flat";
   return <span className={cn("num font-semibold", tone, className)}>{formatDelta(value, decimals)}</span>;
 }

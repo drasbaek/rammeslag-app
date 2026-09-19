@@ -98,9 +98,18 @@ export interface LadderEntryOut {
   matches_played: number;
   /** Career total across every season — what `threshold` is measured against. */
   career_matches: number;
+  /** Inside the scope. On a season board these are season-only numbers. */
   wins: number;
   losses: number;
   draws: number;
+  /**
+   * The all-time record, across every season. Equal to `wins`/`losses`/`draws`
+   * on the all-time board and different from them on every season board, which
+   * is why a row that wants to show a career record has to read these.
+   */
+  career_wins: number;
+  career_losses: number;
+  career_draws: number;
   /** Last five verdicts, oldest first. */
   form: Verdict[];
   /** Has appeared in a match in the current season. Display only — never a filter. */
@@ -284,6 +293,21 @@ export interface SessionCreate {
   played_on: string;
   type?: SessionType;
   note?: string | null;
+}
+
+/** POST /api/seasons. Dates are inclusive on both ends and may not overlap. */
+export interface SeasonCreate {
+  name: string;
+  /** ISO date, YYYY-MM-DD */
+  starts_on: string;
+  ends_on: string;
+}
+
+/** PATCH /api/seasons/{id}. Omitted means unchanged. */
+export interface SeasonUpdate {
+  name?: string;
+  starts_on?: string;
+  ends_on?: string;
 }
 
 export interface PlayerCreate {

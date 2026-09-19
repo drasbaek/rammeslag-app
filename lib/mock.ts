@@ -34,11 +34,15 @@ import type {
   PlayerOut,
   PlayerUpdate,
   ProfileOut,
+  SeasonCreate,
   SeasonOut,
+  SeasonUpdate,
   SeasonRef,
   SeasonStatOut,
+  SessionCreate,
   SessionDetailOut,
   SessionOut,
+  SessionType,
   TeamSide,
   Verdict,
 } from "@/lib/types";
@@ -56,8 +60,29 @@ const extraMatches: SeedMatch[] = [];
 let authed: MeOut | null = null;
 
 const playerById = new Map(roster.map((p) => [p.id, p]));
-const sessionById = new Map(SESSIONS.map((s) => [s.id, s]));
-const seasonById = new Map(SEASONS.map((s) => [s.id, s]));
+
+/**
+ * PINs the admin screen has set, by player id. The seed ships none, so
+ * `MOCK_PIN` stands in for everybody who has not been given one — the real
+ * backend hashes these and never hands them back, and neither does this.
+ */
+const pins = new Map<string, string>();
+
+/** Sessions are created from the app, so the mock owns a mutable copy. */
+const sessionList: SeedSession[] = SESSIONS.map((s) => ({ ...s }));
+const sessionById = new Map(sessionList.map((s) => [s.id, s]));
+
+/** Seasons are editable in the admin screen, so the mock owns a copy. */
+const seasonList: SeasonOut[] = SEASONS.map((s) => ({ ...s }));
+const seasonById = new Map(seasonList.map((s) => [s.id, s]));
+
+/** Exactly one season contains today, the way the backend resolves it. */
+function recomputeCurrent(): void {
+  const today = new Date().toISOString().slice(0, 10);
+  for (const season of seasonList) {
+    season.is_current = season.starts_on <= today && today <= season.ends_on;
+  }
+}
 
 function allMatches(): SeedMatch[] {
   return [...MATCHES, ...extraMatches];
@@ -221,6 +246,11 @@ function buildLadder(
     const tally = emptyTally();
     for (const item of scoped) addToTally(tally, item, p.id);
 
+    // The career record is the same sum over every match, not just the ones
+    // inside the scope — a season board still reports an all-time W-L-D.
+    const career = emptyTally();
+    for (const item of all) addToTally(career, item, p.id);
+
     const rating = w.ratings[p.id] ?? entryRatingOf(p.id);
     entries.push({
       rank: 0,
@@ -236,6 +266,9 @@ function buildLadder(
       wins: tally.wins,
       losses: tally.losses,
       draws: tally.draws,
+      career_wins: career.wins,
+      career_losses: career.losses,
+      career_draws: career.draws,
       form: formOf(scoped, p.id),
       provisional: all.length < PROVISIONAL_MATCHES,
       active: active.has(p.id),
@@ -297,7 +330,48 @@ export async function getLadder(scope: LadderScope, includeGuests = false): Prom
 /* ---- Seasons and players ------------------------------------------------ */
 
 export async function getSeasons(): Promise<SeasonOut[]> {
-  return delay([...SEASONS].sort((a, b) => (a.starts_on < b.starts_on ? 1 : -1)));
+  return delay([...seasonList].sort((a, b) => (a.starts_on < b.starts_on ? 1 : -1)));
+}
+
+export async function createSeason(body: SeasonCreate): Promise<SeasonOut> {
+  if (!authed?.is_admin) throw new Error("Kun administratorer kan oprette sæsoner");
+  if (body.ends_on < body.starts_on) throw new Error("Slutdatoen ligger før startdatoen");
+  const clash = seasonList.find(
+    (season) => body.starts_on <= season.ends_on && season.starts_on <= body.ends_on,
+  );
+  if (clash) throw new Error(`Datoerne overlapper ${clash.name}`);
+
+  const created: SeasonOut = {
+    id: `se-new-${seasonList.length + 1}`,
+    name: body.name.trim(),
+    starts_on: body.starts_on,
+    ends_on: body.ends_on,
+    is_current: false,
+  };
+  seasonList.push(created);
+  seasonById.set(created.id, created);
+  recomputeCurrent();
+  return delay({ ...created });
+}
+
+export async function updateSeason(id: string, body: SeasonUpdate): Promise<SeasonOut> {
+  if (!authed?.is_admin) throw new Error("Kun administratorer kan rette sæsoner");
+  const target = seasonById.get(id);
+  if (!target) throw new Error(`Ukendt sæson: ${id}`);
+
+  const starts = body.starts_on ?? target.starts_on;
+  const ends = body.ends_on ?? target.ends_on;
+  if (ends < starts) throw new Error("Slutdatoen ligger før startdatoen");
+  const clash = seasonList.find(
+    (season) => season.id !== id && starts <= season.ends_on && season.starts_on <= ends,
+  );
+  if (clash) throw new Error(`Datoerne overlapper ${clash.name}`);
+
+  if (body.name !== undefined) target.name = body.name.trim();
+  target.starts_on = starts;
+  target.ends_on = ends;
+  recomputeCurrent();
+  return delay({ ...target });
 }
 
 export async function getPlayers(): Promise<PlayerOut[]> {
@@ -315,6 +389,7 @@ export async function createPlayer(body: PlayerCreate): Promise<PlayerOut> {
   };
   roster.push(created);
   playerById.set(created.id, created);
+  if (body.pin) pins.set(created.id, body.pin);
   return delay(playerOut(created.id));
 }
 
@@ -325,6 +400,8 @@ export async function updatePlayer(id: string, body: PlayerUpdate): Promise<Play
   if (body.entry_rating !== undefined) target.entry_rating = body.entry_rating;
   if (body.is_guest !== undefined) target.is_guest = body.is_guest;
   if (body.is_admin !== undefined) target.is_admin = body.is_admin;
+  // An omitted pin leaves the old one alone, exactly as PATCH does.
+  if (body.pin) pins.set(id, body.pin);
   return delay(playerOut(id));
 }
 
@@ -345,7 +422,8 @@ function toSessionOut(session: SeedSession, w: World): SessionOut {
 export async function getSessions(seasonId?: string): Promise<SessionOut[]> {
   const w = world();
   return delay(
-    SESSIONS.filter((s) => !seasonId || seasonId === "all" || s.season_id === seasonId)
+    sessionList
+      .filter((s) => !seasonId || seasonId === "all" || s.season_id === seasonId)
       .map((s) => toSessionOut(s, w))
       .sort((a, b) => (a.played_on < b.played_on ? 1 : -1)),
   );
@@ -505,7 +583,7 @@ export async function getPlayerProfile(id: string): Promise<ProfileOut> {
     }
   }
 
-  const seasons: SeasonStatOut[] = [...SEASONS]
+  const seasons: SeasonStatOut[] = [...seasonList]
     .sort((a, b) => (a.starts_on < b.starts_on ? -1 : 1))
     .map((season) => {
       const gains = new Map<string, number>();
@@ -582,7 +660,7 @@ function restoreAuth(): void {
 }
 
 export async function login(playerId: string, pin: string): Promise<MeOut> {
-  if (pin !== MOCK_PIN) {
+  if (pin !== (pins.get(playerId) ?? MOCK_PIN)) {
     throw new Error("Forkert PIN");
   }
   authed = player(playerId);
@@ -637,6 +715,38 @@ export async function createMatch(body: MatchCreate): Promise<MatchOut> {
   const w = world();
   const item = w.applied.find((x) => x.match.id === seed.id)!;
   return delay(toMatch(item, seed));
+}
+
+const SESSION_TYPES: SessionType[] = ["training", "casual", "social", "tournament"];
+
+/**
+ * POST /api/sessions. The season is resolved from the date, never sent — and
+ * when no season covers it the real API answers 400 with exactly this Danish
+ * sentence, which is the failure the create form is built around.
+ */
+export async function createSession(body: SessionCreate): Promise<SessionOut> {
+  if (!authed) throw new Error("Log ind for at oprette en session");
+  const type = body.type ?? "training";
+  if (!SESSION_TYPES.includes(type)) throw new Error("Ukendt sessionstype.");
+
+  const season = seasonList.find(
+    (s) => s.starts_on <= body.played_on && body.played_on <= s.ends_on,
+  );
+  if (!season) throw new Error("Der findes ingen sæson, der dækker den dato.");
+
+  const created: SeedSession = {
+    id: `s-new-${sessionList.length + 1}`,
+    season_id: season.id,
+    played_on: body.played_on,
+    type,
+    status: "open",
+    note: body.note?.trim() ? body.note.trim() : null,
+    roster: [],
+    match_target: 0,
+  };
+  sessionList.push(created);
+  sessionById.set(created.id, created);
+  return delay(toSessionOut(created, world()));
 }
 
 export async function closeSession(id: string): Promise<SessionOut> {

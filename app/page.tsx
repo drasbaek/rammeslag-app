@@ -4,10 +4,11 @@ import { Fragment, useMemo, useState } from "react";
 import { Segmented } from "@/components/ui/segmented";
 import { RowSkeletons } from "@/components/ui/skeleton";
 import { LadderRow } from "@/components/ladder/ladder-row";
-import { BundpropCard } from "@/components/ladder/bundprop-card";
+import { BundpropRow } from "@/components/ladder/bundprop-row";
 import { GuestToggle } from "@/components/ladder/guest-toggle";
 import { useFlip } from "@/components/ladder/use-flip";
 import { useLadder, useSeasons } from "@/lib/queries";
+import { ladderZones } from "@/lib/zones";
 import { PROVISIONAL_MATCHES, type LadderScope } from "@/lib/types";
 
 export default function LadderPage() {
@@ -34,6 +35,10 @@ export default function LadderPage() {
   // The bundprop is the last MEMBER, whether or not guests are on screen.
   const bundpropId = members.length > 1 ? members[members.length - 1].player_id : null;
   const above = members.length > 1 ? members[members.length - 2] : null;
+
+  // Both ends of the table are tinted; the middle is left alone. Guests are
+  // never zoned — they are being measured, not ranked against the team.
+  const zones = useMemo(() => ladderZones(members), [members]);
 
   return (
     <div>
@@ -76,7 +81,7 @@ export default function LadderPage() {
         <div className="space-y-1.5">
           {entries.map((entry, index) =>
             entry.player_id === bundpropId ? (
-              <BundpropCard
+              <BundpropRow
                 key={entry.player_id}
                 entry={entry}
                 seasonMode={seasonMode}
@@ -91,6 +96,8 @@ export default function LadderPage() {
                   index={index}
                   seasonMode={seasonMode}
                   threshold={threshold}
+                  zone={zones.get(entry.player_id)?.zone ?? null}
+                  zoneDepth={zones.get(entry.player_id)?.depth ?? 0}
                   innerRef={register(entry.player_id)}
                 />
               </Fragment>
@@ -104,7 +111,9 @@ export default function LadderPage() {
       ) : null}
 
       <p className="mt-7 px-1 text-center text-[10px] leading-relaxed text-dim">
-        Bevægelse måles mod stigen før seneste aften.
+        Bevægelse måles mod stigen før seneste session.
+        <br />
+        Toppen og bunden er tonet. Bunden er ikke en straf — den er et udgangspunkt.
         <br />
         Gæsternes kampe tæller altid med i ratingen — de står bare ikke på listen.
       </p>

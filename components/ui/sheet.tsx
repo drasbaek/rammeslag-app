@@ -27,6 +27,10 @@ export function Sheet({
         <Dialog.Content
           className={cn(
             "fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-[520px] rounded-t-[28px] border border-line bg-ink-850 shadow-[0_-20px_60px_-20px_rgba(0,0,0,0.9)] focus:outline-none",
+            // A form with a few fields is taller than a phone. The sheet keeps
+            // its handle and scrolls rather than pushing its save button off
+            // the bottom of the screen.
+            "max-h-[90dvh] overflow-y-auto overscroll-contain",
             "animate-rise",
             className,
           )}

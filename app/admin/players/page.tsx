@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AdminTabs } from "@/components/admin/admin-tabs";
 import { PlayerForm } from "@/components/admin/player-form";
 import { useMe, usePlayers } from "@/lib/queries";
 import { rating as formatRating } from "@/lib/format";
@@ -77,6 +78,8 @@ export default function AdminPlayersPage() {
         </svg>
         STIGEN
       </Link>
+
+      <AdminTabs />
 
       <div className="flex items-baseline justify-between gap-3">
         <h1 className="text-[22px] font-black tracking-[-0.03em]">Spillere</h1>

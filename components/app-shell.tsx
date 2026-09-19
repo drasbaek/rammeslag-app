@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuthGate } from "@/components/auth/auth-gate";
+import { useNewSession } from "@/components/session/new-session";
 import { useMe, useSessions } from "@/lib/queries";
 import { haptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
@@ -72,7 +73,7 @@ function TopBar() {
 
 const TABS = [
   { href: "/", label: "Stigen", icon: "ladder" },
-  { href: "/sessions", label: "Aftener", icon: "calendar" },
+  { href: "/sessions", label: "Sessioner", icon: "calendar" },
 ] as const;
 
 function TabIcon({ name, active }: { name: string; active: boolean }) {
@@ -96,10 +97,35 @@ function TabIcon({ name, active }: { name: string; active: boolean }) {
   );
 }
 
+/**
+ * One tab. It fills its column and centres itself inside it, so the icon and
+ * the label of one tab sit on the same axes as the other's at every width.
+ */
+function Tab({ tab, pathname }: { tab: (typeof TABS)[number]; pathname: string }) {
+  const active = tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href);
+
+  return (
+    <Link
+      href={tab.href}
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        "flex min-w-0 flex-col items-center gap-1 py-2 transition-colors",
+        active ? "text-volt" : "text-dim",
+      )}
+    >
+      <TabIcon name={tab.icon} active={active} />
+      <span className="max-w-full truncate text-[10px] font-bold uppercase tracking-[0.12em]">
+        {tab.label}
+      </span>
+    </Link>
+  );
+}
+
 function BottomNav() {
   const pathname = usePathname();
   const router = useRouter();
   const gate = useAuthGate();
+  const newSession = useNewSession();
   const sessions = useSessions();
 
   const openSession = sessions.data?.find((session) => session.status === "open");
@@ -109,37 +135,39 @@ function BottomNav() {
       className="fixed inset-x-0 bottom-0 z-30 border-t border-line-soft bg-ink-950/90 backdrop-blur-xl"
       style={{ paddingBottom: "var(--safe-b)" }}
     >
-      <div className="mx-auto grid h-16 w-full max-w-[520px] grid-cols-[1fr_auto_1fr] items-center px-6">
-        {TABS.map((tab, index) => {
-          const active = tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href);
-          return (
-            <div key={tab.href} className={cn("flex", index === 0 ? "justify-start" : "justify-end")}>
-              <Link
-                href={tab.href}
-                className={cn(
-                  "flex w-20 flex-col items-center gap-1 py-2 transition-colors",
-                  active ? "text-volt" : "text-dim",
-                )}
-              >
-                <TabIcon name={tab.icon} active={active} />
-                <span className="text-[10px] font-bold tracking-[0.12em] uppercase">{tab.label}</span>
-              </Link>
-            </div>
-          );
-        })}
+      {/* Three equal columns with the button in the middle one. The "+" is
+          centred by the layout, not by an offset, and the two tabs are mirror
+          images of each other around it — which is what makes the icons, the
+          labels and the button read as one row instead of two groups. */}
+      <div className="mx-auto grid h-16 w-full max-w-[520px] grid-cols-3 items-center px-2">
+        <Tab tab={TABS[0]} pathname={pathname} />
 
-        <button
-          aria-label="Indtast kampe"
-          onClick={() => {
-            haptic("tap");
-            gate.requireAuth(() => router.push(openSession ? `/sessions/${openSession.id}/entry` : "/sessions"));
-          }}
-          className="volt-glow -mt-6 flex h-14 w-14 items-center justify-center rounded-full bg-volt text-volt-ink transition-transform active:scale-95"
-        >
-          <svg viewBox="0 0 20 20" className="h-6 w-6" aria-hidden>
-            <path d="M10 3.5v13M3.5 10h13" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
-          </svg>
-        </button>
+        {/* The notch. Pinned to the middle column and lifted a fixed 20px above
+            the tab row, so "raised" is a stated distance rather than the
+            side-effect of a negative margin inside a centred grid. */}
+        <div className="relative self-stretch">
+          <button
+            aria-label={openSession ? "Indtast kampe" : "Ny session"}
+            onClick={() => {
+              haptic("tap");
+              // An evening in progress is the thing you meant. Otherwise there
+              // is no evening yet, so the button starts one rather than leaving
+              // the list to be read.
+              if (openSession) {
+                gate.requireAuth(() => router.push(`/sessions/${openSession.id}/entry`));
+                return;
+              }
+              newSession.open();
+            }}
+            className="volt-glow absolute inset-x-0 -top-5 mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-volt text-volt-ink transition-transform active:scale-95"
+          >
+            <svg viewBox="0 0 20 20" className="h-6 w-6" aria-hidden>
+              <path d="M10 3.5v13M3.5 10h13" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
+
+        <Tab tab={TABS[1]} pathname={pathname} />
       </div>
     </nav>
   );

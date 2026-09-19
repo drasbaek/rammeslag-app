@@ -181,7 +181,7 @@ export default function EntryPage() {
         <svg viewBox="0 0 8 12" className="h-3 w-2 rotate-180" aria-hidden>
           <path d="M1 1l5 5-5 5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" />
         </svg>
-        AFTENEN
+        SESSIONEN
       </Link>
 
       {session.isPending || !data ? (
@@ -351,7 +351,7 @@ export default function EntryPage() {
               each other. */}
           <div
             className={cn("fixed inset-x-0 z-20 px-4", showPicker ? "hidden" : "")}
-            style={{ bottom: "calc(88px + var(--safe-b))" }}
+            style={{ bottom: "calc(96px + var(--safe-b))" }}
           >
             <div className="mx-auto w-full max-w-[520px] rounded-card border border-line bg-ink-900/92 p-2.5 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl">
               <div className="flex items-center justify-between gap-2 px-1 pb-2">

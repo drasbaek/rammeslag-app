@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthGate } from "@/components/auth/auth-gate";
 import { useSession } from "@/lib/queries";
 import { participants, sessionStandings } from "@/lib/session-stats";
-import { formatDateShort, SESSION_TYPE_LABEL, weekdayShort } from "@/lib/format";
+import { formatDateShort, matchCount, SESSION_TYPE_LABEL, weekdayShort } from "@/lib/format";
 import { haptic } from "@/lib/haptics";
 
 export default function SessionDetailPage() {
@@ -37,7 +37,7 @@ export default function SessionDetailPage() {
         <svg viewBox="0 0 8 12" className="h-3 w-2 rotate-180" aria-hidden>
           <path d="M1 1l5 5-5 5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" />
         </svg>
-        AFTENER
+        SESSIONER
       </Link>
 
       {session.isPending || !data ? (
@@ -68,7 +68,7 @@ export default function SessionDetailPage() {
             </h1>
 
             <p className="num mt-1.5 text-mini text-mute">
-              {data.season.name} · {matches.length} {matches.length === 1 ? "kamp" : "kampe"} ·{" "}
+              {data.season.name} · {matchCount(matches.length)} ·{" "}
               {squad.length} spillere
             </p>
             {data.note ? <p className="mt-1 text-[11px] italic text-dim">{data.note}</p> : null}

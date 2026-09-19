@@ -9,7 +9,7 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 export const metadata: Metadata = {
   title: "Rammeslag FC",
-  description: "Stigen, aftenerne og bundproppen for Rammeslag FC.",
+  description: "Stigen, sessionerne og bundproppen for Rammeslag FC.",
   applicationName: "Rammeslag FC",
   manifest: "/manifest.json",
   appleWebApp: {

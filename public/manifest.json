@@ -1,7 +1,7 @@
 {
   "name": "Rammeslag FC",
   "short_name": "Rammeslag",
-  "description": "Stigen, aftenerne og bundproppen for Rammeslag FC.",
+  "description": "Stigen, sessionerne og bundproppen for Rammeslag FC.",
   "lang": "da-DK",
   "dir": "ltr",
   "start_url": "/",
@@ -19,6 +19,6 @@
   ],
   "shortcuts": [
     { "name": "Stigen", "url": "/", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
-    { "name": "Aftener", "url": "/sessions", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+    { "name": "Sessioner", "url": "/sessions", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
   ]
 }

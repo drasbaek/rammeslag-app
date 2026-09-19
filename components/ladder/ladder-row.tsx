@@ -1,15 +1,21 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import type { LadderEntryOut } from "@/lib/types";
+import type { LadderZone } from "@/lib/zones";
 import { FormDots } from "@/components/ui/form-dots";
 import { Movement } from "@/components/ui/movement";
 import { ProvisionalMark } from "@/components/ladder/provisional-mark";
-import { rating as formatRating, delta, recordLine } from "@/lib/format";
+import { rating as formatRating, delta, matchCount, recordLine } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 /**
  * One tight broadcast row. Rank 1 is taller and carries the accent; everyone
  * else is a flat line so the eye can run down the numbers — which it has to,
  * because ranks 2 through 7 are separated by single points.
+ *
+ * Rows in the top or bottom zone carry a tint whose strength is `zoneDepth`
+ * (see `.zone-top` / `.zone-bottom` in globals.css). The leader opts out: they
+ * already have the accent gradient, and the zone would double it.
  */
 export function LadderRow({
   entry,
@@ -17,6 +23,8 @@ export function LadderRow({
   threshold,
   innerRef,
   index,
+  zone = null,
+  zoneDepth = 0,
 }: {
   entry: LadderEntryOut;
   seasonMode: boolean;
@@ -24,15 +32,21 @@ export function LadderRow({
   threshold: number;
   innerRef?: (node: HTMLElement | null) => void;
   index: number;
+  /** Which end of the table this row sits at, or null for the neutral middle. */
+  zone?: LadderZone;
+  /** 0..1, how deep into that zone. Drives the tint, nothing else. */
+  zoneDepth?: number;
 }) {
   const leader = entry.rank === 1;
+  const tinted = zone !== null && !leader;
+  const careerRecord = recordLine(entry.career_wins, entry.career_losses, entry.career_draws);
   const number = seasonMode ? delta(entry.rating_gained, 0) : formatRating(entry.rating);
   const numberTone = seasonMode
     ? entry.rating_gained > 0.05
       ? "text-win"
       : entry.rating_gained < -0.05
         ? "text-loss"
-        : "text-draw"
+        : "text-flat"
     : leader
       ? "text-volt"
       : entry.provisional
@@ -43,12 +57,18 @@ export function LadderRow({
     <Link
       ref={innerRef as never}
       href={`/players/${entry.player_id}`}
-      style={{ animationDelay: `${Math.min(index, 12) * 22}ms` }}
+      style={
+        {
+          animationDelay: `${Math.min(index, 12) * 22}ms`,
+          ...(tinted ? { "--zone": zoneDepth } : null),
+        } as CSSProperties
+      }
       className={cn(
         "animate-rise relative flex items-center gap-2.5 overflow-hidden rounded-row border px-3 transition-colors",
         leader
           ? "h-[72px] border-volt/25 bg-[linear-gradient(100deg,rgba(0,229,255,0.10),rgba(0,229,255,0)_58%),linear-gradient(180deg,var(--color-ink-800),var(--color-ink-850))]"
           : "h-[52px] border-transparent bg-ink-850/70 active:bg-ink-800",
+        tinted ? (zone === "top" ? "zone-top" : "zone-bottom") : "",
       )}
     >
       {leader ? <span className="absolute inset-y-0 left-0 w-[3px] bg-volt" aria-hidden /> : null}
@@ -56,7 +76,14 @@ export function LadderRow({
       <span
         className={cn(
           "num-tight w-5 shrink-0 text-right font-bold tabular-nums",
-          leader ? "text-[22px] text-volt" : "text-[15px] text-dim",
+          leader
+            ? "text-[22px] text-volt"
+            : cn(
+                "text-[15px]",
+                // The rank numeral carries the zone colour too, so the tint is
+                // legible in the column the eye actually runs down.
+                tinted ? (zone === "top" ? "text-volt/55" : "text-bund/70") : "text-dim",
+              ),
         )}
       >
         {entry.rank}
@@ -92,11 +119,18 @@ export function LadderRow({
             <ProvisionalMark careerMatches={entry.career_matches} threshold={threshold} />
           ) : null}
         </span>
+        {/* The all-time record, quietly. It reads the career fields, not the
+            scoped ones, so a season board still shows who somebody is rather
+            than what they did since August. */}
         {leader ? (
           <span className="num mt-1 block truncate text-[9px] font-bold tracking-[0.08em] text-volt/70">
-            FØRER · {recordLine(entry.wins, entry.losses, entry.draws)} · {entry.matches_played} KAMPE
+            FØRER · {careerRecord} · {entry.career_matches} KAMPE
           </span>
-        ) : null}
+        ) : (
+          <span className="num mt-0.5 block truncate text-[9px] leading-none tabular-nums text-dim">
+            {careerRecord} i alt
+          </span>
+        )}
       </span>
 
       {/* The leader trades their form strip for the biggest numeral on the
@@ -111,7 +145,7 @@ export function LadderRow({
         <span className="num text-[9px] leading-none text-dim">
           {leader && !seasonMode
             ? `${delta(entry.rating_gained, 0)} i alt`
-            : `${entry.matches_played} ${entry.matches_played === 1 ? "kamp" : "kampe"}`}
+            : matchCount(entry.matches_played)}
         </span>
       </span>
     </Link>

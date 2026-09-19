@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { PlayerDeltaOut, RecapOut } from "@/lib/types";
 import { Delta } from "@/components/ui/delta";
 import { standingOf, type SessionStanding } from "@/lib/session-stats";
-import { firstName, recordLine } from "@/lib/format";
+import { firstName, matchCount, recordLine } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 const BUND_ROASTS = [
@@ -11,6 +11,7 @@ const BUND_ROASTS = [
   "Var der. Det tæller også for noget.",
   "Betalte banelejen i sjæl i aften.",
   "Alle andre skulle jo slå nogen.",
+  "Herfra går det kun opad.",
 ];
 
 function roastFor(id: string): string {
@@ -60,7 +61,7 @@ function HighlightCard({
       </p>
       <p className="num relative mt-1 text-[10px] text-dim">
         {standing
-          ? `${recordLine(standing.wins, standing.losses, standing.draws)} · ${standing.matches} kampe`
+          ? `${recordLine(standing.wins, standing.losses, standing.draws)} · ${matchCount(standing.matches)}`
           : `rating ${Math.round(highlight.rating)}`}
       </p>
     </Link>
@@ -101,31 +102,30 @@ function BundpropStrip({
   return (
     <Link
       href={`/players/${highlight.player_id}`}
-      className="bund-grain animate-rise mt-2 block overflow-hidden rounded-card border border-loss/25"
+      className="bund-grain animate-rise mt-2 block overflow-hidden rounded-card border border-bund/20"
     >
-      <div className="hazard h-[5px] w-full opacity-70" aria-hidden />
       <div className="flex items-center gap-3 px-3 py-3">
         <svg viewBox="0 0 34 30" className="h-8 w-9 shrink-0" aria-hidden>
-          <path d="M24 10c3-1 5-3 5-6" stroke="var(--color-loss)" strokeWidth="1.3" fill="none" opacity="0.7" strokeLinecap="round" />
-          <circle cx="29" cy="3" r="1.8" stroke="var(--color-loss)" strokeWidth="1.3" fill="none" opacity="0.7" />
-          <ellipse cx="15" cy="22" rx="13" ry="8" fill="var(--color-loss)" opacity="0.16" />
-          <ellipse cx="15" cy="19" rx="13" ry="8" stroke="var(--color-loss)" strokeWidth="1.5" fill="#140b10" />
-          <ellipse cx="15" cy="19" rx="7" ry="4.2" stroke="var(--color-loss)" strokeWidth="1.1" fill="none" opacity="0.6" />
+          <path d="M24 10c3-1 5-3 5-6" stroke="var(--color-bund)" strokeWidth="1.3" fill="none" opacity="0.6" strokeLinecap="round" />
+          <circle cx="29" cy="3" r="1.8" stroke="var(--color-bund)" strokeWidth="1.3" fill="none" opacity="0.6" />
+          <ellipse cx="15" cy="22" rx="13" ry="8" fill="var(--color-bund)" opacity="0.12" />
+          <ellipse cx="15" cy="19" rx="13" ry="8" stroke="var(--color-bund)" strokeWidth="1.4" fill="#120f0e" opacity="0.85" />
+          <ellipse cx="15" cy="19" rx="7" ry="4.2" stroke="var(--color-bund)" strokeWidth="1.1" fill="none" opacity="0.5" />
         </svg>
 
         <div className="min-w-0 flex-1">
-          <span className="inline-block rounded-[4px] bg-loss px-1.5 py-[2px] text-[9px] font-black tracking-[0.16em] text-ink-950">
+          <span className="inline-block rounded-[4px] border border-bund/35 bg-bund/10 px-1.5 py-[2px] text-[9px] font-black tracking-[0.14em] text-bund/90">
             AFTENENS BUNDPROP
           </span>
           <p className="mt-1.5 truncate text-[16px] font-extrabold tracking-tight">{highlight.name}</p>
-          <p className="truncate text-[11px] italic text-loss/80">{roastFor(highlight.player_id)}</p>
+          <p className="truncate text-[11px] italic text-bund/70">{roastFor(highlight.player_id)}</p>
         </div>
 
         <div className="shrink-0 text-right">
           <Delta value={highlight.delta} className="text-stat-sm" />
           <p className="num mt-0.5 text-[10px] text-dim">
             {standing
-              ? `${recordLine(standing.wins, standing.losses, standing.draws)} · ${standing.matches} kampe`
+              ? `${recordLine(standing.wins, standing.losses, standing.draws)} · ${matchCount(standing.matches)}`
               : `rating ${Math.round(highlight.rating)}`}
           </p>
         </div>

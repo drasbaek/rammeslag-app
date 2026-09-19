@@ -16,7 +16,10 @@ import type {
   PlayerOut,
   PlayerUpdate,
   ProfileOut,
+  SeasonCreate,
   SeasonOut,
+  SeasonUpdate,
+  SessionCreate,
   SessionDetailOut,
   SessionOut,
 } from "@/lib/types";
@@ -115,6 +118,47 @@ export function useUpdatePlayer() {
       void client.invalidateQueries({ queryKey: ["ladder"] });
       void client.invalidateQueries({ queryKey: ["profile"] });
       void client.invalidateQueries({ queryKey: ["session"] });
+    },
+  });
+}
+
+export function useCreateSeason() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (body: SeasonCreate) => api.createSeason(body),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.seasons() });
+      // A new season changes which window the ladder and the session list
+      // group by, so neither can keep what it had.
+      void client.invalidateQueries({ queryKey: ["ladder"] });
+      void client.invalidateQueries({ queryKey: ["sessions"] });
+    },
+  });
+}
+
+export function useUpdateSeason() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, body }: { id: string; body: SeasonUpdate }) => api.updateSeason(id, body),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.seasons() });
+      void client.invalidateQueries({ queryKey: ["ladder"] });
+      void client.invalidateQueries({ queryKey: ["sessions"] });
+      // Moving a season's dates moves which sessions fall inside it, and the
+      // profile's per-season numbers with them.
+      void client.invalidateQueries({ queryKey: ["profile"] });
+    },
+  });
+}
+
+export function useCreateSession() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (body: SessionCreate) => api.createSession(body),
+    // The caller navigates straight into the new session's entry screen, so
+    // the list behind it has to know the evening exists before it is read.
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ["sessions"] });
     },
   });
 }

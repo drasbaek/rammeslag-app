@@ -2,8 +2,11 @@
 
 import { useMemo } from "react";
 import { SessionRow } from "@/components/session/session-row";
+import { useNewSession } from "@/components/session/new-session";
+import { Button } from "@/components/ui/button";
 import { RowSkeletons } from "@/components/ui/skeleton";
 import { useSeasons, useSessions } from "@/lib/queries";
+import { haptic } from "@/lib/haptics";
 import type { SessionOut } from "@/lib/types";
 
 interface Group {
@@ -16,6 +19,7 @@ interface Group {
 export default function SessionsPage() {
   const sessions = useSessions();
   const seasons = useSeasons();
+  const newSession = useNewSession();
 
   /**
    * `GET /api/sessions` is one flat list, newest first — the season only comes
@@ -43,10 +47,33 @@ export default function SessionsPage() {
   return (
     <div>
       <div className="flex items-baseline justify-between px-1">
-        <h1 className="text-hero font-black tracking-[-0.045em]">AFTENER</h1>
+        <h1 className="text-hero font-black tracking-[-0.045em]">SESSIONER</h1>
         <span className="num text-[10px] tracking-[0.14em] text-dim">{total > 0 ? `${total} I ALT` : ""}</span>
       </div>
-      <p className="mt-1 px-1 text-mini text-mute">Hver aften er én række. Tryk for kampene og opsamlingen.</p>
+      <p className="mt-1 px-1 text-mini text-mute">Hver session er én række. Tryk for kampene og opsamlingen.</p>
+
+      {/* The way in. Without it the entry screen has no reachable door for an
+          evening that is not already on the list. */}
+      <Button
+        variant="volt"
+        size="lg"
+        className="mt-4 w-full"
+        onClick={() => {
+          haptic("tap");
+          newSession.open();
+        }}
+      >
+        <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden>
+          <path d="M10 3.5v13M3.5 10h13" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+        </svg>
+        Ny session
+      </Button>
+
+      {!sessions.isPending && total === 0 ? (
+        <p className="mt-6 rounded-card border border-dashed border-ink-600/70 px-4 py-8 text-center text-mini text-dim">
+          Ingen sessioner endnu. Opret aftenen, og skriv kampene ind.
+        </p>
+      ) : null}
 
       {sessions.isPending ? (
         <div className="mt-5">
@@ -69,7 +96,7 @@ export default function SessionsPage() {
                 ) : null}
               </div>
               <span className="num text-[10px] text-dim">
-                {group.sessions.length} aftener · {matches} kampe
+                {group.sessions.length} sessioner · {matches} kampe
               </span>
             </div>
 
@@ -83,7 +110,7 @@ export default function SessionsPage() {
       })}
 
       {sessions.isError ? (
-        <p className="py-10 text-center text-mini text-loss">Kunne ikke hente aftenerne.</p>
+        <p className="py-10 text-center text-mini text-loss">Kunne ikke hente sessionerne.</p>
       ) : null}
     </div>
   );

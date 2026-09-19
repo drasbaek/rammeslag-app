@@ -203,43 +203,6 @@ export default function PlayerProfilePage() {
             ) : null}
           </section>
 
-          {data.seasons.filter((season) => season.matches > 0).length > 1 ? (
-            <section className="mt-5">
-              <SectionHeader title="Sæson for sæson" />
-              <div className="rounded-card border border-line-soft bg-ink-850/60 px-3">
-                {data.seasons
-                  .filter((season) => season.matches > 0)
-                  .map((season) => (
-                    <div
-                      key={season.season_id}
-                      className="flex items-center gap-2 border-b border-line-soft py-2 last:border-b-0"
-                    >
-                      <span className="min-w-0 flex-1 truncate text-[12px] font-semibold text-mute">
-                        {season.name}
-                      </span>
-                      <span className="num w-[52px] shrink-0 text-right text-[10px] text-dim">
-                        {recordLine(season.wins, season.losses, season.draws)}
-                      </span>
-                      <span className="num w-[42px] shrink-0 text-right text-[10px] text-dim">
-                        {season.rank === null ? "–" : `nr. ${season.rank}`}
-                      </span>
-                      <span
-                        className={`num w-[46px] shrink-0 text-right text-[12px] font-bold ${
-                          season.rating_gained > 0.05
-                            ? "text-win"
-                            : season.rating_gained < -0.05
-                              ? "text-loss"
-                              : "text-draw"
-                        }`}
-                      >
-                        {delta(season.rating_gained, 0)}
-                      </span>
-                    </div>
-                  ))}
-              </div>
-            </section>
-          ) : null}
-
           <footer className="mt-8 flex items-center justify-between border-t border-line-soft px-1 pt-3">
             <span className="text-[9px] font-bold tracking-[0.2em] text-ink-500">RAMMESLAG FC</span>
             <span className="num text-[9px] tracking-[0.12em] text-ink-500">

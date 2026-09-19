@@ -78,6 +78,11 @@ export function initials(name: string): string {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
+/** "1 kamp", "6 kampe". The count is printed in half the screens in the app. */
+export function matchCount(value: number): string {
+  return `${value} ${value === 1 ? "kamp" : "kampe"}`;
+}
+
 export function recordLine(wins: number, losses: number, draws: number): string {
   return draws > 0 ? `${wins}-${losses}-${draws}` : `${wins}-${losses}`;
 }

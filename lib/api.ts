@@ -18,7 +18,9 @@ import type {
   PlayerOut,
   PlayerUpdate,
   ProfileOut,
+  SeasonCreate,
   SeasonOut,
+  SeasonUpdate,
   SessionCreate,
   SessionDetailOut,
   SessionOut,
@@ -140,8 +142,9 @@ export function closeSession(id: string): Promise<SessionOut> {
 }
 
 export function createSession(body: SessionCreate): Promise<SessionOut> {
-  if (!live) throw new ApiError("Ikke understøttet i mock-tilstand", 501);
-  return http<SessionOut>("/sessions", { method: "POST", body: JSON.stringify(body) });
+  return live
+    ? http<SessionOut>("/sessions", { method: "POST", body: JSON.stringify(body) })
+    : mock.createSession(body);
 }
 
 /* ---- Writes (admin) ----------------------------------------------------- */
@@ -156,4 +159,16 @@ export function updatePlayer(id: string, body: PlayerUpdate): Promise<PlayerOut>
   return live
     ? http<PlayerOut>(`/players/${id}`, { method: "PATCH", body: JSON.stringify(body) })
     : mock.updatePlayer(id, body);
+}
+
+export function createSeason(body: SeasonCreate): Promise<SeasonOut> {
+  return live
+    ? http<SeasonOut>("/seasons", { method: "POST", body: JSON.stringify(body) })
+    : mock.createSeason(body);
+}
+
+export function updateSeason(id: string, body: SeasonUpdate): Promise<SeasonOut> {
+  return live
+    ? http<SeasonOut>(`/seasons/${id}`, { method: "PATCH", body: JSON.stringify(body) })
+    : mock.updateSeason(id, body);
 }
