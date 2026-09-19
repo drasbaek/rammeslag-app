@@ -94,7 +94,14 @@ jobs:
       - name: Lint
         run: npm --prefix frontend run lint
 
+
+      - name: Build
+        run: npm --prefix frontend run build
+
       - name: Typecheck
+        # After Build, not before: Next generates its route types
+        # (LayoutProps, PageProps) into .next/types during the build,
+        # so tsc cannot resolve them on a clean checkout otherwise.
         # Must run FROM frontend/, not with --prefix or -p. npm exec ignores
         # --prefix for the working directory, and tsconfig's baseUrl (which
         # the "@/*" aliases depend on) resolves against the invocation, so
@@ -102,9 +109,6 @@ jobs:
         # resolve a single "@/lib/..." import.
         working-directory: frontend
         run: npx tsc --noEmit
-
-      - name: Build
-        run: npm --prefix frontend run build
 
   rating-fixture-guard:
     # Hard rule 3 in AGENTS.md, made mechanical. This is the most important
