@@ -8,7 +8,7 @@ considered and lost on specific grounds.
 
 Next.js and FastAPI in one Vercel project, Neon Postgres, a branch database
 per preview. Chosen over a single Fly.io container and over a split
-frontend/backend deploy because **per-PR preview environments with isolated
+split frontend/backend deploy because **per-PR preview environments with isolated
 data** are the mechanism the whole agent loop depends on: an agent opens a
 PR, a live URL appears, it gets reviewed from a phone.
 

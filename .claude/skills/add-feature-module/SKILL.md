@@ -39,10 +39,10 @@ backend/src/rammeslag/modules/<name>/service.py     logic, no FastAPI imports
 backend/src/rammeslag/modules/<name>/router.py      HTTP only
 backend/migrations/versions/<rev>_add_<name>.py     Alembic
 backend/tests/test_<name>.py                        service first, HTTP second
-frontend/lib/types.ts                               wire types (edit)
-frontend/lib/api.ts                                 fetchers (edit)
-frontend/lib/queries.ts                             TanStack hooks (edit)
-frontend/app/<route>/page.tsx                       the screen
+lib/types.ts                               wire types (edit)
+lib/api.ts                                 fetchers (edit)
+lib/queries.ts                             TanStack hooks (edit)
+app/<route>/page.tsx                       the screen
 ```
 
 plus one line in `backend/src/rammeslag/main.py` to register the router.
@@ -393,7 +393,7 @@ export function useFineTotals(): UseQueryResult<FineTotal[]> {
 }
 ```
 
-**`frontend/app/<route>/page.tsx`**:
+**`app/<route>/page.tsx`**:
 
 ```tsx
 "use client";

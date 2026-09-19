@@ -4,8 +4,8 @@ One deployable: a Vercel project holding a Next.js client and a FastAPI
 backend, backed by Neon Postgres.
 
 **The load-bearing rule: FastAPI owns all logic and all database access.**
-The frontend is a pure client that speaks HTTP. Nothing in `frontend/` ever
-touches Postgres. If you are tempted, you are about to rebuild the old app.
+The frontend is a pure client that speaks HTTP. Nothing in the web app
+ever touches Postgres. If you are tempted, you are about to rebuild the old app.
 
 ## Layout
 
@@ -33,11 +33,14 @@ backend/
       rating/
   migrations/              Alembic.
   tests/
-frontend/
-  app/                     Next.js App Router. Client components.
-  components/              shadcn/ui plus ours.
-  lib/api.ts               Typed client generated from OpenAPI.
-  public/                  Manifest and icons.
+app/                       Next.js App Router. Client components.
+components/                shadcn/ui plus ours.
+lib/api.ts                 Typed client generated from OpenAPI.
+public/                    Manifest and icons.
+package.json               The Next.js app lives at the repo root, because
+                           Vercel detects the framework from a root
+                           package.json. A frontend/ subdirectory looks
+                           tidier and costs a broken deploy.
 fixtures/
   history.json             Pseudonymised real history.
   expected_ratings.json    Golden snapshot. CI asserts against this.
@@ -144,7 +147,7 @@ DELETE /api/matches/{id}               admin
 ```
 
 The OpenAPI schema FastAPI emits at `/api/openapi.json` is the contract.
-`frontend/lib/api.ts` is generated from it. There is no second description
+`lib/api.ts` is generated from it. There is no second description
 of these shapes anywhere, and no custom MCP server restating them.
 
 ## Conventions

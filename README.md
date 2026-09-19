@@ -34,7 +34,7 @@ is normative: the code implements that document and nothing else.
 | Agents | Claude Code, via GitHub Actions and `.claude/skills/` |
 
 One load-bearing rule holds the whole thing together: **FastAPI owns all
-logic and all database access.** Nothing in `frontend/` touches Postgres.
+logic and all database access.** Nothing in the web app touches Postgres.
 Everything goes through `/api/*`. See
 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
@@ -191,8 +191,8 @@ nothing is done until it has been seen at 390×844.
 ## Deployment notes
 
 The Vercel project's **Root Directory stays at the repository root**, not
-`frontend/`. [`vercel.json`](vercel.json) does the rest: it builds the
-Next.js app out of `frontend/` and deploys `api/index.py` as a Python
+the repo root. [`vercel.json`](vercel.json) does the rest: Next.js is
+detected at the root and `api/index.py` deploys as a Python
 function, with `/api/*` rewritten to the FastAPI entrypoint.
 
 Secrets:

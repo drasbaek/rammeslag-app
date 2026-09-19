@@ -27,7 +27,7 @@ This file is the single source of truth for agents. `CLAUDE.md` points here.
    `docs/RATING.md`.
 
 5. **The frontend never reaches the database.** All data comes from
-   `/api/*`. No direct Postgres access from `frontend/`.
+   `/api/*`. No direct Postgres access from the web app.
 
 6. **No nullable foreign keys** where a type column would do. Ask why the
    old schema's nullable `season_id` needed a paragraph of explanation.

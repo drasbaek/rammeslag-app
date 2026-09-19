@@ -28,7 +28,7 @@ Pick a target:
 
 ## The five screens
 
-Confirm the routes against `frontend/app/` - they are authoritative, this
+Confirm the routes against `app/` - they are authoritative, this
 list is a reminder.
 
 | # | Screen | Route | What it must survive |

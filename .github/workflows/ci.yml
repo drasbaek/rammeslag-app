@@ -70,44 +70,38 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.npm
-          key: npm-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json', 'frontend/package.json') }}
+          key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json', 'package.json') }}
           restore-keys: npm-${{ runner.os }}-
 
       - name: Cache Next.js build cache
         uses: actions/cache@v4
         with:
-          path: frontend/.next/cache
-          key: next-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json') }}-${{ github.sha }}
+          path: .next/cache
+          key: next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
           restore-keys: |
-            next-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json') }}-
+            next-${{ runner.os }}-${{ hashFiles('package-lock.json') }}-
             next-${{ runner.os }}-
 
       - name: Install
         run: |
-          if [ -f frontend/package-lock.json ]; then
-            npm --prefix frontend ci
+          if [ -f package-lock.json ]; then
+            npm ci
           else
-            echo "::warning::No frontend/package-lock.json - falling back to npm install."
-            npm --prefix frontend install
+            echo "::warning::No package-lock.json - falling back to npm install."
+            npm install
           fi
 
       - name: Lint
-        run: npm --prefix frontend run lint
+        run: npm run lint
 
 
       - name: Build
-        run: npm --prefix frontend run build
+        run: npm run build
 
       - name: Typecheck
-        # After Build, not before: Next generates its route types
-        # (LayoutProps, PageProps) into .next/types during the build,
-        # so tsc cannot resolve them on a clean checkout otherwise.
-        # Must run FROM frontend/, not with --prefix or -p. npm exec ignores
-        # --prefix for the working directory, and tsconfig's baseUrl (which
-        # the "@/*" aliases depend on) resolves against the invocation, so
-        # both other forms fail: one prints tsc's help, the other cannot
-        # resolve a single "@/lib/..." import.
-        working-directory: frontend
+        # After Build: Next generates its route types (LayoutProps,
+        # PageProps) into .next/types during the build, so tsc cannot
+        # resolve them on a clean checkout otherwise.
         run: npx tsc --noEmit
 
   rating-fixture-guard:

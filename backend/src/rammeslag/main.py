@@ -20,7 +20,7 @@ from rammeslag.modules.sessions.router import router as sessions_router
 
 DESCRIPTION = (
     "ELO ladder for Rammeslag FC. The OpenAPI schema served here is the contract; "
-    "frontend/lib/api.ts is generated from it."
+    "lib/api.ts is generated from it."
 )
 
 

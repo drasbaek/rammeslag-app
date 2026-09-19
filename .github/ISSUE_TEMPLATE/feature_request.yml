@@ -51,7 +51,7 @@ body:
     attributes:
       label: Files or routes, if you already know
       description: Saves the agent a search. Leave blank if you do not know.
-      placeholder: "frontend/app/sessions/[id]/page.tsx, backend/src/rammeslag/modules/sessions/service.py"
+      placeholder: "app/sessions/[id]/page.tsx, backend/src/rammeslag/modules/sessions/service.py"
 
   - type: textarea
     id: acceptance
