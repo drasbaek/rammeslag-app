@@ -1,0 +1,229 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Rammeslag FC design tokens.
+   Dark sports broadcast: near-black ground, one electric accent (volt cyan),
+   oversized tabular numerals, tight rows. Semantic win/loss colours are
+   functional, not brand — they are the only hues beside the accent.
+   --------------------------------------------------------------------------- */
+@theme {
+  /* Ground and surfaces, coolest to warmest */
+  --color-ink-950: #04060a;
+  --color-ink-900: #070a0f;
+  --color-ink-850: #0b0f16;
+  --color-ink-800: #10151d;
+  --color-ink-700: #161d27;
+  --color-ink-600: #1f2836;
+  --color-ink-500: #2b3644;
+  --color-line: #1c2431;
+  --color-line-soft: #141a24;
+
+  /* Text */
+  --color-chalk: #eef3f9;
+  --color-mute: #8a95a5;
+  --color-dim: #56616f;
+
+  /* The one electric accent */
+  --color-volt: #00e5ff;
+  --color-volt-soft: #5ff0ff;
+  --color-volt-deep: #00889b;
+  --color-volt-ink: #002229;
+
+  /* Semantic verdicts */
+  --color-win: #2be08b;
+  --color-loss: #ff4a5e;
+  --color-draw: #66727f;
+
+  /* Type scale */
+  --text-eyebrow: 0.6875rem;
+  --text-eyebrow--line-height: 1;
+  --text-eyebrow--letter-spacing: 0.18em;
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.1;
+  --text-mini: 0.75rem;
+  --text-mini--line-height: 1.15;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.35;
+  --text-stat-sm: 1.25rem;
+  --text-stat-sm--line-height: 1;
+  --text-stat: 1.75rem;
+  --text-stat--line-height: 0.95;
+  --text-hero: 2.75rem;
+  --text-hero--line-height: 0.88;
+  --text-mega: 4rem;
+  --text-mega--line-height: 0.82;
+
+  /* Radii */
+  --radius-card: 16px;
+  --radius-row: 12px;
+  --radius-pill: 999px;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --safe-b: env(safe-area-inset-bottom, 0px);
+    --safe-t: env(safe-area-inset-top, 0px);
+  }
+
+  html {
+    background-color: var(--color-ink-950);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--color-ink-950);
+    color: var(--color-chalk);
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
+  }
+
+  /* Numerals are the loudest thing in this app. Always tabular. */
+  .num {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1, "ss01" 1;
+    letter-spacing: -0.03em;
+  }
+
+  .num-tight {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
+    letter-spacing: -0.045em;
+  }
+
+  .eyebrow {
+    font-size: var(--text-eyebrow);
+    line-height: 1;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-dim);
+  }
+
+  button {
+    touch-action: manipulation;
+  }
+}
+
+@layer utilities {
+  /* Broadcast furniture ---------------------------------------------------- */
+
+  /* Subtle top-lit gradient used on the page ground */
+  .ground {
+    background:
+      radial-gradient(120% 60% at 50% -10%, rgba(0, 229, 255, 0.07), transparent 62%),
+      var(--color-ink-950);
+  }
+
+  .card {
+    background: linear-gradient(180deg, var(--color-ink-800), var(--color-ink-850));
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+  }
+
+  .hairline {
+    border-bottom: 1px solid var(--color-line-soft);
+  }
+
+  /* Hazard tape for the bundprop. Two-tone diagonal, in palette. */
+  .hazard {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      rgba(255, 74, 94, 0.9) 0px,
+      rgba(255, 74, 94, 0.9) 9px,
+      rgba(7, 10, 15, 0.9) 9px,
+      rgba(7, 10, 15, 0.9) 18px
+    );
+  }
+
+  .bund-grain {
+    background:
+      radial-gradient(90% 120% at 12% 0%, rgba(255, 74, 94, 0.16), transparent 58%),
+      linear-gradient(180deg, #170d12, #0d0a0f);
+  }
+
+  .outline-numeral {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(255, 74, 94, 0.45);
+  }
+
+  .volt-glow {
+    box-shadow: 0 0 0 1px rgba(0, 229, 255, 0.35), 0 8px 30px -12px rgba(0, 229, 255, 0.55);
+  }
+
+  .scroll-x-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scroll-x-none {
+    scrollbar-width: none;
+  }
+
+  /* Motion ----------------------------------------------------------------- */
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .animate-rise {
+    animation: rise-in 0.42s var(--ease-out-expo) both;
+  }
+
+  @keyframes pop-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.82);
+    }
+    60% {
+      transform: scale(1.04);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  .animate-pop {
+    animation: pop-in 0.34s var(--ease-out-expo) both;
+  }
+
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  .animate-fade {
+    animation: fade 0.22s ease-out both;
+  }
+
+  @keyframes sweep {
+    from {
+      transform: translateX(-120%);
+    }
+    to {
+      transform: translateX(220%);
+    }
+  }
+  .animate-sweep {
+    animation: sweep 1.9s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-rise,
+    .animate-pop,
+    .animate-fade,
+    .animate-sweep {
+      animation: none !important;
+    }
+  }
+}
