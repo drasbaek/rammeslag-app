@@ -36,6 +36,15 @@ from rating_diff import Movement, load_ladder, movements  # noqa: E402
 #: Claims are written to one decimal place, so allow rounding slack.
 TOLERANCE = 0.1
 
+#: A mover must be named in the PR body only if they moved at least this far.
+#: Changing one player's seed shifts everyone who ever played them, often by
+#: fractions of a point. Demanding that a 0.1 shift be enumerated trains people
+#: to paste a wall of numbers or to switch the check off, and neither makes the
+#: ladder safer. Every movement is still printed; this only governs what must
+#: be explained. Any delta that is CLAIMED is still verified against the
+#: fixture, however small.
+MATERIAL = 1.0
+
 HTML_COMMENT = re.compile(r"<!--.*?-->", re.DOTALL)
 SIGNED = re.compile(r"[+-]\s?\d+(?:[.,]\d+)?")
 ARROW = re.compile(r"(\d+(?:[.,]\d+)?)\s*->\s*(\d+(?:[.,]\d+)?)")
@@ -68,10 +77,11 @@ def verify(body: str, moved: list[Movement]) -> list[str]:
             continue
         claims = claimed_deltas(body, movement.name)
         if not claims:
-            problems.append(
-                f"`{movement.name}` moved {movement.delta:+.1f} but the PR body "
-                "does not mention them"
-            )
+            if abs(movement.delta) >= MATERIAL:
+                problems.append(
+                    f"`{movement.name}` moved {movement.delta:+.1f} but the PR body "
+                    "does not mention them"
+                )
         elif not any(abs(claim - movement.delta) <= TOLERANCE for claim in claims):
             shown = ", ".join(f"{c:+.1f}" for c in claims)
             problems.append(
@@ -109,7 +119,11 @@ def main(before_path: str, after_path: str) -> int:
     problems.extend(verify(body, moved))
 
     if not problems:
-        print(f"Rating change explained and verified against the fixture ({len(moved)} moved).")
+        material = sum(1 for m in moved if abs(m.delta) >= MATERIAL)
+        print(
+            f"Rating change explained and verified against the fixture: "
+            f"{len(moved)} moved, {material} materially (>= {MATERIAL:.1f})."
+        )
         return 0
 
     banner = "=" * 72
