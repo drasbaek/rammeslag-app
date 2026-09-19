@@ -31,3 +31,19 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI's whole dependency-injection model is a call in an argument default,
+# so B008 fires on every route. These are the framework's markers, not mutable
+# defaults; this is the configuration FastAPI's own documentation prescribes.
+extend-immutable-calls = [
+    "fastapi.Body",
+    "fastapi.Cookie",
+    "fastapi.Depends",
+    "fastapi.File",
+    "fastapi.Form",
+    "fastapi.Header",
+    "fastapi.Path",
+    "fastapi.Query",
+    "fastapi.Security",
+]
