@@ -1,6 +1,6 @@
 ---
 name: regenerate-fixture
-description: Re-run the golden rating snapshot in fixtures/expected_ratings.json, show the movement in human terms ("Jacob +12, Jonas -8"), and write the explanation the PR body must carry. Use whenever the rating engine, its constants, fixtures/history.json, or the golden test changes - or whenever CI fails with "unexplained rating fixture change".
+description: Re-run the golden rating snapshot in fixtures/expected_ratings.json, show the movement in human terms ("Klaus +12, Bo -8"), and write the explanation the PR body must carry. Use whenever the rating engine, its constants, fixtures/history.json, or the golden test changes - or whenever CI fails with "unexplained rating fixture change".
 ---
 
 # regenerate-fixture
@@ -97,11 +97,11 @@ which prints something like:
 ```
 ## Rating change
 
-Jacob    1204.3 -> 1216.7   +12.4
-Jonas    1188.0 -> 1180.0    -8.0
-Nikolaj  new player at 1012.5
+Klaus    1204.3 -> 1216.7   +12.4
+Bo    1188.0 -> 1180.0    -8.0
+Mikkel  new player at 1012.5
 
-Headline: Jacob +12, Jonas -8
+Headline: Klaus +12, Bo -8
 ```
 
 Now do the part a script cannot. Look at those names and ask whether the
@@ -141,8 +141,8 @@ Paste this, filled in:
 ```markdown
 ## Rating change
 
-Jacob  1204.3 -> 1216.7   +12.4
-Jonas  1188.0 -> 1180.0    -8.0
+Klaus  1204.3 -> 1216.7   +12.4
+Bo  1188.0 -> 1180.0    -8.0
 
 Why: K_PROVISIONAL raised 32 -> 40 so a newcomer converges inside one
 session instead of three. Only the four players under five matches moved;

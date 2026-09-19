@@ -99,8 +99,8 @@ where an agent can read and edit it, rather than hiding it in node_modules.
 
 ## 9. English code, Danish UI, no i18n
 
-The humour does not survive translation — "Jonas has lost 4 in a row" is a
-fact, "Jonas er ugens bundprop" is a joke, and only one of those was asked
+The humour does not survive translation — "Bo has lost 4 in a row" is a
+fact, "Bo er ugens bundprop" is a joke, and only one of those was asked
 for. But the repo is a public example, so identifiers and docs stay English.
 
 No i18n layer: one audience, one language, and a framework would cost every

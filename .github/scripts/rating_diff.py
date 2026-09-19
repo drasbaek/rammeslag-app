@@ -3,8 +3,8 @@
 
 Prints the movement in the form a human reads without opening the file:
 
-    Jacob Barsballe    1204.3 -> 1216.7   +12.4
-    Jonas Lange        1188.0 -> 1180.0    -8.0
+    Klaus Hedegaard    1204.3 -> 1216.7   +12.4
+    Bo Vestergaard        1188.0 -> 1180.0    -8.0
 
 Used by the rating-fixture-guard CI job, by check_fixture_explained.py, and
 by the `regenerate-fixture` skill, so the PR body, the CI summary and the

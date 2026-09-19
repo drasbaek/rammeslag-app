@@ -212,7 +212,7 @@ jobs:
   # repo where a green test suite is not enough evidence: the golden test
   # only proves the fixture matches the engine, and an agent that changed
   # both in the same commit makes it match by construction. A human has to
-  # look at the numbers and recognise that Jacob really did move up twelve
+  # look at the numbers and recognise that Klaus really did move up twelve
   # points. The path guard below is not optional decoration - it is the
   # reason auto-merge is survivable at all.
   # ---------------------------------------------------------------------

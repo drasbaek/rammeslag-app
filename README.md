@@ -115,7 +115,7 @@ by how much, and why. No explanation, no merge. This is the most important
 check in the repo: a passing test suite proves nothing here, because an
 agent that changes the engine and the snapshot in the same commit makes them
 agree by construction. A human has to read the numbers and recognise that
-Jacob really did move up twelve points.
+Klaus really did move up twelve points.
 
 **`no real data`.** `export/` holds the real history with real names and is
 gitignored, but a gitignore is a convention and `git add -f` beats it. This
@@ -138,7 +138,7 @@ Three skills live in `.claude/skills/`:
   purpose is sameness: bødekasse comes out shaped like matches, so the fifth
   module costs what the second did.
 - **`regenerate-fixture`** re-runs the golden snapshot and prints the
-  movement in human terms - *Jacob +12, Jonas -8* - then makes you explain
+  movement in human terms - *Klaus +12, Bo -8* - then makes you explain
   it in the PR body.
 - **`review-on-mobile`** drives a browser over all five screens at 390×844,
   screenshots each, and checks for horizontal overflow, English copy that

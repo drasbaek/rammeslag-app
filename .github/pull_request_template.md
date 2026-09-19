@@ -44,8 +44,8 @@ Generate the block with the `regenerate-fixture` skill, or:
       <(git show origin/main:fixtures/expected_ratings.json) \
       fixtures/expected_ratings.json
 
-Jacob  1204.3 -> 1216.7   +12.4
-Jonas  1188.0 -> 1180.0    -8.0
+Klaus  1204.3 -> 1216.7   +12.4
+Bo  1188.0 -> 1180.0    -8.0
 
 Why: <which constant or rule moved, and why that is correct>
 -->

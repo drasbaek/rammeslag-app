@@ -321,7 +321,7 @@ from rammeslag.modules.fines import service
 
 
 def test_total_carries_its_count(db, make_player, make_session):
-    player = make_player(name="Jacob")
+    player = make_player(name="Klaus")
     padel = make_session()
     service.create_fine(
         db, session_id=padel.id, player_id=player.id,

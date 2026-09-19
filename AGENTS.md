@@ -48,7 +48,7 @@ chat, so it is allowed to be funny.
   layout that only works on a laptop is not done.
 - **Last place gets the bundprop treatment.** The humour is a feature that
   was explicitly asked for. Keep it affectionate.
-- **Every stat shows its sample size.** "3-1 with Jacob" — never an
+- **Every stat shows its sample size.** "3-1 with Klaus" — never an
   unqualified claim of chemistry from four matches. The app does not
   pretend to know more than it does.
 - **Motion on rank change, haptics on submit.** This is most of the

@@ -125,7 +125,7 @@ in `layout.tsx`, and the PWA manifest `name` / `short_name`.
 
 ### 4. Every stat shows its sample size
 
-AGENTS.md: *"'3-1 with Jacob' — never an unqualified claim of chemistry from
+AGENTS.md: *"'3-1 with Klaus' — never an unqualified claim of chemistry from
 four matches."*
 
 On the player profile and anywhere else showing a derived number, list every
@@ -184,7 +184,7 @@ Write this into the PR, not into the chat:
 | Ladder | clean | clean | n/a | |
 | Sessions | clean | "Loading…" → "Henter…" | n/a | |
 | Session detail | **fails** | clean | n/a | match row, 4 names, no min-w-0 |
-| Player profile | clean | clean | **fails** | "72% med Jacob" has no match count |
+| Player profile | clean | clean | **fails** | "72% med Klaus" has no match count |
 | Register match | clean | clean | n/a | submit button under the keyboard on focus |
 ```
 
