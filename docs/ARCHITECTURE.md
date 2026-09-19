@@ -1,7 +1,15 @@
 # Architecture
 
-One deployable: a Vercel project holding a Next.js client and a FastAPI
-backend, backed by Neon Postgres.
+One deployable: a Vercel project holding two **services** -- a Next.js
+client at the repo root and a FastAPI backend under `backend/` -- backed by
+Neon Postgres.
+
+They build independently and ship together, so the frontend and the API can
+never be out of step with each other. A top-level rewrite sends `/api/*` to
+the backend service and everything else to the web service. This is the
+mechanism for a polyglot app in one Vercel project; a single-framework
+project cannot host a Python backend, because the framework owns the build
+and a root `api/` directory is never picked up.
 
 **The load-bearing rule: FastAPI owns all logic and all database access.**
 The frontend is a pure client that speaks HTTP. Nothing in the web app
@@ -16,9 +24,10 @@ docs/
   ARCHITECTURE.md          This file.
   RATING.md                The ELO specification.
   DECISIONS.md             Why things are the way they are.
-api/
-  index.py                 Vercel entrypoint. Mounts the FastAPI app.
 backend/
+  app.py                   Vercel service entrypoint. Exports the ASGI app.
+  requirements.txt         Runtime deps for Vercel. pyproject stays the
+                           source of truth; this mirrors it.
   pyproject.toml           uv-managed.
   src/rammeslag/
     main.py                App factory, router registration.

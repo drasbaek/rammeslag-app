@@ -191,8 +191,8 @@ nothing is done until it has been seen at 390×844.
 ## Deployment notes
 
 The Vercel project's **Root Directory stays at the repository root**, not
-the repo root. [`vercel.json`](vercel.json) does the rest: Next.js is
-detected at the root and `api/index.py` deploys as a Python
+the repo root. [`vercel.json`](vercel.json) does the rest: the web service is Next.js at the root and the api service is FastAPI
+under `backend/`, deployed as a Python
 function, with `/api/*` rewritten to the FastAPI entrypoint.
 
 Secrets:
