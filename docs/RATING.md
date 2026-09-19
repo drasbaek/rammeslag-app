@@ -7,8 +7,18 @@ regenerating `fixtures/expected_ratings.json` in the same commit.
 ## Inputs
 
 Matches where `source = 'internal'`, replayed in chronological order by
-`played_at`, ties broken by `created_at` then `id`. Every player starts at
-**1000.0**.
+`played_at`, ties broken by `match_id`. Every player starts at **1000.0**.
+
+The engine sorts defensively rather than trusting input order. `match_id` is
+a weak tie-break — it is stable but arbitrary — so the matches module must
+stamp `played_at` at entry time, which keeps matches within a session
+distinct and in the order they were actually played.
+
+**Entry ratings from the old app are deliberately ignored.** `export/` records
+that one player entered at 1100 and that this is required to reconcile with
+the old system's numbers. We seed everyone at 1000.0, so **these ratings will
+not reconcile with the old app's, by design.** The fixture preserves
+`entry_elo` as provenance; the engine does not read it.
 
 Only the game totals matter. Sets are stored and displayed, but the engine
 reads `games_a` and `games_b`, each the sum over the match's sets.
@@ -35,9 +45,16 @@ Margin multiplier, proportional because match length varies from 7 to 24
 games:
 
     total = games_a + games_b
-    mov   = 1 + abs(games_a - games_b) / total
+    mov   = 1 + MOV_SCALE * abs(games_a - games_b) / total
 
-If `total == 0` the match does not affect ratings at all.
+`MOV_SCALE` multiplies the margin term, as written above. At 1.0 several
+placements are numerically identical; this one is normative, and the others
+diverge the moment anyone tunes it.
+
+If `total == 0` no rating changes, but the match **does** count toward
+`matches_played` and toward the provisional threshold — one counter, not two.
+This is defensive only: the matches module rejects a match with no games at
+write time, so it should never reach the engine from the app.
 
 Each player has their own K, so newcomers converge without making veterans
 volatile:
@@ -60,6 +77,12 @@ provisional. That is intended.
 - **Winning always gains rating.** `S_T - E_T > 0` whenever team T wins,
   since `E_T < 1` always. Any change that breaks this is a bug, not a
   tuning decision.
+- **Losing always costs rating**, by the same argument. Both directions are
+  guaranteed and both are tested against every fixture match.
+- **A drawn match yields verdict `D`** for all four players, including a
+  0-0 match.
+- **Ratings are full float64.** The golden snapshot stores them at full
+  precision so equality is bit-exact. Round only for display.
 - **Replay is deterministic.** Same inputs, same outputs, bit for bit.
 - **Deleting a match is a full replay**, never an inverse update.
 
@@ -75,6 +98,18 @@ provisional. That is intended.
 | `ELO_SCALE` | 400.0 |
 
 All six live in `modules/rating/constants.py` and nowhere else.
+
+## Validation is the caller's job
+
+The engine trusts its input and computes. It does not reject a player
+appearing twice in one match, a player partnered with themselves, or
+negative game counts. Those are the matches module's rules, enforced before
+anything is written:
+
+- four distinct players
+- every set's games are non-negative
+- at least one game in total
+- one to three sets
 
 ## Set verdicts are display only
 
