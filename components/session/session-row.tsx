@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { SessionOut } from "@/lib/types";
-import { dayNumber, monthShort, weekdayShort, SESSION_TYPE_LABEL } from "@/lib/format";
+import { dayNumber, monthShort, weekdayShort, sessionTypeLabel } from "@/lib/format";
 
 /**
  * One evening. Not a match — the list is of nights out.
@@ -38,7 +38,7 @@ export function SessionRow({ session, index }: { session: SessionOut; index: num
           ) : null}
         </div>
         <p className="mt-1 truncate text-[11px] text-dim">
-          <span className="text-mute">{SESSION_TYPE_LABEL[session.type]}</span>
+          <span className="text-mute">{sessionTypeLabel(session.type)}</span>
           {session.note ? ` · ${session.note}` : ""}
         </p>
       </div>

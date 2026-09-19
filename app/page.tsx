@@ -109,14 +109,6 @@ export default function LadderPage() {
       {ladder.isError ? (
         <p className="py-10 text-center text-mini text-loss">Kunne ikke hente stigen.</p>
       ) : null}
-
-      <p className="mt-7 px-1 text-center text-[10px] leading-relaxed text-dim">
-        Bevægelse måles mod stigen før seneste session.
-        <br />
-        Toppen og bunden er tonet. Bunden er ikke en straf — den er et udgangspunkt.
-        <br />
-        Gæsternes kampe tæller altid med i ratingen — de står bare ikke på listen.
-      </p>
     </div>
   );
 }

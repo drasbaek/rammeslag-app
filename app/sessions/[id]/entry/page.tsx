@@ -267,22 +267,7 @@ export default function EntryPage() {
           </section>
 
           <section className="mt-5">
-            <SectionHeader
-              title="Partier"
-              right={
-                sets.length < 3 ? (
-                  <button
-                    onClick={() => {
-                      haptic("tap");
-                      setSets((current) => [...current, { games_a: null, games_b: null }]);
-                    }}
-                    className="text-[10px] font-bold tracking-[0.12em] text-volt"
-                  >
-                    + SÆT
-                  </button>
-                ) : null
-              }
-            />
+            <SectionHeader title="Partier" />
             <div className="space-y-2">
               {sets.map((draft, index) => (
                 <ScorePad
@@ -299,6 +284,24 @@ export default function EntryPage() {
                   }
                 />
               ))}
+              {/* Under the last set, not in the header: you read down the sets
+                  you have played and the next one is the next thing on screen.
+                  Outlined, never volt — "Gem kamp" is the only filled button
+                  on this screen and it stays that way. */}
+              {sets.length < 3 ? (
+                <button
+                  onClick={() => {
+                    haptic("tap");
+                    setSets((current) => [...current, { games_a: null, games_b: null }]);
+                  }}
+                  className="flex w-full items-center justify-center gap-1.5 rounded-row border border-dashed border-line py-2.5 text-[11px] font-bold tracking-[0.12em] text-dim transition-colors active:border-volt/50 active:text-volt"
+                >
+                  <svg viewBox="0 0 12 12" className="h-2.5 w-2.5" aria-hidden>
+                    <path d="M6 1.5v9M1.5 6h9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  </svg>
+                  TILFØJ SÆT
+                </button>
+              ) : null}
             </div>
           </section>
 
@@ -309,18 +312,31 @@ export default function EntryPage() {
                 {matches.map((match, index) => (
                   <div
                     key={match.id}
-                    className="flex items-center gap-2 rounded-row bg-ink-850/60 px-3 py-2"
+                    className="flex items-center gap-1.5 rounded-row bg-ink-850/60 px-3 py-2"
                   >
-                    <span className="num w-4 shrink-0 text-[10px] text-dim">{index + 1}</span>
+                    <span className="num w-3.5 shrink-0 text-[10px] text-dim">{index + 1}</span>
                     <span className="min-w-0 flex-1 truncate text-[12px] text-mute">
                       {firstName(match.team_a[0].name)} & {firstName(match.team_a[1].name)}
                       <span className="text-dim"> mod </span>
                       {firstName(match.team_b[0].name)} & {firstName(match.team_b[1].name)}
                     </span>
-                    <span className="num-tight shrink-0 text-[13px] font-bold">
-                      {match.games_a}–{match.games_b}
+                    {/* The scoreline, set by set, the way it is said out loud.
+                        The game total is what the rating engine adds up, not a
+                        result anybody recognises. Never shrinks: the names give
+                        way first. */}
+                    <span className="flex shrink-0 items-center gap-1">
+                      {match.sets.map((set, setIndex) => (
+                        <span
+                          key={setIndex}
+                          className="num-tight text-[13px] font-bold tabular-nums text-chalk"
+                        >
+                          {set.games_a}
+                          <span className="text-dim">-</span>
+                          {set.games_b}
+                        </span>
+                      ))}
                     </span>
-                    <span className="num w-[38px] shrink-0 text-right text-[10px] text-dim">
+                    <span className="num w-[30px] shrink-0 text-right text-[10px] text-dim">
                       {delta(match.deltas[match.team_a[0].id] ?? 0, 0)}
                     </span>
                   </div>

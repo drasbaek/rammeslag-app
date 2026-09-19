@@ -51,10 +51,15 @@ function guest(id: string, name: string, skill: number, entry_rating: number): S
 /**
  * Thirteen members and fifteen guests.
  *
+ * Pseudonyms, as everything committed here must be (AGENTS.md rule 2) — but
+ * deliberately as LONG as the real roster's names, sixteen to eighteen
+ * characters. A mock full of short names hides exactly the overflow the player
+ * picker exists to survive.
+ *
  * The numbers this history replays into are the ones the UI has to survive: a
- * leader clear at 1306, six people between 1029 and 1086 who can swap places
- * on a single evening, a bundprop ninety points adrift at 728, and match
- * counts from 6 to 49. The guests land in a 150-point clump around the middle
+ * leader clear at 1386, five people between 961 and 1052 who can swap places
+ * on a single evening, a bundprop 184 points adrift at 676, and match
+ * counts from 6 to 50. The guests land in a 150-point clump around the middle
  * with one to three matches each — which is exactly why the ladder hides them
  * behind a switch.
  *
@@ -64,35 +69,35 @@ function guest(id: string, name: string, skill: number, entry_rating: number): S
  * were judged in at 900 and 800.
  */
 export const SEED_PLAYERS: SeedPlayer[] = [
-  member("p1", "Jacob Riis", 1.02, 0.86, 1100, true),
-  member("p2", "Mikkel Bang", 0.66, 0.935, 800),
-  member("p3", "Anders Krag", 0.66, 0.93, 810),
-  member("p4", "Kasper Vig", 0.62, 0.72, 1080),
-  member("p5", "Frederik Lund", 0.58, 0.68, 1070),
-  member("p6", "Rasmus Dahl", 0.54, 0.544, 1050),
-  member("p7", "Emil Krogh", 0.5, 0.6, 1200),
-  member("p8", "Nikolaj Brandt", 0.46, 0.58, 1170),
-  member("p9", "Sebastian Mørk", 0.42, 0.55, 1030),
-  member("p10", "Lauge Winther", 0.38, 0.416, 980),
-  member("p11", "Christian Aaby", 0.34, 0.36, 1020),
-  member("p12", "Magnus Told", 0.3, 0.3, 850),
-  member("p13", "Oliver Thams", 0.16, 0.62, 900),
+  member("p1", "Jacob Rosenkilde", 1.02, 0.86, 1100, true),
+  member("p2", "Mikkel Brandstrup", 0.66, 0.935, 800),
+  member("p3", "Anders Kragelund", 0.66, 0.93, 810),
+  member("p4", "Kasper Vindelev", 0.62, 0.72, 1080),
+  member("p5", "Frederik Lundgaard", 0.58, 0.68, 1070),
+  member("p6", "Rasmus Dahlgaard", 0.54, 0.544, 1050),
+  member("p7", "Emil Krogsgaard", 0.5, 0.6, 1200),
+  member("p8", "Nikolaj Brandborg", 0.46, 0.58, 1170),
+  member("p9", "Sebastian Mørkeby", 0.42, 0.55, 1030),
+  member("p10", "Lauge Winthereik", 0.38, 0.416, 980),
+  member("p11", "Christian Aabyholm", 0.34, 0.36, 1020),
+  member("p12", "Magnus Toldstrup", 0.3, 0.3, 850),
+  member("p13", "Oliver Thamsborg", 0.16, 0.62, 900),
 
-  guest("g1", "Thomas Brix", 0.55, 990),
-  guest("g2", "Villads Hein", 0.48, 1020),
-  guest("g3", "Simon Dall", 0.6, 1020),
-  guest("g4", "Peter Kann", 0.44, 980),
-  guest("g5", "Mads Ejby", 0.52, 1060),
-  guest("g6", "Jonas Friis", 0.5, 1060),
-  guest("g7", "Henrik Vad", 0.42, 1000),
-  guest("g8", "Martin Sø", 0.58, 1100),
-  guest("g9", "Rune Klit", 0.46, 970),
-  guest("g10", "Bjarke Lind", 0.54, 990),
-  guest("g11", "Søren Ager", 0.5, 950),
-  guest("g12", "Kristian Ry", 0.47, 950),
-  guest("g13", "Daniel Holt", 0.53, 950),
-  guest("g14", "Jeppe Norup", 0.45, 970),
-  guest("g15", "Alexander Beck", 0.56, 1020),
+  guest("g1", "Thomas Brixtofte", 0.55, 990),
+  guest("g2", "Villads Heinesen", 0.48, 1020),
+  guest("g3", "Simon Dalsgaard", 0.6, 1020),
+  guest("g4", "Peter Kannegaard", 0.44, 980),
+  guest("g5", "Mads Ejbygaard", 0.52, 1060),
+  guest("g6", "Jonas Friisberg", 0.5, 1060),
+  guest("g7", "Henrik Vadsholt", 0.42, 1000),
+  guest("g8", "Martin Søndergaard", 0.58, 1100),
+  guest("g9", "Rune Klitgaard", 0.46, 970),
+  guest("g10", "Bjarke Lindegaard", 0.54, 990),
+  guest("g11", "Søren Agerlund", 0.5, 950),
+  guest("g12", "Kristian Rygaard", 0.47, 950),
+  guest("g13", "Daniel Holtermann", 0.53, 950),
+  guest("g14", "Jeppe Norupgaard", 0.45, 970),
+  guest("g15", "Alexander Beckmann", 0.56, 1020),
 ];
 const MEMBER_IDS = SEED_PLAYERS.filter((p) => !p.is_guest).map((p) => p.id);
 const GUEST_IDS = SEED_PLAYERS.filter((p) => p.is_guest).map((p) => p.id);
@@ -289,19 +294,22 @@ function generateSets(pA: number): SeedSet[] {
   const setCount = roll < 0.16 ? 1 : roll < 0.84 ? 2 : 3;
   const sets: SeedSet[] = [];
   for (let i = 0; i < setCount; i += 1) {
-    const total = between(7, 11);
-    if (rand() < 0.1 && total % 2 === 0) {
+    if (rand() < 0.1) {
       // Timed sets end level more often than people remember.
-      sets.push({ set_number: i + 1, games_a: total / 2, games_b: total / 2 });
+      const level = between(3, 5);
+      sets.push({ set_number: i + 1, games_a: level, games_b: level });
       continue;
     }
     const aWins = rand() < pA;
-    const winner = Math.ceil(total / 2) + between(0, Math.max(0, Math.floor(total / 2) - 1));
-    const games = Math.min(winner, total);
+    // A padel set is won 6-x, or 7-5 / 7-6 when it goes the distance. Nothing
+    // in the real history goes past 7, and neither does the score pad.
+    const tight = rand() < 0.15;
+    const won = tight ? 7 : 6;
+    const lost = tight ? between(5, 6) : between(0, 4);
     sets.push({
       set_number: i + 1,
-      games_a: aWins ? games : total - games,
-      games_b: aWins ? total - games : games,
+      games_a: aWins ? won : lost,
+      games_b: aWins ? lost : won,
     });
   }
   return sets;

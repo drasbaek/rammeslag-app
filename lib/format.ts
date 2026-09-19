@@ -72,6 +72,19 @@ export function firstName(name: string): string {
   return name.split(" ")[0];
 }
 
+/**
+ * A name split the way the team says it out loud: a given name and everything
+ * after it. The surname carries the weight — "Hedegaard", not "Klaus" — which is
+ * why the player picker stacks the two instead of truncating one line.
+ * A single-word name has no surname, and gets `given: null` so the caller can
+ * put the one word it has on the loud line.
+ */
+export function nameParts(name: string): { given: string | null; family: string } {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length < 2) return { given: null, family: parts[0] ?? name };
+  return { given: parts.slice(0, -1).join(" "), family: parts[parts.length - 1] };
+}
+
 export function initials(name: string): string {
   const parts = name.replace(/\(.*\)/, "").trim().split(/\s+/);
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
@@ -87,9 +100,19 @@ export function recordLine(wins: number, losses: number, draws: number): string 
   return draws > 0 ? `${wins}-${losses}-${draws}` : `${wins}-${losses}`;
 }
 
+/**
+ * Every type the backend can store, not just the two the create sheet offers.
+ * Old evenings carry "tournament" and "social" is reserved for a bødekasse
+ * night, so the rendering side stays wider than the writing side.
+ */
 export const SESSION_TYPE_LABEL: Record<string, string> = {
   training: "Træning",
   casual: "Løst slag",
   social: "Socialt",
   tournament: "Turnering",
 };
+
+/** Never blank: an unknown type from a newer backend still reads as something. */
+export function sessionTypeLabel(type: string): string {
+  return SESSION_TYPE_LABEL[type] ?? "Session";
+}

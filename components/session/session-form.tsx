@@ -7,7 +7,7 @@ import { Sheet } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useCreateSession, useSeasons } from "@/lib/queries";
 import { seasonFor, seasonRange, todayISO } from "@/lib/seasons";
-import { SESSION_TYPE_LABEL } from "@/lib/format";
+import { sessionTypeLabel } from "@/lib/format";
 import { haptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
 import type { SessionType } from "@/lib/types";
@@ -15,11 +15,17 @@ import type { SessionType } from "@/lib/types";
 const FIELD =
   "w-full rounded-row border border-line bg-ink-900 px-3 py-2.5 text-body text-chalk placeholder:text-dim focus:border-volt/60 focus:outline-none";
 
+/**
+ * Only the two kinds of evening the team actually books a court for.
+ *
+ * The backend enum is wider — "social" and "tournament" still exist and still
+ * render everywhere a session is shown, because old rows carry them and
+ * "social" is reserved for a bødekasse night with no padel played. Narrowing
+ * lives here, in the picker, and nowhere else.
+ */
 const TYPES: { value: SessionType; hint: string }[] = [
   { value: "training", hint: "Den normale aften" },
   { value: "casual", hint: "Uden fast program" },
-  { value: "social", hint: "Bødekasse og fadøl" },
-  { value: "tournament", hint: "Med pokal" },
 ];
 
 /**
@@ -138,7 +144,7 @@ export function SessionForm({
                 )}
               >
                 <span className="block truncate text-[13px] font-bold">
-                  {SESSION_TYPE_LABEL[option.value]}
+                  {sessionTypeLabel(option.value)}
                 </span>
                 <span className="block truncate text-[10px] text-dim">{option.hint}</span>
               </button>

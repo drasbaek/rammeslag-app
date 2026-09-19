@@ -3,7 +3,12 @@
 import { haptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
 
-const DIGITS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+/**
+ * A padel set does not go past 7. Every one of the 98 evenings on record tops
+ * out there, so the pad stops there too — and the two buttons that buys go
+ * back into the other eight, which is what a thumb wanted all along.
+ */
+const DIGITS = [0, 1, 2, 3, 4, 5, 6, 7];
 
 function Row({
   value,
@@ -15,7 +20,7 @@ function Row({
   tone: "a" | "b";
 }) {
   return (
-    <div className="flex gap-[3px]">
+    <div className="flex gap-1">
       {DIGITS.map((digit) => {
         const active = value === digit;
         return (
@@ -26,7 +31,7 @@ function Row({
               onPick(digit);
             }}
             className={cn(
-              "num-tight flex h-9 flex-1 items-center justify-center rounded-[7px] text-[13px] font-bold transition-all duration-100 active:scale-90",
+              "num-tight flex h-11 flex-1 items-center justify-center rounded-[8px] text-[16px] font-bold transition-all duration-100 active:scale-90",
               active
                 ? tone === "a"
                   ? "bg-volt text-volt-ink"
@@ -87,7 +92,7 @@ export function ScorePad({
         </div>
       </div>
 
-      <div className="space-y-[3px]">
+      <div className="space-y-1">
         <Row value={draft.games_a} tone="a" onPick={(value) => onChange({ ...draft, games_a: value })} />
         <Row value={draft.games_b} tone="b" onPick={(value) => onChange({ ...draft, games_b: value })} />
       </div>

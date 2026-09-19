@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthGate } from "@/components/auth/auth-gate";
 import { useSession } from "@/lib/queries";
 import { participants, sessionStandings } from "@/lib/session-stats";
-import { formatDateShort, matchCount, SESSION_TYPE_LABEL, weekdayShort } from "@/lib/format";
+import { formatDateShort, matchCount, sessionTypeLabel, weekdayShort } from "@/lib/format";
 import { haptic } from "@/lib/haptics";
 
 export default function SessionDetailPage() {
@@ -58,7 +58,7 @@ export default function SessionDetailPage() {
               ) : null}
               {data.type !== "training" ? (
                 <span className="rounded-[3px] border border-line px-1.5 py-[1px] text-[9px] font-bold tracking-[0.1em] text-mute">
-                  {SESSION_TYPE_LABEL[data.type].toUpperCase()}
+                  {sessionTypeLabel(data.type).toUpperCase()}
                 </span>
               ) : null}
             </div>
