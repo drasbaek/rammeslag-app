@@ -490,6 +490,20 @@ def _writable(event: Event) -> None:
         raise DomainError("Begivenheden er aflyst.")
 
 
+def _answerable(event: Event, *, by_admin: bool) -> None:
+    """Whether an answer may still be written.
+
+    ``locked`` means the squad has been picked. Letting a player quietly
+    change their answer under a finished team sheet is the thing locking
+    exists to stop, so the rule lives here rather than only in a disabled
+    button -- a status the API does not enforce is a status that is not true.
+    An admin still edits, which is how a late withdrawal gets recorded.
+    """
+    _writable(event)
+    if event.status == LOCKED and not by_admin:
+        raise DomainError("Holdet er sat, så svarene er låst. Sig det til en admin.")
+
+
 def set_response(
     db: DbSession,
     event_id: str,
@@ -497,12 +511,13 @@ def set_response(
     state: str,
     *,
     added_by: str | None = None,
+    by_admin: bool = False,
 ) -> EventResponse:
     """Record one answer, replacing any earlier one from the same player."""
     if state not in RESPONSE_STATES:
         raise DomainError("Ukendt svar.")
     event = get_event(db, event_id)
-    _writable(event)
+    _answerable(event, by_admin=by_admin)
     if db.get(Player, player_id) is None:
         raise NotFoundError("Spilleren findes ikke.")
 
@@ -529,10 +544,12 @@ def set_response(
     return response
 
 
-def clear_response(db: DbSession, event_id: str, player_id: str) -> None:
+def clear_response(
+    db: DbSession, event_id: str, player_id: str, *, by_admin: bool = False
+) -> None:
     """Back to silence. This is also how a guest is taken off the list."""
     event = get_event(db, event_id)
-    _writable(event)
+    _answerable(event, by_admin=by_admin)
     existing = db.execute(
         select(EventResponse).where(
             EventResponse.event_id == event_id, EventResponse.player_id == player_id
@@ -654,6 +671,11 @@ def set_matchups(db: DbSession, event_id: str, matchups: Sequence[MatchupInput])
         db.execute(select(EventMatchup).where(EventMatchup.event_id == event_id)).scalars().all()
     ):
         db.delete(row)
+    # The old plan has to leave the table before the new one arrives, for the
+    # same reason the squad does: a flush orders inserts ahead of deletes, and
+    # replanning almost always reuses round 1 on court 1, which is exactly
+    # what UNIQUE(event_id, round, court) forbids twice over.
+    db.flush()
     for matchup in matchups:
         db.add(
             EventMatchup(

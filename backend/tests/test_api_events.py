@@ -817,3 +817,72 @@ def test_setting_a_squad_never_reaches_a_rating(client, db) -> None:
 
     assert db.query(Match).count() == 1
     assert client.get("/api/ladder?season=all").json()["entries"] == before
+
+
+# --------------------------------------------------------------------------
+# Rewriting a whole list
+# --------------------------------------------------------------------------
+
+
+def test_replanning_the_same_round_and_court_is_not_a_collision(client, db) -> None:
+    """The ordinary edit: swap two players, keep round 1 on court 1.
+
+    Replacing a list wholesale deletes the old rows and inserts the new ones,
+    and SQLAlchemy emits inserts before deletes inside one flush -- so without
+    an explicit flush between the two halves this lands on
+    UNIQUE(event_id, round, court) and 500s. Every real replan reuses a slot,
+    so only a test that keeps one could catch it.
+    """
+    _seed(db)
+    make_event(db, "e1", "season-1", date(2099, 1, 1))
+    login(client, "boss", "9999")
+
+    first = {
+        "matchups": [{"round": 1, "court": 1, "team_a": ["p1", "p2"], "team_b": ["p3", "p4"]}]
+    }
+    second = {
+        "matchups": [{"round": 1, "court": 1, "team_a": ["p1", "p3"], "team_b": ["p2", "p4"]}]
+    }
+    client.put("/api/events/e1/matchups", json=first)
+    response = client.put("/api/events/e1/matchups", json=second)
+
+    assert response.status_code == 200
+    assert [p["id"] for p in response.json()["matchups"][0]["team_a"]] == ["p1", "p3"]
+    assert db.query(EventMatchup).count() == 1
+
+
+# --------------------------------------------------------------------------
+# Locking
+# --------------------------------------------------------------------------
+
+
+def test_a_locked_fixture_refuses_a_players_answer(client, db) -> None:
+    """Locking is what stops an answer moving under a finished team sheet. A
+    disabled button is not that rule; this is."""
+    _seed(db)
+    make_event(db, "e1", "season-1", date(2099, 1, 1), type="match", status="locked")
+    login(client, "regular", "1234")
+
+    response = client.put("/api/events/e1/response", json={"state": "no"})
+
+    assert response.status_code == 400
+    assert "låst" in response.json()["detail"].lower()
+
+
+def test_an_admin_still_records_a_late_withdrawal_on_a_locked_fixture(client, db) -> None:
+    _seed(db)
+    make_event(db, "e1", "season-1", date(2099, 1, 1), type="match", status="locked")
+    login(client, "boss", "9999")
+
+    assert client.put("/api/events/e1/response/p1", json={"state": "no"}).status_code == 200
+
+
+def test_locking_does_not_freeze_the_squad_itself(client, db) -> None:
+    """Locked means the answers are settled, not that the admin is finished."""
+    _seed(db)
+    make_event(db, "e1", "season-1", date(2099, 1, 1), type="match", status="locked")
+    login(client, "boss", "9999")
+
+    response = client.put("/api/events/e1/selection", json={"player_ids": ["p1", "p2"]})
+
+    assert response.status_code == 200

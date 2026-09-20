@@ -182,7 +182,9 @@ def set_my_response(
     player: Player = Depends(current_user),
 ) -> EventOut:
     """Answer for yourself. Klar, ikke klar, ved ikke."""
-    service.set_response(db, event_id, player.id, payload.state, added_by=player.id)
+    service.set_response(
+        db, event_id, player.id, payload.state, added_by=player.id, by_admin=player.is_admin
+    )
     event = service.get_event(db, event_id)
     return _event_out(service.build_views(db, [event], viewer_id=player.id)[0])
 
@@ -197,7 +199,9 @@ def set_response_for(
 ) -> EventOut:
     """Answer on someone's behalf. This is how a guest joins a training."""
     _may_answer_for(db, actor, player_id)
-    service.set_response(db, event_id, player_id, payload.state, added_by=actor.id)
+    service.set_response(
+        db, event_id, player_id, payload.state, added_by=actor.id, by_admin=actor.is_admin
+    )
     event = service.get_event(db, event_id)
     return _event_out(service.build_views(db, [event], viewer_id=actor.id)[0])
 
@@ -211,7 +215,7 @@ def clear_response(
 ) -> EventOut:
     """Back to no answer, and the way a guest is taken off the list again."""
     _may_answer_for(db, actor, player_id)
-    service.clear_response(db, event_id, player_id)
+    service.clear_response(db, event_id, player_id, by_admin=actor.is_admin)
     event = service.get_event(db, event_id)
     return _event_out(service.build_views(db, [event], viewer_id=actor.id)[0])
 
