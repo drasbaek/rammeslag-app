@@ -123,8 +123,8 @@ Two kinds live in one table, discriminated by `type`, the same way
 - `match` — a league fixture against another club. Availability and the squad
   an admin picks. **No score is ever recorded.** These are not internal
   doubles and nothing about them reaches the ladder.
-- `training` — a Sunday. Availability, a court count, and once it has been
-  played a link to the `session` its results went into.
+- `training` — a Sunday. Availability, a court count, the kampe an admin sets,
+  and a link to the `session` those kampe are played into.
 
 Three rules hold this together, and an agent changing this module must keep
 all three:
@@ -140,8 +140,43 @@ all three:
    `fixtures/expected_ratings.json`.
 3. **`events.session_id` is the one nullable FK in the schema**, and it is
    deliberate. Rule 6 in AGENTS.md forbids a nullable FK *where a type column
-   would do* — here one would not. A training has a session only after it has
-   been played, so this is optional state over time, not a discriminator.
+   would do* — here one would not. A training has a session only after its
+   kampe are set, so this is optional state over time, not a discriminator.
+
+## Setting the kampe is what opens an evening
+
+`PUT /api/events/{id}/matchups`, on a training with a non-empty plan, creates
+the empty `session` those kampe will be played into and links the two. It is
+the only way a session is created from the app.
+
+This is one decision, so it is one action. It used to be two — a plan, then a
+separate "open the evening" button — next to a third way in, a "ny
+træningssession" that created a session with no training in front of it at
+all. Three doors onto the same Sunday is how a date ends up in the app twice,
+once in the calendar the team answers and once in the history list, with the
+scores on the wrong one.
+
+The session is still **empty**. The plan is read back beside it, not copied
+into it:
+
+- `GET /api/sessions/{id}` returns `planned[]` — each planned court with its
+  four players and the `match_id` of the result typed in for it, or `null`.
+- The pairing is computed on read, as a pure function over player ids, by
+  matching the two unordered pairs. Nothing links a planned court to a match
+  in the schema, and nothing writes one.
+- Sides may be swapped by whoever typed the score in; a plan may repeat the
+  same four people in a later round, so each match answers at most one
+  planned court, in round order.
+- A kamp nobody planned is an ordinary kamp. It counts for the ladder and is
+  simply not in `planned[]`.
+
+**Closing is gated on the plan.** `POST /api/sessions/{id}/close` is refused
+while any planned kamp is without a score, because closing is what turns an
+evening into the morning-after report and the recap is sums over kampe that
+have not all been played yet. Scores arriving one at a time from four
+different phones is the point; the evening stays open until the last one is
+in. An evening with no plan behind it — everything the old spreadsheet left
+— closes whenever somebody says so.
 
 ## Schema
 
@@ -198,15 +233,18 @@ GET    /api/ladder?season=<id|all>     Ranked players. Rating, movement, form.
 GET    /api/players
 GET    /api/players/{id}               Profile, rating curve, stats.
 GET    /api/seasons
-GET    /api/sessions?season=<id>
-GET    /api/sessions/{id}              Detail, matches, recap highlights.
+GET    /api/sessions?season=<id>       Each row carries event_id and planned_count.
+GET    /api/sessions/{id}              Detail, matches, the plan, recap highlights.
 
 POST   /api/auth/login                 {player_id, pin} -> cookie
 POST   /api/auth/logout
 GET    /api/auth/me
 
-POST   /api/sessions                   auth
-POST   /api/sessions/{id}/close        auth
+POST   /api/sessions                   auth   Not reachable from the app: an
+                                              evening comes from a training's
+                                              plan. Kept for import scripts.
+POST   /api/sessions/{id}/close        auth   Refused while a planned kamp has
+                                              no score.
 PATCH  /api/sessions/{id}              auth   Re-dating moves its matches.
 POST   /api/matches                    auth
 DELETE /api/sessions/{id}              admin
@@ -223,8 +261,10 @@ PUT    /api/events/{id}/response/{player}     auth   A guest's, or admin: anyone
 DELETE /api/events/{id}/response/{player}     auth   Back to no answer.
 
 PUT    /api/events/{id}/selection      admin  The whole squad, at once.
-PUT    /api/events/{id}/matchups       admin  The whole plan, at once.
-POST   /api/events/{id}/session        admin  Training only. Opens the evening.
+PUT    /api/events/{id}/matchups       admin  The whole plan, at once. On a
+                                              training, a non-empty plan also
+                                              opens the session it is played
+                                              into and links it.
 
 POST   /api/players/guest              auth   Name only. Seed rating, no PIN.
 ```
@@ -232,6 +272,11 @@ POST   /api/players/guest              auth   Name only. Seed rating, no PIN.
 Selection and the plan are whole-list `PUT`s rather than per-row writes: an
 admin picks a squad as one decision, and a stream of row edits would need an
 ordering story it does not have.
+
+Re-planning is ordinary — somebody drops out an hour before — and it never
+opens a second evening: a training that already has a `session_id` keeps it,
+with whatever scores are already in it. Saving an *empty* plan opens nothing;
+that is a whiteboard being wiped.
 
 The OpenAPI schema FastAPI emits at `/api/openapi.json` is the contract.
 `lib/api.ts` is generated from it. There is no second description

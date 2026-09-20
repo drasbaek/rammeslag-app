@@ -1,12 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo } from "react";
 import { SessionRow } from "@/components/session/session-row";
-import { useQuickAdd } from "@/components/quick-add";
-import { Button } from "@/components/ui/button";
 import { RowSkeletons } from "@/components/ui/skeleton";
 import { useSeasons, useSessions } from "@/lib/queries";
-import { haptic } from "@/lib/haptics";
 import type { SessionOut } from "@/lib/types";
 
 interface Group {
@@ -19,7 +17,6 @@ interface Group {
 export default function SessionsPage() {
   const sessions = useSessions();
   const seasons = useSeasons();
-  const quickAdd = useQuickAdd();
 
   /**
    * `GET /api/sessions` is one flat list, newest first — the season only comes
@@ -60,27 +57,17 @@ export default function SessionsPage() {
         Hver træning er én række. Tryk for kampene og opsamlingen.
       </p>
 
-      {/* The way in. Without it the entry screen has no reachable door for an
-          evening that is not already on the list. */}
-      <Button
-        variant="volt"
-        size="lg"
-        className="mt-4 w-full"
-        onClick={() => {
-          haptic("tap");
-          quickAdd.openSession();
-        }}
-      >
-        <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden>
-          <path d="M10 3.5v13M3.5 10h13" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
-        </svg>
-        Ny træningssession
-      </Button>
-
+      {/* No button that starts an evening. This list is what happened, and an
+          evening starts in Program, where a træning gets its kampe set. */}
       {!sessions.isPending && total === 0 ? (
-        <p className="mt-6 rounded-card border border-dashed border-ink-600/70 px-4 py-8 text-center text-mini text-dim">
-          Ingen træninger endnu. Opret aftenen, og skriv kampene ind.
-        </p>
+        <div className="mt-6 rounded-card border border-dashed border-ink-600/70 px-4 py-8 text-center">
+          <p className="text-mini text-dim">
+            Ingen træninger endnu. En aften opstår, når kampene til en træning er sat.
+          </p>
+          <Link href="/program" className="mt-2 inline-block text-mini font-semibold text-volt">
+            Gå til programmet →
+          </Link>
+        </div>
       ) : null}
 
       {sessions.isPending ? (

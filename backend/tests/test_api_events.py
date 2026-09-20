@@ -589,22 +589,34 @@ def test_deleting_an_event_takes_its_answers_and_leaves_its_session(client, db) 
 
 
 # --------------------------------------------------------------------------
-# The handover to score entry
+# The handover to score entry: setting the kampe opens the evening
 # --------------------------------------------------------------------------
 
 
-def test_a_training_opens_an_empty_session_and_links_to_it(client, db) -> None:
+PLAN = [
+    {"round": 1, "court": 1, "team_a": ["p1", "p2"], "team_b": ["p3", "p4"]},
+    {"round": 1, "court": 2, "team_a": ["p5", "p6"], "team_b": ["regular", "boss"]},
+]
+
+
+def test_setting_the_kampe_opens_an_empty_session_and_links_to_it(client, db) -> None:
+    """One decision, one action. The plan and the evening it is played on used
+    to be two buttons in two places, which is how a team ended up with two
+    ways to create the same Sunday."""
     _seed(db)
     make_event(db, "e1", "season-1", date(2025, 9, 7), note="Tre baner")
     login(client, "boss", "9999")
 
-    created = client.post("/api/events/e1/session").json()
-    event = client.get("/api/events/e1").json()
+    event = client.put("/api/events/e1/matchups", json={"matchups": PLAN}).json()
+    assert event["session_id"] is not None
 
+    created = client.get(f"/api/sessions/{event['session_id']}").json()
     assert created["played_on"] == "2025-09-07"
     assert created["type"] == "training"
-    assert created["match_count"] == 0
-    assert event["session_id"] == created["id"]
+    # Empty. A plan is not a result, and every score is still typed in.
+    assert created["matches"] == []
+    assert len(created["planned"]) == 2
+    assert db.query(Match).count() == 0
 
 
 def test_a_fixture_never_opens_a_session(client, db) -> None:
@@ -614,21 +626,37 @@ def test_a_fixture_never_opens_a_session(client, db) -> None:
     make_event(db, "e1", "season-1", date(2025, 9, 8), type="match", opponent="Piverts")
     login(client, "boss", "9999")
 
-    response = client.post("/api/events/e1/session")
+    event = client.put("/api/events/e1/matchups", json={"matchups": PLAN}).json()
 
-    assert response.status_code == 400
-    assert response.json()["detail"] == "Kun en træning kan blive til en session."
+    assert event["session_id"] is None
 
 
-def test_a_training_only_opens_one_session(client, db) -> None:
+def test_clearing_the_plan_opens_nothing(client, db) -> None:
+    """Saving an empty whiteboard is a plan being taken down, not an evening
+    being started. Nothing belongs in the history list yet."""
     _seed(db)
     make_event(db, "e1", "season-1", date(2025, 9, 7))
     login(client, "boss", "9999")
 
-    client.post("/api/events/e1/session")
-    second = client.post("/api/events/e1/session")
+    event = client.put("/api/events/e1/matchups", json={"matchups": []}).json()
 
-    assert second.status_code == 400
+    assert event["session_id"] is None
+    assert client.get("/api/sessions").json() == []
+
+
+def test_a_training_only_opens_one_session(client, db) -> None:
+    """Re-planning is normal: somebody drops out an hour before. The evening
+    it is played on stays the same evening, with the same scores in it."""
+    _seed(db)
+    make_event(db, "e1", "season-1", date(2025, 9, 7))
+    login(client, "boss", "9999")
+
+    first = client.put("/api/events/e1/matchups", json={"matchups": PLAN}).json()
+    changed = [dict(PLAN[0], team_b=["p3", "p5"])]
+    second = client.put("/api/events/e1/matchups", json={"matchups": changed}).json()
+
+    assert second["session_id"] == first["session_id"]
+    assert len(client.get("/api/sessions").json()) == 1
 
 
 def test_the_yes_list_is_what_prefills_the_line_up(client, db) -> None:

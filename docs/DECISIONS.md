@@ -206,6 +206,15 @@ Rejected: materialising planned matchups as scoreless `Match` rows to be
 filled in later. It would put rows with no sets in front of the rating
 engine, which is the one input it is documented not to validate.
 
+Still true, with the plan now doing more work than it did. The session screen
+shows the training's kampe as a checklist — each planned court with the
+result typed in for it, or nothing yet — and tapping one fills the four names
+into the picker. That pairing is computed **on read**, as a pure function
+matching the two pairs of names, and it is the reason this decision survived
+the feature that most wanted to overturn it: a checklist needs to know which
+kamp is done, and it can know that without a row, a foreign key, or anything
+in `modules/events/` ever constructing a `Match`.
+
 ## 14. A guest is an ordinary player, added by whoever is bringing them
 
 `POST /api/players/guest` needs a login but not an admin, takes a name and
@@ -257,3 +266,38 @@ learned where it was.
 `Træningshistorik` became `Historik`: at five columns a tab is about 75px,
 which is eight characters at 9px. The screen it opens still says the long
 name at the top.
+
+## 16. One way to create an evening
+
+An evening is created by setting a training's kampe. Nothing else in the app
+creates one.
+
+Before this, three things did: `+ → Ny træningssession` (a session with no
+training in front of it), `+ → Ny træning` followed by an "opret aftenen"
+button on the training screen, and the same button reached from the history
+list. The first and second were the same Sunday under two names, and a team
+that used both had the date in the calendar everybody answers in *and* a
+separate row in the history list with the scores on it.
+
+So the flow is now one line: somebody creates a træning → people answer →
+an admin sets the kampe, which opens the evening → anybody types in the
+results, one kamp at a time, from whichever phone is nearest → the evening
+closes when the last score is in, and that is the report.
+
+What each step costs is deliberate. Setting the kampe is admin-only, because
+it is the same decision as picking a squad. Typing in a result is not: the
+whole reason the evening is a checklist rather than one person's data-entry
+job is that the four people who played a kamp know its score and the admin
+does not. And closing waits for all of them, because a recap taken at "four
+of six" is a wrong answer rather than an early one.
+
+Cost accepted: an evening played last month that is not in the app at all now
+takes two screens instead of one — create the træning on that date, set the
+kampe, type the scores in. That is a rare job, it is the same flow as every
+other evening, and it leaves the date in the calendar where the team can see
+it. The alternative was keeping a "skriv en gammel aften ind" door, which is
+the third way in again, with a nicer name.
+
+`POST /api/sessions` still exists and is still tested. `scripts/import_history.py`
+is the caller that needs it, and the contract does not shrink to fit the UI.
+Nothing in the web app calls it.

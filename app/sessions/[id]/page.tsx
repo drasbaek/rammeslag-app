@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { Wordmark } from "@/components/brand";
 import { MatchCard } from "@/components/session/match-card";
 import { MovementBars } from "@/components/session/movement-bars";
+import { PlannedList } from "@/components/session/planned-list";
 import { Recap } from "@/components/session/recap";
 import { SessionForm } from "@/components/session/session-form";
 import { Button } from "@/components/ui/button";
@@ -28,8 +29,10 @@ export default function SessionDetailPage() {
   // The endpoint hands over the matches and a three-line recap; who played and
   // how the evening moved are sums over those matches.
   const matches = useMemo(() => data?.matches ?? [], [data?.matches]);
+  const planned = useMemo(() => data?.planned ?? [], [data?.planned]);
   const standings = useMemo(() => sessionStandings(matches), [matches]);
   const squad = useMemo(() => participants(matches), [matches]);
+  const missing = planned.filter((game) => game.match_id === null).length;
 
   return (
     <div>
@@ -91,16 +94,31 @@ export default function SessionDetailPage() {
           </header>
 
           {data.status === "open" ? (
-            <Button
-              variant="volt"
-              className="mt-4 w-full"
-              onClick={() => {
-                haptic("tap");
-                gate.requireAuth(() => router.push(`/sessions/${data.id}/entry`));
-              }}
-            >
-              Indtast kampe
-            </Button>
+            <>
+              <Button
+                variant="volt"
+                className="mt-4 w-full"
+                onClick={() => {
+                  haptic("tap");
+                  gate.requireAuth(() => router.push(`/sessions/${data.id}/entry`));
+                }}
+              >
+                Indtast resultater
+              </Button>
+              <p className="mt-1.5 text-center text-[10px] leading-snug text-dim">
+                {missing > 0
+                  ? `Mangler ${missing} af ${planned.length} kampe. Alle kan skrive deres egne ind.`
+                  : "Aftenen er i gang. Skriv kampen ind, mens I husker den."}
+              </p>
+            </>
+          ) : null}
+
+          {/* Above the recap while the evening is open: what is left to type
+              in matters more than a report that is not finished yet. */}
+          {planned.length > 0 ? (
+            <div className="mt-6">
+              <PlannedList planned={planned} matches={matches} />
+            </div>
           ) : null}
 
           <Recap recap={data.recap} standings={standings} />
@@ -122,7 +140,9 @@ export default function SessionDetailPage() {
             </section>
           ) : (
             <p className="mt-8 rounded-card border border-dashed border-ink-600/70 px-4 py-8 text-center text-mini text-dim">
-              Ingen kampe denne aften. Det var en af de andre slags.
+              {planned.length > 0
+                ? "Ingen resultater endnu. Kampene står klar ovenfor."
+                : "Ingen kampe denne aften. Det var en af de andre slags."}
             </p>
           )}
 

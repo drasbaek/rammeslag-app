@@ -9,9 +9,15 @@ import { dayNumber, monthShort, weekdayShort, sessionTypeLabel } from "@/lib/for
  * it does not list who turned up. So the row leads with the date block and
  * closes on the match count instead of a stack of faces: the number is the
  * honest headline, and it is the one the endpoint actually returns.
+ *
+ * An evening that came from a træning also knows how many kampe were planned,
+ * and then the headline number is "3/6" rather than "3": on an evening still
+ * being typed in, how many are left is the entire question.
  */
 export function SessionRow({ session, index }: { session: SessionOut; index: number }) {
   const open = session.status === "open";
+  const planned = session.planned_count > 0;
+  const missing = Math.max(0, session.planned_count - session.match_count);
 
   return (
     <Link
@@ -39,14 +45,21 @@ export function SessionRow({ session, index }: { session: SessionOut; index: num
         </div>
         <p className="mt-1 truncate text-[11px] text-dim">
           <span className="text-mute">{sessionTypeLabel(session.type)}</span>
-          {session.note ? ` · ${session.note}` : ""}
+          {planned && missing > 0
+            ? ` · mangler ${missing} ${missing === 1 ? "resultat" : "resultater"}`
+            : session.note
+              ? ` · ${session.note}`
+              : ""}
         </p>
       </div>
 
       <div className="flex shrink-0 flex-col items-end">
-        <span className="num-tight text-[19px] font-black leading-none">{session.match_count}</span>
+        <span className="num-tight text-[19px] font-black leading-none">
+          {session.match_count}
+          {planned ? <span className="text-[13px] text-dim">/{session.planned_count}</span> : null}
+        </span>
         <span className="mt-0.5 text-[9px] font-bold tracking-[0.1em] text-dim">
-          {session.match_count === 1 ? "KAMP" : "KAMPE"}
+          {session.match_count === 1 && !planned ? "KAMP" : "KAMPE"}
         </span>
       </div>
 

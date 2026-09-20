@@ -64,9 +64,10 @@ function Court({ matchup }: { matchup: EventMatchupOut }) {
  * The plan, as everybody reads it.
  *
  * A whiteboard and nothing else: there is no score here and there never will
- * be, because nothing on this screen becomes a kamp. Results are typed into
- * the aften, on the entry screen every other result goes through, and the
- * caption says so out loud so nobody waits for a box to fill in.
+ * be, because nothing on this screen becomes a kamp. The same kampe appear on
+ * the aften as a list of results to type in, one at a time, on the entry
+ * screen every other result goes through — and the caption says so out loud
+ * so nobody waits for a box to fill in here.
  */
 export function TrainingPlan({ matchups }: { matchups: EventMatchupOut[] }) {
   const rounds = roundsOf(matchups);
@@ -97,7 +98,7 @@ export function TrainingPlan({ matchups }: { matchups: EventMatchupOut[] }) {
         ))}
       </div>
       <p className="mt-2 px-1 text-[10px] leading-snug text-dim">
-        Planen er en tavle. Resultaterne skrives ind på aftenen som alle andre kampe.
+        Planen er en tavle. De samme kampe står klar på aftenen, hvor resultaterne skrives ind.
       </p>
     </div>
   );

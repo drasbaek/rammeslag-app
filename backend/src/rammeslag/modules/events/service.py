@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime, time
 from zoneinfo import ZoneInfo
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session as DbSession
 
 from rammeslag.db import new_id, utcnow
@@ -668,12 +668,19 @@ def validate_matchups(matchups: Sequence[MatchupInput]) -> None:
         busy.update(players)
 
 
-def set_matchups(db: DbSession, event_id: str, matchups: Sequence[MatchupInput]) -> None:
-    """Replace the plan wholesale.
+def set_matchups(
+    db: DbSession, event_id: str, matchups: Sequence[MatchupInput], *, created_by: str | None = None
+) -> None:
+    """Replace the plan wholesale, and open the evening it will be played on.
 
     These are planned line-ups and nothing more. They are never turned into
     ``Match`` rows here; score entry writes those, from the same screen every
     other result goes through. Nothing in this function can move a rating.
+
+    Setting the kampe is also the moment a training gets its session, because
+    those are one decision and used to be two buttons in two places. The
+    session is still empty -- it is the evening the results go into, and the
+    plan it is read against, not a set of results.
     """
     event = get_event(db, event_id)
     _writable(event)
@@ -709,6 +716,76 @@ def set_matchups(db: DbSession, event_id: str, matchups: Sequence[MatchupInput])
         )
     db.commit()
 
+    # An empty plan is a plan being cleared, and clearing the whiteboard is not
+    # a reason to put an evening in the history list. A session that already
+    # exists is left exactly where it is, matches and all.
+    if matchups and event.type == TRAINING and event.session_id is None:
+        create_session_for(db, event_id, created_by=created_by)
+
+
+# --------------------------------------------------------------------------
+# Read access from the other direction: what was planned for an evening
+# --------------------------------------------------------------------------
+
+
+def plan_for_session(db: DbSession, session_id: str) -> tuple[str | None, list[MatchupView]]:
+    """The training behind an evening, and the kampe it was planned with.
+
+    A read and only a read. The session screen shows the plan as a list of
+    kampe still to be typed in, and this is where it gets it -- the pairing of
+    a planned court with the result somebody entered for it happens in
+    ``sessions``, over player ids, and never writes anything here.
+    """
+    event = db.execute(
+        select(Event).where(Event.session_id == session_id)
+    ).scalar_one_or_none()
+    if event is None:
+        return None, []
+
+    players = player_index(db)
+    rows = (
+        db.execute(
+            select(EventMatchup)
+            .where(EventMatchup.event_id == event.id)
+            .order_by(EventMatchup.round, EventMatchup.court)
+        )
+        .scalars()
+        .all()
+    )
+    return event.id, [
+        MatchupView(
+            round=row.round,
+            court=row.court,
+            team_a=[p for pid in row.player_ids[:2] if (p := players.get(pid)) is not None],
+            team_b=[p for pid in row.player_ids[2:] if (p := players.get(pid)) is not None],
+        )
+        for row in rows
+    ]
+
+
+def plan_counts_for_sessions(
+    db: DbSession, session_ids: Sequence[str]
+) -> dict[str, tuple[str, int]]:
+    """``session_id -> (event_id, planned kampe)``, in one query.
+
+    The history list needs "three of six typed in" on every row, which is a
+    count and not a plan. Sessions with no training behind them -- everything
+    imported from the old spreadsheet -- are simply absent.
+    """
+    if not session_ids:
+        return {}
+    rows = db.execute(
+        select(Event.session_id, Event.id, func.count(EventMatchup.id))
+        .outerjoin(EventMatchup, EventMatchup.event_id == Event.id)
+        .where(Event.session_id.in_(list(session_ids)))
+        .group_by(Event.session_id, Event.id)
+    ).all()
+    return {
+        session: (event_id, count)
+        for session, event_id, count in rows
+        if session is not None
+    }
+
 
 # --------------------------------------------------------------------------
 # The handover: a planned training becomes an evening with results
@@ -718,13 +795,17 @@ def set_matchups(db: DbSession, event_id: str, matchups: Sequence[MatchupInput])
 def create_session_for(db: DbSession, event_id: str, *, created_by: str | None = None):
     """Open the session a training's results go into, and link the two.
 
+    Reached by :func:`set_matchups` and by nothing else. Setting the kampe and
+    opening the evening they are played on were two buttons in two places, and
+    they are one decision: the moment there is a plan, there is an evening for
+    it in the history list.
+
     Only a training gets one. A fixture is a league match against another
     club: there is no internal doubles result to enter and none of it belongs
     on the ladder.
 
-    This creates an empty session -- the same one the "+" button would have
-    made -- and nothing else. Who played is still decided by the matches that
-    get typed in; the yes-list only pre-fills the picker.
+    The session is empty. Who played is still decided by the matches that get
+    typed in, one at a time, against the plan.
     """
     event = get_event(db, event_id)
     if event.type != TRAINING:
@@ -742,6 +823,10 @@ def create_session_for(db: DbSession, event_id: str, *, created_by: str | None =
         type=TRAINING,
         note=event.note,
         created_by=created_by,
+        # The event's own season, not one resolved again from the date. They
+        # are the same season for every training the API has ever created,
+        # and staying with the event's is what keeps them the same later.
+        season_id=event.season_id,
     )
     event.session_id = play_session.id
     db.commit()
@@ -777,6 +862,8 @@ __all__ = [
     "get_detail",
     "get_event",
     "list_events",
+    "plan_counts_for_sessions",
+    "plan_for_session",
     "set_matchups",
     "set_response",
     "set_selection",

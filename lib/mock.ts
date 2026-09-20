@@ -60,6 +60,7 @@ import type {
   SeasonRef,
   SeasonStatOut,
   SelectionIn,
+  PlannedGameOut,
   SessionCreate,
   SessionDetailOut,
   SessionOut,
@@ -436,7 +437,13 @@ export async function updatePlayer(id: string, body: PlayerUpdate): Promise<Play
 
 /* ---- Sessions ----------------------------------------------------------- */
 
+/** The training an evening was planned as, if it was planned as one. */
+function eventForSession(sessionId: string): MockEvent | null {
+  return eventList.find((event) => event.session_id === sessionId) ?? null;
+}
+
 function toSessionOut(session: SeedSession, w: World): SessionOut {
+  const event = eventForSession(session.id);
   return {
     id: session.id,
     season: seasonRef(session.season_id),
@@ -445,7 +452,47 @@ function toSessionOut(session: SeedSession, w: World): SessionOut {
     status: session.status,
     note: session.note,
     match_count: (w.bySession.get(session.id) ?? []).length,
+    event_id: event?.id ?? null,
+    planned_count: event ? (matchupsByEvent.get(event.id) ?? []).length : 0,
   };
+}
+
+/**
+ * Which saved match answers which planned kamp — the same rule the API uses,
+ * for the same reason: nothing links them, so the two pairs of names do.
+ *
+ * Sides may be swapped by whoever typed the score in, a plan may repeat the
+ * same four people in a later round, and a kamp nobody planned is simply not
+ * on the list. Each result answers at most one planned court.
+ */
+function pairKey(teamA: string[], teamB: string[]): string {
+  const side = (ids: string[]) => [...ids].sort().join("+");
+  return [side(teamA), side(teamB)].sort().join("|");
+}
+
+function plannedFor(sessionId: string): PlannedGameOut[] {
+  const event = eventForSession(sessionId);
+  if (!event) return [];
+  const plan = matchupsByEvent.get(event.id) ?? [];
+  const played = allMatches()
+    .filter((match) => match.session_id === sessionId)
+    .sort((a, b) => (a.played_at < b.played_at ? -1 : 1));
+
+  const used = new Set<string>();
+  return plan.map((matchup) => {
+    const want = pairKey([...matchup.team_a], [...matchup.team_b]);
+    const found = played.find(
+      (match) => !used.has(match.id) && pairKey([...match.team_a], [...match.team_b]) === want,
+    );
+    if (found) used.add(found.id);
+    return {
+      round: matchup.round,
+      court: matchup.court,
+      team_a: matchup.team_a.map(playerOut),
+      team_b: matchup.team_b.map(playerOut),
+      match_id: found?.id ?? null,
+    };
+  });
 }
 
 export async function getSessions(seasonId?: string): Promise<SessionOut[]> {
@@ -534,7 +581,9 @@ export async function getSession(id: string): Promise<SessionDetailOut> {
     type: session.type,
     status: session.status,
     note: session.note,
+    event_id: eventForSession(session.id)?.id ?? null,
     matches: items.map((item) => toMatch(item, seedById.get(item.match.id)!)),
+    planned: plannedFor(session.id),
     recap: {
       biggest_riser: moved.length > 0 ? line(moved[0][0]) : null,
       biggest_faller: moved.length > 0 ? line(moved[moved.length - 1][0]) : null,
@@ -793,10 +842,18 @@ export async function createSession(body: SessionCreate): Promise<SessionOut> {
   return delay(toSessionOut(created, world()));
 }
 
+/**
+ * Closing is what turns an evening into the report, so it waits for the last
+ * score. An evening with no plan behind it closes whenever somebody says so —
+ * there is nothing for it to be missing.
+ */
 export async function closeSession(id: string): Promise<SessionOut> {
   if (!authed) throw new Error("Log ind for at lukke aftenen");
   const session = sessionById.get(id);
   if (!session) throw new Error(`Ukendt aften: ${id}`);
+  const missing = plannedFor(id).filter((game) => game.match_id === null).length;
+  if (missing === 1) throw new Error("Der mangler resultatet på én planlagt kamp.");
+  if (missing > 1) throw new Error(`Der mangler resultater på ${missing} planlagte kampe.`);
   session.status = "closed";
   return delay(toSessionOut(session, world()));
 }
@@ -932,6 +989,60 @@ const eventById = new Map(eventList.map((e) => [e.id, e]));
 const responsesByEvent = new Map<string, Map<string, MockResponse>>();
 const selectionsByEvent = new Map<string, string[]>();
 const matchupsByEvent = new Map<string, MatchupsIn["matchups"]>();
+
+/**
+ * The evening in progress, as it now comes to exist: a træning somebody set
+ * the kampe for last week, two of them already typed in.
+ *
+ * An open session with no træning behind it is not a state this app can
+ * produce any more — an evening is created by setting a plan and by nothing
+ * else — so the mock does not pretend otherwise. The first kampe on the plan
+ * are the ones already played, so the screen shows a real "2 af 6" rather
+ * than six untouched rows and two matches nobody planned.
+ */
+(function seedTonight(): void {
+  const session = sessionById.get(OPEN_SESSION_ID);
+  if (!session) return;
+
+  const played = MATCHES.filter((match) => match.session_id === OPEN_SESSION_ID);
+  const squad = session.roster.filter((id) => playerById.has(id));
+  const plan: MatchupsIn["matchups"] = played.map((match, index) => ({
+    round: index + 1,
+    court: 1,
+    team_a: [match.team_a[0], match.team_a[1]],
+    team_b: [match.team_b[0], match.team_b[1]],
+  }));
+
+  // The rest of the evening, still to be typed in: one court per round,
+  // rotating through the squad so the same four are never on it twice.
+  for (let round = plan.length + 1; round <= 6 && squad.length >= 4; round += 1) {
+    const offset = (round * 3) % squad.length;
+    const four = Array.from({ length: 4 }, (_, i) => squad[(offset + i) % squad.length]);
+    plan.push({
+      round,
+      court: 1,
+      team_a: [four[0], four[1]],
+      team_b: [four[2], four[3]],
+    });
+  }
+
+  const event: MockEvent = {
+    id: "ev-tonight",
+    season_id: session.season_id,
+    type: "training",
+    held_on: session.played_on,
+    start_time: "10:00:00",
+    venue: "Pakhus77",
+    opponent: null,
+    capacity: 12,
+    status: "open",
+    note: session.note,
+    session_id: session.id,
+  };
+  eventList.unshift(event);
+  eventById.set(event.id, event);
+  matchupsByEvent.set(event.id, plan);
+})();
 
 /** A plausible spread of answers, so the tallies on screen are not all zero. */
 function seedResponses(): void {
@@ -1171,28 +1282,30 @@ export async function setSelection(id: string, body: SelectionIn): Promise<Event
   return getEvent(id);
 }
 
-/** The plan, replaced wholesale. A whiteboard: none of this becomes a match. */
+/**
+ * The plan, replaced wholesale — and the one thing that opens an evening.
+ *
+ * A whiteboard: none of this becomes a match. Saving a non-empty plan for a
+ * training also creates the empty session its results go into, exactly as the
+ * API does, because setting the kampe and opening the evening they are played
+ * on are one decision. An empty plan is a whiteboard being wiped, and starts
+ * nothing.
+ */
 export async function setMatchups(id: string, body: MatchupsIn): Promise<EventDetailOut> {
   if (!authed?.is_admin) throw new Error("Kun en administrator kan gøre det.");
-  mockEvent(id);
-  matchupsByEvent.set(id, body.matchups);
-  return getEvent(id);
-}
-
-export async function createSessionForEvent(id: string): Promise<SessionOut> {
-  if (!authed?.is_admin) throw new Error("Kun en administrator kan gøre det.");
   const event = mockEvent(id);
-  if (event.type !== "training") throw new Error("Kun en træning kan blive til en session.");
-  if (event.status === "cancelled") throw new Error("Træningen er aflyst.");
-  if (event.session_id) throw new Error("Der er allerede oprettet en session for træningen.");
+  if (event.status === "cancelled") throw new Error("Begivenheden er aflyst.");
+  matchupsByEvent.set(id, body.matchups);
 
-  const created = await createSession({
-    played_on: event.held_on,
-    type: "training",
-    note: event.note,
-  });
-  event.session_id = created.id;
-  return created;
+  if (body.matchups.length > 0 && event.type === "training" && !event.session_id) {
+    const created = await createSession({
+      played_on: event.held_on,
+      type: "training",
+      note: event.note,
+    });
+    event.session_id = created.id;
+  }
+  return getEvent(id);
 }
 
 /**

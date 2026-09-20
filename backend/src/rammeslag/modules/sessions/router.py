@@ -6,13 +6,14 @@ from fastapi import APIRouter, Depends, Query, Response
 from sqlalchemy.orm import Session as DbSession
 
 from rammeslag.deps import current_user, get_db, require_admin
-from rammeslag.modules.matches.schemas import match_out
+from rammeslag.modules.matches.schemas import match_out, player_out
 from rammeslag.modules.players.models import Player
 from rammeslag.modules.seasons import service as season_service
 from rammeslag.modules.seasons.schemas import SeasonRef
 from rammeslag.modules.sessions import service
 from rammeslag.modules.sessions.models import Session as PlaySession
 from rammeslag.modules.sessions.schemas import (
+    PlannedGameOut,
     PlayerDeltaOut,
     RecapOut,
     SessionCreate,
@@ -28,6 +29,9 @@ def _session_out(db: DbSession, play_session: PlaySession) -> SessionOut:
     """One saved session, with the match count the list screen sorts on."""
     season = season_service.get_season(db, play_session.season_id)
     counts = {s.id: c for s, c in service.list_sessions(db, play_session.season_id)}
+    event_id, planned = service.plan_counts(db, [play_session.id]).get(
+        play_session.id, (None, 0)
+    )
     return SessionOut(
         id=play_session.id,
         season=SeasonRef(id=season.id, name=season.name),
@@ -36,6 +40,8 @@ def _session_out(db: DbSession, play_session: PlaySession) -> SessionOut:
         status=play_session.status,
         note=play_session.note,
         match_count=counts.get(play_session.id, 0),
+        event_id=event_id,
+        planned_count=planned,
     )
 
 
@@ -53,6 +59,10 @@ def list_sessions(
     db: DbSession = Depends(get_db),
 ) -> list[SessionOut]:
     seasons = {s.id: s for s in season_service.list_seasons(db)}
+    rows = service.list_sessions(db, season)
+    # One query for the whole list rather than one per row: the plan is what
+    # says "tre af seks skrevet ind" on every evening that was a training.
+    plans = service.plan_counts(db, [play_session.id for play_session, _ in rows])
     return [
         SessionOut(
             id=play_session.id,
@@ -67,8 +77,10 @@ def list_sessions(
             status=play_session.status,
             note=play_session.note,
             match_count=count,
+            event_id=plans.get(play_session.id, (None, 0))[0],
+            planned_count=plans.get(play_session.id, (None, 0))[1],
         )
-        for play_session, count in service.list_sessions(db, season)
+        for play_session, count in rows
     ]
 
 
@@ -82,7 +94,18 @@ def get_session(session_id: str, db: DbSession = Depends(get_db)) -> SessionDeta
         type=detail.type,
         status=detail.status,
         note=detail.note,
+        event_id=detail.event_id,
         matches=[match_out(m) for m in detail.matches],
+        planned=[
+            PlannedGameOut(
+                round=game.round,
+                court=game.court,
+                team_a=[player_out(p) for p in game.team_a],
+                team_b=[player_out(p) for p in game.team_b],
+                match_id=game.match_id,
+            )
+            for game in detail.planned
+        ],
         recap=RecapOut(
             biggest_riser=_delta_out(detail.recap.biggest_riser),
             biggest_faller=_delta_out(detail.recap.biggest_faller),
@@ -122,6 +145,12 @@ def close_session(
     db: DbSession = Depends(get_db),
     player: Player = Depends(current_user),
 ) -> SessionOut:
+    """Close the evening, which is what turns it into the report.
+
+    Refused while a planned kamp is still without a score: the recap is sums
+    over the evening's kampe, and one taken before they have all been played
+    is a wrong answer rather than an early one.
+    """
     return _session_out(db, service.close_session(db, session_id))
 
 
