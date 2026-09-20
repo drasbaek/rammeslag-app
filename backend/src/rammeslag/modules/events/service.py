@@ -20,6 +20,7 @@ from rammeslag.modules.events.models import (
     COURT_CAPACITY,
     DEFAULT_SQUAD_SIZE,
     DEFAULT_TRAINING_COURTS,
+    DEFAULT_TRAINING_VENUE,
     EVENT_STATUSES,
     EVENT_TYPES,
     ID_PREFIX,
@@ -146,6 +147,18 @@ def default_capacity(type: str) -> int:
     if type == MATCH:
         return DEFAULT_SQUAD_SIZE
     return DEFAULT_TRAINING_COURTS * COURT_CAPACITY
+
+
+def default_venue(type: str) -> str | None:
+    """The home hall for a training, and nothing for a fixture.
+
+    Training is always at Pakhus77, so the form stopped asking. A fixture is
+    somewhere new every time, so there is nothing sensible to fall back to and
+    the caller is made to say.
+    """
+    if type == TRAINING:
+        return DEFAULT_TRAINING_VENUE
+    return None
 
 
 def courts_for(capacity: int) -> int:
@@ -381,14 +394,19 @@ def create_event(
     type: str,
     held_on: date,
     start_time: time,
-    venue: str,
+    venue: str | None = None,
     opponent: str | None = None,
     capacity: int | None = None,
     note: str | None = None,
     created_by: str | None = None,
 ) -> Event:
     _validate_type(type)
-    clean_venue = venue.strip()
+    # Same shape as capacity: the caller may say, and is otherwise given the
+    # default for its kind. A training's is the home hall; a fixture has none,
+    # so an omitted venue is still refused there.
+    clean_venue = venue.strip() if venue is not None else None
+    if not clean_venue:
+        clean_venue = default_venue(type)
     if not clean_venue:
         raise DomainError("Begivenheden skal have et sted.")
     size = capacity if capacity is not None else default_capacity(type)
@@ -754,6 +772,7 @@ __all__ = [
     "create_event",
     "create_session_for",
     "default_capacity",
+    "default_venue",
     "delete_event",
     "get_detail",
     "get_event",

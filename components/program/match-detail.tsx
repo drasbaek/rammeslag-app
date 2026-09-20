@@ -4,6 +4,7 @@ import { useState } from "react";
 import { AvailabilityList } from "@/components/program/availability-list";
 import { MatchAdminBar } from "@/components/program/match-admin-bar";
 import { MatchSquadPicker } from "@/components/program/match-squad-picker";
+import { ResponseOverride } from "@/components/program/response-override";
 import {
   SQUAD_STATE_TEXT,
   answersOf,
@@ -58,6 +59,12 @@ export function MatchDetail({ event }: { event: EventDetailOut }) {
 
   const unconfirmed = event.selected.filter((player) => stateOf(player) !== "yes").length;
   const cancelled = event.status === "cancelled";
+  // An admin answers for anyone, and still does so on a locked fixture —
+  // that is how a late withdrawal gets recorded. A cancelled fixture refuses
+  // every write, an admin's included, so there the control would be a button
+  // that offers a 400. This is availability only: it hangs off the answer
+  // list at the bottom and never off the squad block above.
+  const mayOverride = isAdmin && !cancelled;
 
   return (
     <div className="space-y-5">
@@ -202,7 +209,17 @@ export function MatchDetail({ event }: { event: EventDetailOut }) {
         </div>
       ) : null}
 
-      <AvailabilityList event={event} type="match" />
+      <AvailabilityList
+        event={event}
+        type="match"
+        action={
+          mayOverride
+            ? (player, state) => (
+                <ResponseOverride event={event} type="match" player={player} state={state} />
+              )
+            : undefined
+        }
+      />
 
       {isAdmin ? <MatchAdminBar event={event} /> : null}
 

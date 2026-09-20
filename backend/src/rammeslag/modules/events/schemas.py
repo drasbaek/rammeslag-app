@@ -15,7 +15,9 @@ class EventCreate(BaseModel):
     type: str = Field(description=" | ".join(EVENT_TYPES))
     held_on: date
     start_time: time
-    venue: str = Field(min_length=1, max_length=120)
+    #: Omitted means Pakhus77 for a training; a fixture has to say, because an
+    #: away kamp is somewhere new every time.
+    venue: str | None = Field(default=None, max_length=120)
     #: Fixtures only. Ignored for a training.
     opponent: str | None = Field(default=None, max_length=120)
     #: Omitted means six for a fixture, twelve (three courts) for a training.
@@ -69,8 +71,9 @@ class EventOut(BaseModel):
 class EventResponseOut(BaseModel):
     player: PlayerOut
     state: str = Field(description=" | ".join(RESPONSE_STATES))
-    #: Who wrote it. Different from ``player.id`` only for a guest, where it
-    #: is the member who brought them.
+    #: Who wrote it. Different from ``player.id`` whenever somebody answered on
+    #: another person's behalf: the member who brought a guest, or an admin
+    #: recording an answer that only ever arrived in the group chat.
     added_by: str | None = None
     updated_at: datetime
 

@@ -20,10 +20,11 @@ const COURT_CHOICES = [1, 2, 3, 4];
 /**
  * Put something in the calendar, or correct it.
  *
- * One form for both kinds, because everything except two fields is the same
- * question — when, where, and a note. A fixture then asks who we are playing
- * and how many the squad is; a training asks how many baner are booked and
- * turns that into places on its own.
+ * One form for both kinds, because most of it is the same question — when,
+ * and a note. A fixture then asks where, who we are playing and how many the
+ * squad is; a training asks how many baner are booked and turns that into
+ * places on its own. Training is always at Pakhus77, so nobody is asked: the
+ * backend fills the venue in, and the row and the detail screen still show it.
  *
  * The season is never chosen. The backend resolves it from the date and
  * refuses a date no season covers, so the form shows which season the date
@@ -50,6 +51,8 @@ export function EventForm({
   const [startTime, setStartTime] = useState(
     event ? clockInput(event.start_time) : type === "training" ? "10:00" : "18:00",
   );
+  // Fixtures only. A training's venue is the backend's default and is never
+  // sent from here, so an edit leaves whatever is stored alone.
   const [venue, setVenue] = useState(event?.venue ?? "");
   const [opponent, setOpponent] = useState(event?.opponent ?? "");
   const [capacity, setCapacity] = useState(event?.capacity ?? (type === "match" ? 6 : 12));
@@ -74,7 +77,7 @@ export function EventForm({
       haptic("warn");
       return;
     }
-    if (!venue.trim()) {
+    if (isMatch && !venue.trim()) {
       setError("Skriv hvor det foregår.");
       haptic("warn");
       return;
@@ -89,7 +92,9 @@ export function EventForm({
         .mutateAsync({
           held_on: heldOn,
           start_time: startTime,
-          venue: venue.trim(),
+          // Omitted, not blanked: the API reads an empty string as an error
+          // and an absent field as "leave it".
+          venue: isMatch ? venue.trim() : undefined,
           opponent: isMatch ? opponent.trim() : undefined,
           capacity,
           note: note.trim(),
@@ -104,7 +109,7 @@ export function EventForm({
         type,
         held_on: heldOn,
         start_time: startTime,
-        venue: venue.trim(),
+        venue: isMatch ? venue.trim() : undefined,
         opponent: isMatch ? opponent.trim() || null : null,
         capacity,
         note: note.trim() || null,
@@ -129,7 +134,13 @@ export function EventForm({
       description={
         isMatch
           ? "Holdet melder sig klar herefter. Udtagelsen laver du bagefter."
-          : "Meld til og fra herinde. Baner kan ændres, hvis hallen laver om."
+          : // A new training goes in the home hall, so the form can say so.
+            // An existing one names where it actually is: the API still takes
+            // a venue, so a Sunday somewhere else is a thing that can exist,
+            // and a sheet asserting "altid i Pakhus77" over it would be wrong.
+            event
+            ? `I ${event.venue}. Baner kan ændres, hvis hallen laver om.`
+            : "Altid i Pakhus77. Baner kan ændres, hvis hallen laver om."
       }
     >
       <div className="space-y-3">
@@ -180,22 +191,23 @@ export function EventForm({
           </div>
         ) : null}
 
-        <label className="block">
-          <span className="eyebrow block pb-1.5">Sted</span>
-          <input
-            className={FIELD}
-            value={venue}
-            onChange={(e) => {
-              setVenue(e.target.value);
-              setError(null);
-            }}
-            placeholder={isMatch ? "Pakhus77" : "Pakhus77"}
-            autoComplete="off"
-          />
-        </label>
-
         {isMatch ? (
           <>
+            {/* Only a fixture is asked where. An away kamp is somewhere new
+                every time; a training is always in the home hall. */}
+            <label className="block">
+              <span className="eyebrow block pb-1.5">Sted</span>
+              <input
+                className={FIELD}
+                value={venue}
+                onChange={(e) => {
+                  setVenue(e.target.value);
+                  setError(null);
+                }}
+                placeholder="Pakhus77"
+                autoComplete="off"
+              />
+            </label>
             <label className="block">
               <span className="eyebrow block pb-1.5">Modstander</span>
               <input

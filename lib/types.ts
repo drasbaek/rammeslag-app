@@ -272,7 +272,11 @@ export interface EventOut {
 export interface EventResponseOut {
   player: PlayerOut;
   state: ResponseState;
-  /** Differs from `player.id` only for a guest: the member who brought them. */
+  /**
+   * Who wrote the answer. Differs from `player.id` whenever somebody answered
+   * on another person's behalf: the member who brought a guest, or an admin
+   * recording an answer that only ever arrived in the group chat.
+   */
   added_by: PlayerId | null;
   /** ISO datetime */
   updated_at: string;
@@ -429,7 +433,8 @@ export interface EventCreate {
   held_on: string;
   /** "HH:MM" or "HH:MM:SS" */
   start_time: string;
-  venue: string;
+  /** Omitted means Pakhus77 for a training; a fixture has to say. */
+  venue?: string;
   /** Fixtures only; ignored for a training. */
   opponent?: string | null;
   /** Omitted means six for a fixture, twelve (three baner) for a training. */

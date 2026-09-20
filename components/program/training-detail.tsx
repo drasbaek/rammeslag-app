@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useAuthGate } from "@/components/auth/auth-gate";
 import { AvailabilityList } from "@/components/program/availability-list";
+import { ResponseOverride } from "@/components/program/response-override";
 import { TrainingAdmin } from "@/components/program/training-admin";
 import { TrainingGuestSheet } from "@/components/program/training-guest-sheet";
 import { TrainingHandover } from "@/components/program/training-handover";
@@ -40,6 +41,12 @@ export function TrainingDetail({ event }: { event: EventDetailOut }) {
   // Locked means the answers are closed to everybody but an admin, which the
   // API enforces. Offering to add a guest there would be offering a 400.
   const frozen = cancelled || (event.status === "locked" && !isAdmin);
+  // `frozen` is the gate for what a player may do. It is the wrong gate for
+  // an admin's override: locked closes the answers to everybody but an admin,
+  // and an admin still has to be able to record somebody dropping out after
+  // the kampe are set. Only aflyst stops them, because the API refuses every
+  // write there and a button that offers a 400 is worse than no button.
+  const mayOverride = isAdmin && !cancelled;
 
   const filled = event.counts.yes;
   const missing = Math.max(0, event.capacity - filled);
@@ -54,7 +61,7 @@ export function TrainingDetail({ event }: { event: EventDetailOut }) {
    * somebody wrote for them. Only guests get the button — a member unsubscribes
    * themselves, and an admin has the whole roster in the guest search anyway.
    */
-  const removeGuest = (player: PlayerOut, state: ResponseState) => {
+  const removeGuest = (player: PlayerOut, state: ResponseState | null) => {
     if (!player.is_guest || state !== "yes" || frozen) return null;
     return (
       <button
@@ -70,6 +77,24 @@ export function TrainingDetail({ event }: { event: EventDetailOut }) {
       >
         Fjern
       </button>
+    );
+  };
+
+  /**
+   * One control per row, never two.
+   *
+   * A guest keeps "Fjern": taking them off the list is the same write as
+   * clearing their answer, and the rest of the sheet would be nonsense for
+   * them — a guest who is not coming is simply not on the list, and nobody
+   * asked a guest whether they were coming in the first place. Everyone else
+   * gets the admin sheet, including the names under "Mangler svar", which are
+   * exactly the ones being chased in the group chat.
+   */
+  const rowAction = (player: PlayerOut, state: ResponseState | null) => {
+    if (player.is_guest) return removeGuest(player, state);
+    if (!mayOverride) return null;
+    return (
+      <ResponseOverride event={event} type="training" player={player} state={state} />
     );
   };
 
@@ -164,7 +189,7 @@ export function TrainingDetail({ event }: { event: EventDetailOut }) {
 
       <TrainingHandover event={event} isAdmin={isAdmin} />
 
-      <AvailabilityList event={event} type="training" action={removeGuest} />
+      <AvailabilityList event={event} type="training" action={rowAction} />
 
       {isAdmin ? <TrainingAdmin event={event} /> : null}
 

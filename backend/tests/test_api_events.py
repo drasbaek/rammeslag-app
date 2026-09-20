@@ -178,6 +178,66 @@ def test_a_training_takes_three_courts_and_never_an_opponent(client, db) -> None
     assert body["opponent"] is None
 
 
+def test_a_training_lands_at_pakhus77_without_being_told(client, db) -> None:
+    """Sunday is always in the home hall, so the form stopped asking. The
+    default lives here rather than in the client, so the row still reads
+    "Pakhus77" no matter who posted the event."""
+    _seed(db)
+    login(client, "boss", "9999")
+
+    body = client.post(
+        "/api/events",
+        json={
+            "type": "training",
+            "held_on": "2025-09-07",
+            "start_time": "10:00:00",
+        },
+    ).json()
+
+    assert body["venue"] == "Pakhus77"
+
+
+def test_a_training_somewhere_else_keeps_the_place_it_was_given(client, db) -> None:
+    """The hall being double-booked is a real Sunday. The form no longer
+    offers the field, but the API stays honest: a venue that is sent is the
+    venue that is stored."""
+    _seed(db)
+    login(client, "boss", "9999")
+
+    body = client.post(
+        "/api/events",
+        json={
+            "type": "training",
+            "held_on": "2025-09-07",
+            "start_time": "10:00:00",
+            "venue": "Grenaa",
+        },
+    ).json()
+
+    assert body["venue"] == "Grenaa"
+
+
+def test_a_fixture_without_a_venue_is_still_refused(client, db) -> None:
+    """An away kamp is somewhere new every time, so there is no default to
+    fall back on. Guessing the home hall would send six players to the wrong
+    address."""
+    _seed(db)
+    login(client, "boss", "9999")
+
+    response = client.post(
+        "/api/events",
+        json={
+            "type": "match",
+            "held_on": "2025-09-08",
+            "start_time": "18:00:00",
+            "opponent": "Astronauterne",
+        },
+    )
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Begivenheden skal have et sted."
+
+
 def test_a_date_outside_every_season_is_refused(client, db) -> None:
     _seed(db)
     login(client, "boss", "9999")

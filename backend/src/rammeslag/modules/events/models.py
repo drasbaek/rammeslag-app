@@ -53,6 +53,10 @@ DEFAULT_TRAINING_COURTS = 3
 #: "Spillere i over- eller underskud" row was subtracting from.
 DEFAULT_SQUAD_SIZE = 6
 
+#: Training is always in the home hall, so nobody is asked where it is. A
+#: fixture still has to say: an away kamp is somewhere new every time.
+DEFAULT_TRAINING_VENUE = "Pakhus77"
+
 
 class Event(Base):
     __tablename__ = "events"

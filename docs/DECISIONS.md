@@ -232,9 +232,27 @@ inert.
 
 Kampe and træninger share the Program tab because they are two things to the
 people organising them and exactly one thing to the person checking their
-phone: a date to answer. Bødekasse is in the layout early because adding a
-fifth column later would re-space the other four and move every tab out from
-under the thumb that had learned where it was.
+phone: a date to answer.
+
+That still holds, with one thing added since: the Program list carries a
+`Alle · Kampe · Træning` chip row under the Kommende / Tidligere toggle. It is
+not a retraction. There is still one tab, one list and one answering flow —
+the chips narrow a request (`GET /api/events?type=`) and nothing else. What
+the paragraph above got slightly wrong is that it treated "one thing to
+answer" and "one thing to look at" as the same claim. They are not. An admin
+chasing six klar for Saturday is looking for kampe, and eight Sundays in
+between them are noise; the player checking whether they said yes to anything
+is looking at all of it. The alternative was a second tab, and that costs what
+it always costs: the same question asked in two places, two counts of what you
+owe, and a player who answers on one screen and is still chased from the
+other. A chip row costs one line of height on a 390px screen, it is styled
+lighter than the Segmented above it so it reads as a view and not a
+destination, and it resets to Alle every time the screen opens — a filter that
+survives the tab you left is a filter that hides next Saturday from you.
+
+Bødekasse is in the layout early because adding a fifth column later would
+re-space the other four and move every tab out from under the thumb that had
+learned where it was.
 
 `Træningshistorik` became `Historik`: at five columns a tab is about 75px,
 which is eight characters at 9px. The screen it opens still says the long
