@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { MatchCard } from "@/components/session/match-card";
 import { MovementBars } from "@/components/session/movement-bars";
 import { Recap } from "@/components/session/recap";
+import { SessionForm } from "@/components/session/session-form";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthGate } from "@/components/auth/auth-gate";
@@ -20,6 +21,7 @@ export default function SessionDetailPage() {
   const router = useRouter();
   const gate = useAuthGate();
   const session = useSession(id);
+  const [editing, setEditing] = useState(false);
   const data = session.data;
 
   // The endpoint hands over the matches and a three-line recap; who played and
@@ -37,7 +39,7 @@ export default function SessionDetailPage() {
         <svg viewBox="0 0 8 12" className="h-3 w-2 rotate-180" aria-hidden>
           <path d="M1 1l5 5-5 5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" />
         </svg>
-        SESSIONER
+        TRÆNINGSHISTORIK
       </Link>
 
       {session.isPending || !data ? (
@@ -63,9 +65,22 @@ export default function SessionDetailPage() {
               ) : null}
             </div>
 
-            <h1 className="mt-1 text-hero font-black tracking-[-0.045em]">
-              {formatDateShort(data.played_on).replace(".", "")}
-            </h1>
+            <div className="mt-1 flex items-center justify-between gap-3">
+              <h1 className="min-w-0 truncate text-hero font-black tracking-[-0.045em]">
+                {formatDateShort(data.played_on).replace(".", "")}
+              </h1>
+              {/* An evening is typed in from memory, so it is typed in wrong
+                  sometimes. The way to fix it sits on the evening itself. */}
+              <button
+                onClick={() => {
+                  haptic("tap");
+                  gate.requireAuth(() => setEditing(true));
+                }}
+                className="shrink-0 rounded-pill border border-line px-3 py-1.5 text-[10px] font-bold tracking-[0.14em] text-mute transition-colors active:border-volt/50 active:text-volt"
+              >
+                RET
+              </button>
+            </div>
 
             <p className="num mt-1.5 text-mini text-mute">
               {data.season.name} · {matchCount(matches.length)} ·{" "}
@@ -111,6 +126,22 @@ export default function SessionDetailPage() {
           )}
 
           <MovementBars standings={standings} />
+
+          {/* Mounted only while open, so every opening starts from what is on
+              screen rather than from whatever was typed and abandoned last. */}
+          {editing ? (
+            <SessionForm
+              key={`edit-${data.id}`}
+              open
+              onOpenChange={setEditing}
+              session={{
+                id: data.id,
+                played_on: data.played_on,
+                type: data.type,
+                note: data.note,
+              }}
+            />
+          ) : null}
 
           <footer className="mt-8 flex items-center justify-between border-t border-line-soft px-1 pt-3">
             <span className="text-[9px] font-bold tracking-[0.2em] text-ink-500">RAMMESLAG FC</span>

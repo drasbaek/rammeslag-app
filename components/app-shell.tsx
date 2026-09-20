@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { Avatar } from "@/components/ui/avatar";
 import { useAuthGate } from "@/components/auth/auth-gate";
-import { useNewSession } from "@/components/session/new-session";
-import { useMe, useSessions } from "@/lib/queries";
+import { useQuickAdd } from "@/components/quick-add";
+import { useMe } from "@/lib/queries";
 import { haptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
 
@@ -73,7 +73,7 @@ function TopBar() {
 
 const TABS = [
   { href: "/", label: "Stigen", icon: "ladder" },
-  { href: "/sessions", label: "Sessioner", icon: "calendar" },
+  { href: "/sessions", label: "Træningshistorik", icon: "calendar" },
 ] as const;
 
 function TabIcon({ name, active }: { name: string; active: boolean }) {
@@ -114,7 +114,7 @@ function Tab({ tab, pathname }: { tab: (typeof TABS)[number]; pathname: string }
       )}
     >
       <TabIcon name={tab.icon} active={active} />
-      <span className="max-w-full truncate text-[10px] font-bold uppercase tracking-[0.12em]">
+      <span className="max-w-full truncate text-[9px] font-bold uppercase tracking-[0.04em]">
         {tab.label}
       </span>
     </Link>
@@ -123,12 +123,7 @@ function Tab({ tab, pathname }: { tab: (typeof TABS)[number]; pathname: string }
 
 function BottomNav() {
   const pathname = usePathname();
-  const router = useRouter();
-  const gate = useAuthGate();
-  const newSession = useNewSession();
-  const sessions = useSessions();
-
-  const openSession = sessions.data?.find((session) => session.status === "open");
+  const quickAdd = useQuickAdd();
 
   return (
     <nav
@@ -147,17 +142,13 @@ function BottomNav() {
             side-effect of a negative margin inside a centred grid. */}
         <div className="relative self-stretch">
           <button
-            aria-label={openSession ? "Indtast kampe" : "Ny session"}
+            aria-label="Tilføj"
             onClick={() => {
               haptic("tap");
-              // An evening in progress is the thing you meant. Otherwise there
-              // is no evening yet, so the button starts one rather than leaving
-              // the list to be read.
-              if (openSession) {
-                gate.requireAuth(() => router.push(`/sessions/${openSession.id}/entry`));
-                return;
-              }
-              newSession.open();
+              // More than one thing can be created now, so the button asks
+              // instead of guessing. The evening in progress is the first row
+              // of the menu, which is where the guess went.
+              quickAdd.openMenu();
             }}
             className="volt-glow absolute inset-x-0 -top-5 mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-volt text-volt-ink transition-transform active:scale-95"
           >

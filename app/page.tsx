@@ -43,7 +43,7 @@ export default function LadderPage() {
   return (
     <div>
       <div className="flex items-baseline justify-between gap-3 px-1">
-        <h1 className="text-hero font-black tracking-[-0.045em]">STIGEN</h1>
+        <h1 className="text-[34px] font-black leading-none tracking-[-0.045em]">ELO-STIGEN</h1>
         <span className="num shrink-0 text-[10px] tracking-[0.14em] text-dim">
           {entries.length > 0 ? `${entries.length} RANGERET` : ""}
         </span>
@@ -52,7 +52,7 @@ export default function LadderPage() {
       <p className="mt-1 px-1 text-mini text-mute">
         {seasonMode
           ? "Rating vundet i sæsonen. All-time nulstilles aldrig."
-          : "Hele holdet, rangeret. Ingen sidder over."}
+          : "Hele holdet rangeret baseret på performance til alle træninger."}
       </p>
 
       <div className="mt-4">

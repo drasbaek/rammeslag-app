@@ -24,6 +24,7 @@ import type {
   SessionCreate,
   SessionDetailOut,
   SessionOut,
+  SessionUpdate,
 } from "@/lib/types";
 
 export const API_MODE: "mock" | "live" =
@@ -147,7 +148,20 @@ export function createSession(body: SessionCreate): Promise<SessionOut> {
     : mock.createSession(body);
 }
 
+export function updateSession(id: string, body: SessionUpdate): Promise<SessionOut> {
+  return live
+    ? http<SessionOut>(`/sessions/${id}`, { method: "PATCH", body: JSON.stringify(body) })
+    : mock.updateSession(id, body);
+}
+
 /* ---- Writes (admin) ----------------------------------------------------- */
+
+/** Takes the evening's matches with it, and the rating they moved. */
+export async function deleteSession(id: string): Promise<null> {
+  if (!live) return mock.deleteSession(id);
+  await http<void>(`/sessions/${id}`, { method: "DELETE" });
+  return null;
+}
 
 export function createPlayer(body: PlayerCreate): Promise<PlayerOut> {
   return live

@@ -295,6 +295,18 @@ export interface SessionCreate {
   note?: string | null;
 }
 
+/**
+ * PATCH /api/sessions/{id}. Every field is optional and an omitted one is left
+ * alone. Re-dating an evening moves its matches with it, so the ladder is
+ * replayed in the order the nights actually happened.
+ */
+export interface SessionUpdate {
+  played_on?: string;
+  type?: SessionType;
+  /** An empty string clears the note. */
+  note?: string;
+}
+
 /** POST /api/seasons. Dates are inclusive on both ends and may not overlap. */
 export interface SeasonCreate {
   name: string;

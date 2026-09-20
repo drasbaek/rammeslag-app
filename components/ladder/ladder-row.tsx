@@ -128,7 +128,7 @@ export function LadderRow({
           </span>
         ) : (
           <span className="num mt-0.5 block truncate text-[9px] leading-none tabular-nums text-dim">
-            {careerRecord} i alt
+            {careerRecord}
           </span>
         )}
       </span>

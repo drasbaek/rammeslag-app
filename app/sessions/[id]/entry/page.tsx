@@ -27,6 +27,9 @@ import type { PlayerOut } from "@/lib/types";
  * from the people who are demonstrably at the hall. Somebody who has not
  * played a single match tonight is only pulled in when there are not four
  * players to choose from — the API has no session roster to ask.
+ *
+ * Offered, never applied. A line-up nobody asked for is a line-up that gets
+ * saved by accident, so this only ever runs when the suggest button is tapped.
  */
 function proposeFour(squad: PlayerOut[], playedTonight: Map<string, number>, nudge: number): string[] {
   const present = squad.filter((p) => (playedTonight.get(p.id) ?? 0) > 0);
@@ -55,17 +58,18 @@ export default function EntryPage() {
   const createMatch = useCreateMatch(id);
   const closeSession = useCloseSession(id);
 
-  /** null means "use the proposal" — the roster is sticky, the picks are not. */
-  const [picked, setPicked] = useState<string[] | null>(null);
+  /** The four names, in order: first two are Hold A. Nobody is picked for you. */
+  const [selected, setSelected] = useState<string[]>([]);
   const [sets, setSets] = useState<SetDraft[]>([{ games_a: null, games_b: null }]);
   const [nudge, setNudge] = useState(0);
   const [showAll, setShowAll] = useState(false);
   /**
-   * The grid is for corrections, so it starts shut. Collapsed, the line-up is
-   * one row and the score pad and the save bar both fit on a 390×844 screen
-   * without scrolling — which is the whole job of this screen.
+   * Open, because picking the four is now the first thing this screen asks
+   * for. It folds itself away the moment the fourth name is tapped, and from
+   * there the score pad and the save bar both fit on a 390×844 screen without
+   * scrolling — which is the whole job of this screen.
    */
-  const [showPicker, setShowPicker] = useState(false);
+  const [showPicker, setShowPicker] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
 
@@ -91,24 +95,22 @@ export default function EntryPage() {
     return counts;
   }, [matches]);
 
-  // The roster is sticky and a line-up is always on screen: the next match is
-  // two taps on the score and one on save. Deriving it instead of writing it
-  // into state in an effect keeps the proposal honest after every save.
+  // What the rotation would pick if it were asked. It is only ever asked by
+  // the button, and deriving it rather than storing it keeps the suggestion
+  // honest after every save.
   const proposal = useMemo(
     () => (squad.length >= 4 ? proposeFour(squad, playedTonight, nudge) : []),
     [squad, playedTonight, nudge],
   );
-  const selected = picked ?? proposal;
 
   const toggle = (playerId: string) => {
     setError(null);
-    const current = picked ?? proposal;
-    const next = current.includes(playerId)
-      ? current.filter((x) => x !== playerId)
-      : current.length >= 4
-        ? [...current.slice(1), playerId]
-        : [...current, playerId];
-    setPicked(next);
+    const next = selected.includes(playerId)
+      ? selected.filter((x) => x !== playerId)
+      : selected.length >= 4
+        ? [...selected.slice(1), playerId]
+        : [...selected, playerId];
+    setSelected(next);
     // Four names is the whole job of the grid, so it folds itself back up and
     // hands the screen to the score pad. One tap to reopen if that was wrong.
     if (next.length === 4) setShowPicker(false);
@@ -147,7 +149,10 @@ export default function EntryPage() {
         haptic("success");
         setSaved(`${gamesA}–${gamesB} gemt`);
         setSets([{ games_a: null, games_b: null }]);
-        setPicked(null);
+        // The next match starts empty and asks again, rather than inheriting
+        // four names that were right for the match that just finished.
+        setSelected([]);
+        setShowPicker(true);
         setNudge((n) => n + 3);
         setError(null);
         window.setTimeout(() => setSaved(null), 2200);
@@ -181,7 +186,7 @@ export default function EntryPage() {
         <svg viewBox="0 0 8 12" className="h-3 w-2 rotate-180" aria-hidden>
           <path d="M1 1l5 5-5 5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" />
         </svg>
-        SESSIONEN
+        TRÆNINGEN
       </Link>
 
       {session.isPending || !data ? (
@@ -208,15 +213,20 @@ export default function EntryPage() {
             <SectionHeader
               title="Hold"
               right={
+                // The rotation as a suggestion: one tap fills the four who
+                // have played least, another shuffles to the next four.
                 <button
                   onClick={() => {
                     haptic("tap");
-                    setPicked(null);
+                    setSelected(proposal);
+                    setShowPicker(false);
                     setNudge((n) => n + 1);
+                    setError(null);
                   }}
-                  className="text-[10px] font-bold tracking-[0.12em] text-volt"
+                  disabled={proposal.length < 4}
+                  className="text-[10px] font-bold tracking-[0.12em] text-volt disabled:opacity-40"
                 >
-                  BYT RUNDT
+                  FORESLÅ FIRE
                 </button>
               }
             />
@@ -230,7 +240,9 @@ export default function EntryPage() {
               className="flex w-full items-center gap-2 rounded-card border border-line-soft bg-ink-850/60 px-3 py-2.5 text-left"
             >
               <span className="min-w-0 flex-1 truncate text-[13px] font-bold text-volt">
-                {teamA.every(Boolean)
+                {/* An empty line-up has no names at all, and `every` is true of
+                    nothing — so the count is what decides, not the contents. */}
+                {teamA.length === 2 && teamA.every(Boolean)
                   ? teamA.map((p) => firstName(p!.name)).join(" & ")
                   : "Vælg to"}
               </span>
@@ -238,7 +250,7 @@ export default function EntryPage() {
                 MOD
               </span>
               <span className="min-w-0 flex-1 truncate text-right text-[13px] font-bold text-chalk">
-                {teamB.every(Boolean)
+                {teamB.length === 2 && teamB.every(Boolean)
                   ? teamB.map((p) => firstName(p!.name)).join(" & ")
                   : "Vælg to"}
               </span>
@@ -355,7 +367,7 @@ export default function EntryPage() {
                 closeSession.mutateAsync().then(() => router.push(`/sessions/${id}`));
               }}
             >
-              Luk aftenen
+              Luk træningssessionen
             </Button>
           ) : null}
 

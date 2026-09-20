@@ -1,14 +1,21 @@
 import type { MatchOut } from "@/lib/types";
-import { firstName, formatTime } from "@/lib/format";
+import { formatTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
+/**
+ * One side of one match: both players, whole names, one above the other.
+ *
+ * Two full names on a single line is 40 characters, and 40 characters do not
+ * fit next to a scoreline on a 390px screen — one of them would always end in
+ * an ellipsis. Stacked, the longest name in the club has room to spare.
+ */
 function TeamLine({
   names,
   games,
   won,
   setResults,
 }: {
-  names: string;
+  names: string[];
   games: number[];
   won: boolean;
   setResults: (boolean | null)[];
@@ -17,18 +24,23 @@ function TeamLine({
     <div className="flex items-center gap-2 py-[3px]">
       <span
         className={cn(
-          "h-4 w-[3px] shrink-0 rounded-full",
+          "w-[3px] shrink-0 self-stretch rounded-full",
           won ? "bg-volt" : "bg-transparent",
         )}
         aria-hidden
       />
-      <span
-        className={cn(
-          "min-w-0 flex-1 truncate text-[13px] tracking-tight",
-          won ? "font-bold text-chalk" : "font-medium text-mute",
-        )}
-      >
-        {names}
+      <span className="min-w-0 flex-1">
+        {names.map((name) => (
+          <span
+            key={name}
+            className={cn(
+              "block truncate text-[13px] leading-[1.35] tracking-tight",
+              won ? "font-bold text-chalk" : "font-medium text-mute",
+            )}
+          >
+            {name}
+          </span>
+        ))}
       </span>
       <span className="flex shrink-0 items-center gap-1">
         {games.map((value, i) => (
@@ -70,13 +82,13 @@ export function MatchCard({ match, index }: { match: MatchOut; index: number }) 
         <span className="num text-[9px] tracking-[0.1em] text-ink-500">{formatTime(match.played_at)}</span>
       </div>
       <TeamLine
-        names={`${firstName(match.team_a[0].name)} & ${firstName(match.team_a[1].name)}`}
+        names={match.team_a.map((player) => player.name)}
         games={gamesA}
         won={match.winner === "A"}
         setResults={verdicts.map((v) => (v === "D" ? null : v === "A"))}
       />
       <TeamLine
-        names={`${firstName(match.team_b[0].name)} & ${firstName(match.team_b[1].name)}`}
+        names={match.team_b.map((player) => player.name)}
         games={gamesB}
         won={match.winner === "B"}
         setResults={verdicts.map((v) => (v === "D" ? null : v === "B"))}

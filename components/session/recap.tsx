@@ -2,23 +2,8 @@ import Link from "next/link";
 import type { PlayerDeltaOut, RecapOut } from "@/lib/types";
 import { Delta } from "@/components/ui/delta";
 import { standingOf, type SessionStanding } from "@/lib/session-stats";
-import { firstName, matchCount, recordLine } from "@/lib/format";
+import { matchCount, recordLine } from "@/lib/format";
 import { cn } from "@/lib/utils";
-
-const BUND_ROASTS = [
-  "Holdt bunden varm hele aftenen.",
-  "Bar bolde, ære og nederlag hjem.",
-  "Var der. Det tæller også for noget.",
-  "Betalte banelejen i sjæl i aften.",
-  "Alle andre skulle jo slå nogen.",
-  "Herfra går det kun opad.",
-];
-
-function roastFor(id: string): string {
-  let hash = 0;
-  for (let i = 0; i < id.length; i += 1) hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
-  return BUND_ROASTS[hash % BUND_ROASTS.length];
-}
 
 function HighlightCard({
   highlight,
@@ -53,8 +38,10 @@ function HighlightCard({
         <span className={tone === "up" ? "text-win" : "text-loss"}>{icon}</span>
         <span className={cn("eyebrow", tone === "up" ? "text-win/80" : "text-loss/80")}>{label}</span>
       </div>
-      <p className="relative mt-2 truncate text-[15px] font-extrabold tracking-tight">
-        {firstName(highlight.name)}
+      {/* The whole name, not the given one. Two cards across a 390px screen
+          leave about 150px, which a long name fills exactly — hence 14px. */}
+      <p className="relative mt-2 truncate text-[14px] font-extrabold leading-tight tracking-tight">
+        {highlight.name}
       </p>
       <p className="relative mt-1">
         <Delta value={highlight.delta} className="text-stat" />
@@ -92,48 +79,6 @@ function FallArrow() {
   );
 }
 
-function BundpropStrip({
-  highlight,
-  standing,
-}: {
-  highlight: PlayerDeltaOut;
-  standing: SessionStanding | null;
-}) {
-  return (
-    <Link
-      href={`/players/${highlight.player_id}`}
-      className="bund-grain animate-rise mt-2 block overflow-hidden rounded-card border border-bund/20"
-    >
-      <div className="flex items-center gap-3 px-3 py-3">
-        <svg viewBox="0 0 34 30" className="h-8 w-9 shrink-0" aria-hidden>
-          <path d="M24 10c3-1 5-3 5-6" stroke="var(--color-bund)" strokeWidth="1.3" fill="none" opacity="0.6" strokeLinecap="round" />
-          <circle cx="29" cy="3" r="1.8" stroke="var(--color-bund)" strokeWidth="1.3" fill="none" opacity="0.6" />
-          <ellipse cx="15" cy="22" rx="13" ry="8" fill="var(--color-bund)" opacity="0.12" />
-          <ellipse cx="15" cy="19" rx="13" ry="8" stroke="var(--color-bund)" strokeWidth="1.4" fill="#120f0e" opacity="0.85" />
-          <ellipse cx="15" cy="19" rx="7" ry="4.2" stroke="var(--color-bund)" strokeWidth="1.1" fill="none" opacity="0.5" />
-        </svg>
-
-        <div className="min-w-0 flex-1">
-          <span className="inline-block rounded-[4px] border border-bund/35 bg-bund/10 px-1.5 py-[2px] text-[9px] font-black tracking-[0.14em] text-bund/90">
-            AFTENENS BUNDPROP
-          </span>
-          <p className="mt-1.5 truncate text-[16px] font-extrabold tracking-tight">{highlight.name}</p>
-          <p className="truncate text-[11px] italic text-bund/70">{roastFor(highlight.player_id)}</p>
-        </div>
-
-        <div className="shrink-0 text-right">
-          <Delta value={highlight.delta} className="text-stat-sm" />
-          <p className="num mt-0.5 text-[10px] text-dim">
-            {standing
-              ? `${recordLine(standing.wins, standing.losses, standing.draws)} · ${matchCount(standing.matches)}`
-              : `rating ${Math.round(highlight.rating)}`}
-          </p>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
 /** The part that gets screenshotted into the group chat. */
 export function Recap({
   recap,
@@ -142,7 +87,7 @@ export function Recap({
   recap: RecapOut;
   standings: SessionStanding[];
 }) {
-  if (!recap.biggest_riser && !recap.biggest_faller && !recap.bundprop) return null;
+  if (!recap.biggest_riser && !recap.biggest_faller) return null;
 
   return (
     <section className="mt-5">
@@ -171,13 +116,6 @@ export function Recap({
           />
         ) : null}
       </div>
-
-      {recap.bundprop ? (
-        <BundpropStrip
-          highlight={recap.bundprop}
-          standing={standingOf(standings, recap.bundprop.player_id)}
-        />
-      ) : null}
     </section>
   );
 }

@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 import { AuthGateProvider } from "@/components/auth/auth-gate";
-import { NewSessionProvider } from "@/components/session/new-session";
+import { QuickAddProvider } from "@/components/quick-add";
 
 /**
  * Everything is fetched in the browser. No server component in this app reads
@@ -26,7 +26,7 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={client}>
       <AuthGateProvider>
-        <NewSessionProvider>{children}</NewSessionProvider>
+        <QuickAddProvider>{children}</QuickAddProvider>
       </AuthGateProvider>
     </QueryClientProvider>
   );

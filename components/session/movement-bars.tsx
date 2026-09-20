@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import type { SessionStanding } from "@/lib/session-stats";
 import { Delta } from "@/components/ui/delta";
-import { firstName, recordLine } from "@/lib/format";
+import { recordLine } from "@/lib/format";
 import { zoneMarks } from "@/lib/zones";
 import { cn } from "@/lib/utils";
 
@@ -38,10 +38,13 @@ export function MovementBars({ standings }: { standings: SessionStanding[] }) {
                 mark ? (mark.zone === "top" ? "zone-top" : "zone-bottom") : "",
               )}
             >
-              <span className="w-[74px] shrink-0 truncate text-[12px] font-semibold text-mute">
-                {firstName(row.name)}
+              {/* Whole names, so the column flexes and the bar is the fixed
+                  one. A bar is readable at 88px; a name is not readable at
+                  74px. */}
+              <span className="min-w-0 flex-1 truncate text-[12px] font-semibold text-mute">
+                {row.name}
               </span>
-              <span className="relative h-3 flex-1">
+              <span className="relative h-3 w-[88px] shrink-0">
                 <span className="absolute inset-y-0 left-1/2 w-px bg-ink-600" aria-hidden />
                 <span
                   className={cn(

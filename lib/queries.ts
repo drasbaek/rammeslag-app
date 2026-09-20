@@ -22,6 +22,7 @@ import type {
   SessionCreate,
   SessionDetailOut,
   SessionOut,
+  SessionUpdate,
 } from "@/lib/types";
 
 export const keys = {
@@ -159,6 +160,38 @@ export function useCreateSession() {
     // the list behind it has to know the evening exists before it is read.
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ["sessions"] });
+    },
+  });
+}
+
+/**
+ * Editing an evening can move it to another date and another season, and the
+ * rating replay runs in date order — so a corrected session moves everybody's
+ * numbers, not just its own row. Everything derived is dropped.
+ */
+export function useUpdateSession(sessionId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (body: SessionUpdate) => api.updateSession(sessionId, body),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.session(sessionId) });
+      void client.invalidateQueries({ queryKey: ["sessions"] });
+      void client.invalidateQueries({ queryKey: ["ladder"] });
+      void client.invalidateQueries({ queryKey: ["profile"] });
+    },
+  });
+}
+
+/** Deleting takes the evening's matches with it, so the whole board is replayed. */
+export function useDeleteSession(sessionId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: () => api.deleteSession(sessionId),
+    onSuccess: () => {
+      client.removeQueries({ queryKey: keys.session(sessionId) });
+      void client.invalidateQueries({ queryKey: ["sessions"] });
+      void client.invalidateQueries({ queryKey: ["ladder"] });
+      void client.invalidateQueries({ queryKey: ["profile"] });
     },
   });
 }

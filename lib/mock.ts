@@ -43,6 +43,7 @@ import type {
   SessionDetailOut,
   SessionOut,
   SessionType,
+  SessionUpdate,
   TeamSide,
   Verdict,
 } from "@/lib/types";
@@ -84,8 +85,14 @@ function recomputeCurrent(): void {
   }
 }
 
+/**
+ * Every match the replay should see. A match belonging to a session that has
+ * been deleted is not one of them — dropping the session drops its matches,
+ * and the next replay is simply a replay without them. Never an inverse
+ * update, exactly as the backend does it.
+ */
 function allMatches(): SeedMatch[] {
-  return [...MATCHES, ...extraMatches];
+  return [...MATCHES, ...extraMatches].filter((m) => sessionById.has(m.session_id));
 }
 
 /**
@@ -755,6 +762,62 @@ export async function closeSession(id: string): Promise<SessionOut> {
   if (!session) throw new Error(`Ukendt aften: ${id}`);
   session.status = "closed";
   return delay(toSessionOut(session, world()));
+}
+
+/** Copenhagen, the way the seed stamps it. Summer time from April to September. */
+function tzOffsetFor(day: string): string {
+  const month = Number(day.slice(5, 7));
+  return month >= 4 && month <= 9 ? "+02:00" : "+01:00";
+}
+
+/** The same clock time, on another day. */
+function restamp(playedAt: string, day: string): string {
+  return `${day}T${playedAt.slice(11, 19)}${tzOffsetFor(day)}`;
+}
+
+/**
+ * PATCH /api/sessions/{id}. An omitted field is left alone; an empty note
+ * clears it.
+ *
+ * Re-dating an evening moves its matches onto the new date, keeping the time
+ * of day each one was played at. Ratings are a chronological replay, so an
+ * evening listed in February whose matches were still stamped in September
+ * would be shown in one place and counted in another.
+ */
+export async function updateSession(id: string, body: SessionUpdate): Promise<SessionOut> {
+  if (!authed) throw new Error("Log ind for at rette en session");
+  const session = sessionById.get(id);
+  if (!session) throw new Error(`Ukendt aften: ${id}`);
+
+  if (body.type !== undefined && !SESSION_TYPES.includes(body.type)) {
+    throw new Error("Ukendt sessionstype.");
+  }
+  const moving = body.played_on !== undefined && body.played_on !== session.played_on;
+  const season = moving
+    ? seasonList.find((s) => s.starts_on <= body.played_on! && body.played_on! <= s.ends_on)
+    : null;
+  if (moving && !season) throw new Error("Der findes ingen sæson, der dækker den dato.");
+
+  if (body.type !== undefined) session.type = body.type;
+  if (body.note !== undefined) session.note = body.note.trim() ? body.note.trim() : null;
+  if (moving && season && body.played_on) {
+    for (const match of allMatches()) {
+      if (match.session_id === id) match.played_at = restamp(match.played_at, body.played_on);
+    }
+    session.played_on = body.played_on;
+    session.season_id = season.id;
+  }
+  return delay(toSessionOut(session, world()));
+}
+
+/** DELETE /api/sessions/{id}. Admin only, and it takes the matches with it. */
+export async function deleteSession(id: string): Promise<null> {
+  if (!authed?.is_admin) throw new Error("Kun administratorer kan slette en session");
+  const session = sessionById.get(id);
+  if (!session) throw new Error(`Ukendt aften: ${id}`);
+  sessionById.delete(id);
+  sessionList.splice(sessionList.indexOf(session), 1);
+  return delay(null);
 }
 
 export { OPEN_SESSION_ID };
