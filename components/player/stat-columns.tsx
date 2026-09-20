@@ -34,11 +34,19 @@ function Column({
   caption,
   stats,
   accent,
+  gainLabel = "Vundet",
 }: {
   title: string;
   caption: string;
   stats: StatColumn | null;
   accent: boolean;
+  /**
+   * What the rating movement is called in this column. The season board ranks
+   * by exactly this number, so the season column names it the same way its
+   * caption does — "Placering" on its own reads as a placing by rating, which
+   * is not what a season rank is.
+   */
+  gainLabel?: string;
 }) {
   return (
     <div
@@ -59,7 +67,7 @@ function Column({
             <Line label="Rating" value={formatRating(stats.rating)} />
           ) : null}
           <Line
-            label="Vundet"
+            label={gainLabel}
             value={delta(stats.rating_gained, 0)}
             tone={
               stats.rating_gained > 0.05
@@ -78,7 +86,15 @@ function Column({
   );
 }
 
-/** All-time and season, side by side. The all-time rating never resets. */
+/**
+ * All-time and season, side by side. The all-time rating never resets.
+ *
+ * The two "Placering" lines are not the same measurement. All-time is a
+ * placing by rating; a season placing is by rating gained inside the season,
+ * which is what STIGEN ranks by in season mode. The season column says so in
+ * its caption and calls the number the rank is built on "Fremgang", because
+ * a rank whose basis is unstated is a rank that gets read as the wrong one.
+ */
 export function StatColumns({
   allTime,
   season,
@@ -90,12 +106,13 @@ export function StatColumns({
 }) {
   return (
     <div className="grid grid-cols-2 gap-2">
-      <Column title="All-time" caption="Siden første kamp" stats={allTime} accent={false} />
+      <Column title="All-time" caption="Placering efter rating" stats={allTime} accent={false} />
       <Column
         title={seasonName}
-        caption="Ratingen nulstilles aldrig"
+        caption="Placering efter fremgang"
         stats={season}
         accent
+        gainLabel="Fremgang"
       />
     </div>
   );

@@ -45,6 +45,10 @@ backend/
 app/                       Next.js App Router. Client components.
 components/                shadcn/ui plus ours.
 lib/api.ts                 Typed client generated from OpenAPI.
+lib/attendance.ts          Who is at the hall tonight, per session, in
+                           localStorage. Deliberately not an API
+                           resource: a session is its matches, and this
+                           only has to survive a reload.
 public/                    Manifest and icons.
 package.json               The Next.js app lives at the repo root, because
                            Vercel detects the framework from a root

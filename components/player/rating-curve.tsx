@@ -47,6 +47,29 @@ function CurveTooltip({
   );
 }
 
+/** A season boundary the curve actually crosses. */
+interface Shift {
+  /** The x value of the first match played inside `season`. */
+  x: number;
+  season: SeasonOut;
+}
+
+/**
+ * Where each label goes, so that none of them leaves the plot.
+ *
+ * A season that started last month sits at the right-hand edge of a long
+ * career, and a label drawn to the right of that line is a label nobody can
+ * read — which is exactly what happened to "Efterår 2026". So the label flips
+ * to the inside of the line once the shift is past the two-thirds mark, and
+ * consecutive labels alternate top and bottom so two nearby seasons do not
+ * print on top of each other.
+ */
+function labelPosition(fraction: number, index: number) {
+  const vertical = index % 2 === 0 ? "Top" : "Bottom";
+  const side = fraction > 0.66 ? "Right" : "Left";
+  return `inside${vertical}${side}` as const;
+}
+
 /**
  * Every match the player has played, in order — `curve` is the rating after
  * each one, oldest first.
@@ -55,18 +78,33 @@ function CurveTooltip({
  * rating. AGENTS.md: `entry_rating` is an admin's private judgement and never
  * appears outside the admin player screen, so it is neither plotted here nor
  * named in the tooltip.
+ *
+ * Every season the curve crosses gets a dashed line, not just the current one:
+ * the interesting question about a rating curve is which half-year a run of
+ * form belongs to. The current season keeps the accent; the older shifts are
+ * grey, so the chart still reads as one line with markers on it.
  */
-export function RatingCurve({ curve, season }: { curve: CurvePoint[]; season: SeasonOut | null }) {
+export function RatingCurve({ curve, seasons }: { curve: CurvePoint[]; seasons: SeasonOut[] }) {
   const rows = useMemo<Row[]>(
     () => curve.map((point, i) => ({ i: i + 1, rating: point.rating, played_at: point.played_at })),
     [curve],
   );
 
-  const seasonStart = useMemo(() => {
-    if (!season) return null;
-    const index = rows.findIndex((row) => row.played_at.slice(0, 10) >= season.starts_on);
-    return index > 0 ? rows[index].i : null;
-  }, [rows, season]);
+  const shifts = useMemo<Shift[]>(() => {
+    const ordered = [...seasons].sort((a, b) => a.starts_on.localeCompare(b.starts_on));
+    // Keyed by x: a player who sat out a whole season has two seasons starting
+    // at the same match, and the later one is the season that match belongs to.
+    const atMatch = new Map<number, SeasonOut>();
+    for (const season of ordered) {
+      const index = rows.findIndex((row) => row.played_at.slice(0, 10) >= season.starts_on);
+      // Index 0 is the first match of the career: the curve begins there, so
+      // there is no shift to mark.
+      if (index > 0) atMatch.set(rows[index].i, season);
+    }
+    return [...atMatch.entries()]
+      .map(([x, season]) => ({ x, season }))
+      .sort((a, b) => a.x - b.x);
+  }, [rows, seasons]);
 
   if (rows.length < 2) {
     return (
@@ -104,20 +142,27 @@ export function RatingCurve({ curve, season }: { curve: CurvePoint[]; season: Se
             tickCount={4}
           />
 
-          {seasonStart !== null ? (
-            <ReferenceLine
-              x={seasonStart}
-              stroke="var(--color-volt-deep)"
-              strokeDasharray="2 4"
-              label={{
-                value: season?.name.toUpperCase() ?? "",
-                position: "insideTopLeft",
-                fill: "var(--color-volt-deep)",
-                fontSize: 9,
-                letterSpacing: "0.1em",
-              }}
-            />
-          ) : null}
+          {shifts.map((shift, index) => {
+            const fraction = rows.length > 1 ? (shift.x - 1) / (rows.length - 1) : 0;
+            const tone = shift.season.is_current
+              ? "var(--color-volt-deep)"
+              : "var(--color-ink-500)";
+            return (
+              <ReferenceLine
+                key={shift.season.id}
+                x={shift.x}
+                stroke={tone}
+                strokeDasharray="2 4"
+                label={{
+                  value: shift.season.name.toUpperCase(),
+                  position: labelPosition(fraction, index),
+                  fill: tone,
+                  fontSize: 9,
+                  letterSpacing: "0.1em",
+                }}
+              />
+            );
+          })}
 
           <Tooltip
             cursor={{ stroke: "var(--color-volt)", strokeWidth: 1, strokeOpacity: 0.4 }}

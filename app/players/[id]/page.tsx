@@ -144,7 +144,7 @@ export default function PlayerProfilePage() {
                 </span>
               }
             />
-            <RatingCurve curve={data.curve} season={currentSeason} />
+            <RatingCurve curve={data.curve} seasons={seasons.data ?? []} />
           </section>
 
           <section className="mt-5">

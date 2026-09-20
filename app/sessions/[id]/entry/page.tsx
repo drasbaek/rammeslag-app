@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { AttendancePicker } from "@/components/entry/attendance-picker";
 import { PlayerPicker } from "@/components/entry/player-picker";
 import { ScorePad, type SetDraft } from "@/components/entry/score-pad";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ import {
   useSession,
 } from "@/lib/queries";
 import { participants } from "@/lib/session-stats";
+import { readAttendance, writeAttendance } from "@/lib/attendance";
 import { firstName, formatDateLong, delta } from "@/lib/format";
 import { haptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
@@ -24,20 +26,17 @@ import type { PlayerOut } from "@/lib/types";
 
 /**
  * Rotation that keeps the evening even: the four who have played least, drawn
- * from the people who are demonstrably at the hall. Somebody who has not
- * played a single match tonight is only pulled in when there are not four
- * players to choose from — the API has no session roster to ask.
+ * from tonight's squad — which is now the people the screen was told are at
+ * the hall, rather than a guess made from who happens to have played already.
  *
  * Offered, never applied. A line-up nobody asked for is a line-up that gets
  * saved by accident, so this only ever runs when the suggest button is tapped.
  */
 function proposeFour(squad: PlayerOut[], playedTonight: Map<string, number>, nudge: number): string[] {
-  const present = squad.filter((p) => (playedTonight.get(p.id) ?? 0) > 0);
-  const pool = present.length >= 4 ? present : squad;
-  const ordered = [...pool].sort((a, b) => {
+  const ordered = [...squad].sort((a, b) => {
     const diff = (playedTonight.get(a.id) ?? 0) - (playedTonight.get(b.id) ?? 0);
     if (diff !== 0) return diff;
-    return pool.indexOf(a) - pool.indexOf(b);
+    return squad.indexOf(a) - squad.indexOf(b);
   });
   if (ordered.length < 4) return ordered.map((p) => p.id);
   const offset = nudge % ordered.length;
@@ -64,10 +63,22 @@ export default function EntryPage() {
   const [nudge, setNudge] = useState(0);
   const [showAll, setShowAll] = useState(false);
   /**
-   * Open, because picking the four is now the first thing this screen asks
-   * for. It folds itself away the moment the fourth name is tapped, and from
-   * there the score pad and the save bar both fit on a 390×844 screen without
-   * scrolling — which is the whole job of this screen.
+   * Tonight's squad, and the answer being edited.
+   *
+   * `chosen` is the roster this phone was given, read straight out of storage
+   * — null when it has not been asked yet, which is also what the server
+   * render sees, and by the time anything depends on it the evening has
+   * loaded. `draft` is non-null exactly while the "who is here" question is on
+   * screen, so changing your mind halfway never takes somebody out from under
+   * a line-up that is already picked.
+   */
+  const [chosen, setChosen] = useState<string[] | null>(() => readAttendance(id));
+  const [draft, setDraft] = useState<string[] | null>(null);
+  /**
+   * Open, because picking the four is the first thing this screen asks for
+   * once it knows who is here. It folds itself away the moment the fourth name
+   * is tapped, and from there the score pad and the save bar both fit on a
+   * 390×844 screen without scrolling — which is the whole job of this screen.
    */
   const [showPicker, setShowPicker] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -77,13 +88,32 @@ export default function EntryPage() {
   const everyone = useMemo(() => players.data ?? [], [players.data]);
   const matches = useMemo(() => data?.matches ?? [], [data?.matches]);
 
-  /** Tonight's squad: whoever has already played, then the rest of the team. */
+  /**
+   * Who is at the hall: the answer this phone gave, or — on a phone joining an
+   * evening that is already under way — whoever has played a match tonight.
+   * Derived rather than stored, so a second device picks the evening up
+   * without being asked a question the matches already answer.
+   */
+  const present = useMemo<string[]>(
+    () => chosen ?? participants(matches).map((p) => p.id),
+    [chosen, matches],
+  );
+
+  /** Tonight's squad, in the roster's own alphabetical order. */
   const squad = useMemo<PlayerOut[]>(() => {
-    const tonight = participants(matches);
-    const tonightIds = new Set(tonight.map((p) => p.id));
-    const rest = everyone.filter((p) => !tonightIds.has(p.id) && (showAll || !p.is_guest));
-    return [...tonight, ...rest];
-  }, [matches, everyone, showAll]);
+    const here = new Set(present);
+    return everyone.filter((p) => here.has(p.id));
+  }, [everyone, present]);
+
+  /**
+   * Everybody who can be ticked off as present. Guests hide behind a toggle —
+   * except one already on tonight's list, who would otherwise disappear from
+   * the screen that is asking about them.
+   */
+  const rosterToAsk = useMemo<PlayerOut[]>(
+    () => everyone.filter((p) => showAll || !p.is_guest || (draft ?? present).includes(p.id)),
+    [everyone, showAll, draft, present],
+  );
 
   const playedTonight = useMemo(() => {
     const counts = new Map<string, number>();
@@ -114,6 +144,38 @@ export default function EntryPage() {
     // Four names is the whole job of the grid, so it folds itself back up and
     // hands the screen to the score pad. One tap to reopen if that was wrong.
     if (next.length === 4) setShowPicker(false);
+  };
+
+  /**
+   * The question is on screen: either it was opened, or this phone has not
+   * answered it for this evening yet. It is asked even when there are matches
+   * to seed it from — those five names are who has played, not who is here,
+   * and a grid that quietly leaves out the three who just arrived is worse
+   * than one tap.
+   */
+  const answered = chosen !== null;
+  const asking = draft !== null || (Boolean(data) && !answered);
+  /** What the tick marks show: the edit in progress, else tonight's squad. */
+  const answer = draft ?? present;
+
+  const toggleDraft = (playerId: string) => {
+    setDraft(
+      answer.includes(playerId)
+        ? answer.filter((x) => x !== playerId)
+        : [...answer, playerId],
+    );
+  };
+
+  const confirmAttendance = () => {
+    setChosen(answer);
+    writeAttendance(id, answer);
+    setDraft(null);
+    // Somebody taken off the list cannot stay in the line-up they were picked
+    // for, so the four are trimmed to the people who are still here.
+    setSelected((current) => current.filter((pid) => answer.includes(pid)));
+    setShowPicker(true);
+    setError(null);
+    haptic("success");
   };
 
   const gamesA = sets.reduce((sum, set) => sum + (set.games_a ?? 0), 0);
@@ -199,7 +261,9 @@ export default function EntryPage() {
         <>
           <header className="flex items-end justify-between gap-3">
             <div className="min-w-0">
-              <p className="eyebrow text-volt">Kamp {matches.length + 1}</p>
+              <p className="eyebrow text-volt">
+                {asking ? "Aftenens spillere" : `Kamp ${matches.length + 1}`}
+              </p>
               <h1 className="mt-1 truncate text-[22px] font-black tracking-[-0.03em]">
                 {formatDateLong(data.played_on)}
               </h1>
@@ -209,113 +273,180 @@ export default function EntryPage() {
             </span>
           </header>
 
-          <section className="mt-4">
-            <SectionHeader
-              title="Hold"
-              right={
-                // The rotation as a suggestion: one tap fills the four who
-                // have played least, another shuffles to the next four.
-                <button
-                  onClick={() => {
-                    haptic("tap");
-                    setSelected(proposal);
-                    setShowPicker(false);
-                    setNudge((n) => n + 1);
-                    setError(null);
-                  }}
-                  disabled={proposal.length < 4}
-                  className="text-[10px] font-bold tracking-[0.12em] text-volt disabled:opacity-40"
-                >
-                  FORESLÅ FIRE
-                </button>
-              }
-            />
+          {asking ? (
+            /* Asked once, before the first line-up: eighteen names scrolled
+               past for every single match is the thing this screen was losing
+               the evening to. The answer lives on this phone (lib/attendance),
+               not in the API — an evening is still its matches. */
+            <section className="mt-4">
+              <SectionHeader
+                title="Hvem er med i aften?"
+                right={
+                  <button
+                    onClick={() => {
+                      haptic("tap");
+                      const members = rosterToAsk.map((p) => p.id);
+                      setDraft(answer.length >= members.length ? [] : members);
+                    }}
+                    className="text-[10px] font-bold tracking-[0.12em] text-volt"
+                  >
+                    {answer.length >= rosterToAsk.length ? "RYD" : "VÆLG ALLE"}
+                  </button>
+                }
+              />
+              <p className="px-1 pb-2 text-mini text-dim">
+                Vælg dem der er i hallen. Resten af aftenen vælges holdene kun blandt dem.
+              </p>
 
-            <button
-              onClick={() => {
-                haptic("tap");
-                setShowPicker((value) => !value);
-              }}
-              aria-expanded={showPicker}
-              className="flex w-full items-center gap-2 rounded-card border border-line-soft bg-ink-850/60 px-3 py-2.5 text-left"
-            >
-              <span className="min-w-0 flex-1 truncate text-[13px] font-bold text-volt">
-                {/* An empty line-up has no names at all, and `every` is true of
-                    nothing — so the count is what decides, not the contents. */}
-                {teamA.length === 2 && teamA.every(Boolean)
-                  ? teamA.map((p) => firstName(p!.name)).join(" & ")
-                  : "Vælg to"}
-              </span>
-              <span className="num shrink-0 px-1 text-[10px] font-black tracking-[0.1em] text-dim">
-                MOD
-              </span>
-              <span className="min-w-0 flex-1 truncate text-right text-[13px] font-bold text-chalk">
-                {teamB.length === 2 && teamB.every(Boolean)
-                  ? teamB.map((p) => firstName(p!.name)).join(" & ")
-                  : "Vælg to"}
-              </span>
-              <svg
-                viewBox="0 0 12 8"
-                className={cn("h-2 w-3 shrink-0 text-dim transition-transform", showPicker ? "rotate-180" : "")}
-                aria-hidden
+              <AttendancePicker roster={rosterToAsk} present={answer} onToggle={toggleDraft} />
+
+              <button
+                onClick={() => setShowAll((value) => !value)}
+                className="mt-2 w-full rounded-pill border border-line py-1.5 text-[11px] font-semibold text-dim"
               >
-                <path d="M1 1l5 5 5-5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" />
-              </svg>
-            </button>
+                {showAll ? "Skjul gæster" : "Vis gæster"}
+              </button>
 
-            {showPicker ? (
-              <div className="animate-fade">
-                <div className="mt-2">
-                  <PlayerPicker roster={squad} selected={selected} onToggle={toggle} />
-                </div>
-                <button
-                  onClick={() => setShowAll((value) => !value)}
-                  className="mt-2 w-full rounded-pill border border-line py-1.5 text-[11px] font-semibold text-dim"
+              <Button
+                variant="volt"
+                size="lg"
+                className="mt-3 w-full"
+                disabled={answer.length < 4}
+                onClick={confirmAttendance}
+              >
+                {answer.length < 4
+                  ? `Vælg mindst fire (${answer.length})`
+                  : `Fortsæt med ${answer.length} spillere`}
+              </Button>
+
+              {/* Only once the question has been answered: the first time
+                  through, there is nothing behind it to go back to. */}
+              {answered ? (
+                <Button
+                  variant="ghost"
+                  className="mx-auto mt-2 block"
+                  onClick={() => setDraft(null)}
                 >
-                  {showAll ? "Skjul gæster" : "Tilføj gæst"}
-                </button>
-              </div>
-            ) : null}
-          </section>
-
-          <section className="mt-5">
-            <SectionHeader title="Partier" />
-            <div className="space-y-2">
-              {sets.map((draft, index) => (
-                <ScorePad
-                  key={index}
-                  index={index}
-                  draft={draft}
-                  onChange={(next) =>
-                    setSets((current) => current.map((set, i) => (i === index ? next : set)))
-                  }
-                  onRemove={
-                    sets.length > 1
-                      ? () => setSets((current) => current.filter((_, i) => i !== index))
-                      : undefined
+                  Fortryd
+                </Button>
+              ) : null}
+            </section>
+          ) : (
+            <>
+              <section className="mt-4">
+                <SectionHeader
+                  title="Hold"
+                  right={
+                    // The rotation as a suggestion: one tap fills the four who
+                    // have played least, another shuffles to the next four.
+                    <button
+                      onClick={() => {
+                        haptic("tap");
+                        setSelected(proposal);
+                        setShowPicker(false);
+                        setNudge((n) => n + 1);
+                        setError(null);
+                      }}
+                      disabled={proposal.length < 4}
+                      className="text-[10px] font-bold tracking-[0.12em] text-volt disabled:opacity-40"
+                    >
+                      FORESLÅ FIRE
+                    </button>
                   }
                 />
-              ))}
-              {/* Under the last set, not in the header: you read down the sets
-                  you have played and the next one is the next thing on screen.
-                  Outlined, never volt — "Gem kamp" is the only filled button
-                  on this screen and it stays that way. */}
-              {sets.length < 3 ? (
+
                 <button
                   onClick={() => {
                     haptic("tap");
-                    setSets((current) => [...current, { games_a: null, games_b: null }]);
+                    setShowPicker((value) => !value);
                   }}
-                  className="flex w-full items-center justify-center gap-1.5 rounded-row border border-dashed border-line py-2.5 text-[11px] font-bold tracking-[0.12em] text-dim transition-colors active:border-volt/50 active:text-volt"
+                  aria-expanded={showPicker}
+                  className="flex w-full items-center gap-2 rounded-card border border-line-soft bg-ink-850/60 px-3 py-2.5 text-left"
                 >
-                  <svg viewBox="0 0 12 12" className="h-2.5 w-2.5" aria-hidden>
-                    <path d="M6 1.5v9M1.5 6h9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  <span className="min-w-0 flex-1 truncate text-[13px] font-bold text-volt">
+                    {/* An empty line-up has no names at all, and `every` is true of
+                        nothing — so the count is what decides, not the contents. */}
+                    {teamA.length === 2 && teamA.every(Boolean)
+                      ? teamA.map((p) => firstName(p!.name)).join(" & ")
+                      : "Vælg to"}
+                  </span>
+                  <span className="num shrink-0 px-1 text-[10px] font-black tracking-[0.1em] text-dim">
+                    MOD
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-right text-[13px] font-bold text-chalk">
+                    {teamB.length === 2 && teamB.every(Boolean)
+                      ? teamB.map((p) => firstName(p!.name)).join(" & ")
+                      : "Vælg to"}
+                  </span>
+                  <svg
+                    viewBox="0 0 12 8"
+                    className={cn("h-2 w-3 shrink-0 text-dim transition-transform", showPicker ? "rotate-180" : "")}
+                    aria-hidden
+                  >
+                    <path d="M1 1l5 5 5-5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" />
                   </svg>
-                  TILFØJ SÆT
                 </button>
-              ) : null}
-            </div>
-          </section>
+
+                {showPicker ? (
+                  <div className="animate-fade">
+                    <div className="mt-2">
+                      <PlayerPicker roster={squad} selected={selected} onToggle={toggle} />
+                    </div>
+                    {/* Somebody turned up late, somebody went home: the roster
+                        is one tap from the grid it decides. */}
+                    <button
+                      onClick={() => {
+                        haptic("tap");
+                        setDraft(present);
+                      }}
+                      className="mt-2 w-full rounded-pill border border-line py-1.5 text-[11px] font-semibold text-dim"
+                    >
+                      Ret fremmødte · {squad.length} med
+                    </button>
+                  </div>
+                ) : null}
+              </section>
+
+              <section className="mt-5">
+                <SectionHeader title="Partier" />
+                <div className="space-y-2">
+                  {sets.map((draftSet, index) => (
+                    <ScorePad
+                      key={index}
+                      index={index}
+                      draft={draftSet}
+                      onChange={(next) =>
+                        setSets((current) => current.map((set, i) => (i === index ? next : set)))
+                      }
+                      onRemove={
+                        sets.length > 1
+                          ? () => setSets((current) => current.filter((_, i) => i !== index))
+                          : undefined
+                      }
+                    />
+                  ))}
+                  {/* Under the last set, not in the header: you read down the sets
+                      you have played and the next one is the next thing on screen.
+                      Outlined, never volt — "Gem kamp" is the only filled button
+                      on this screen and it stays that way. */}
+                  {sets.length < 3 ? (
+                    <button
+                      onClick={() => {
+                        haptic("tap");
+                        setSets((current) => [...current, { games_a: null, games_b: null }]);
+                      }}
+                      className="flex w-full items-center justify-center gap-1.5 rounded-row border border-dashed border-line py-2.5 text-[11px] font-bold tracking-[0.12em] text-dim transition-colors active:border-volt/50 active:text-volt"
+                    >
+                      <svg viewBox="0 0 12 12" className="h-2.5 w-2.5" aria-hidden>
+                        <path d="M6 1.5v9M1.5 6h9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                      </svg>
+                      TILFØJ SÆT
+                    </button>
+                  ) : null}
+                </div>
+              </section>
+            </>
+          )}
 
           {matches.length > 0 ? (
             <section className="mt-6">
@@ -357,7 +488,7 @@ export default function EntryPage() {
             </section>
           ) : null}
 
-          {data.status === "open" ? (
+          {data.status === "open" && !asking ? (
             <Button
               variant="ghost"
               className="mx-auto mt-6 block"
@@ -373,12 +504,12 @@ export default function EntryPage() {
 
           {/* Pinned above the tab bar, clear of the round entry button that
               pokes up out of it. Out of the flow on purpose: "Gem kamp" is
-              never a scroll away. While the grid is open it steps aside — the
-              grid is a full-height job of its own, and two competing surfaces
-              at the bottom of a 390-wide screen is how things end up on top of
-              each other. */}
+              never a scroll away. While a grid is open it steps aside — a grid
+              is a full-height job of its own, and two competing surfaces at the
+              bottom of a 390-wide screen is how things end up on top of each
+              other. */}
           <div
-            className={cn("fixed inset-x-0 z-20 px-4", showPicker ? "hidden" : "")}
+            className={cn("fixed inset-x-0 z-20 px-4", showPicker || asking ? "hidden" : "")}
             style={{ bottom: "calc(96px + var(--safe-b))" }}
           >
             <div className="mx-auto w-full max-w-[520px] rounded-card border border-line bg-ink-900/92 p-2.5 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl">

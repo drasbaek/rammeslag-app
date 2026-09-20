@@ -13,6 +13,10 @@ import { cn } from "@/lib/utils";
  * else is a flat line so the eye can run down the numbers — which it has to,
  * because ranks 2 through 7 are separated by single points.
  *
+ * The leader's rating is the biggest numeral on the ladder, but not so big
+ * that it eats the row: at `text-stat` the form strip fits beside it, and the
+ * player at the top is the one whose last five matches everybody wants to see.
+ *
  * Rows in the top or bottom zone carry a tint whose strength is `zoneDepth`
  * (see `.zone-top` / `.zone-bottom` in globals.css). The leader opts out: they
  * already have the accent gradient, and the zone would double it.
@@ -109,7 +113,7 @@ export function LadderRow({
           <span
             className={cn(
               "min-w-0 truncate font-bold tracking-tight",
-              leader ? "text-[17px]" : entry.is_guest ? "text-[13px]" : "text-body",
+              leader ? "text-[16px]" : entry.is_guest ? "text-[13px]" : "text-body",
               entry.is_guest ? "text-mute" : "",
             )}
           >
@@ -121,10 +125,12 @@ export function LadderRow({
         </span>
         {/* The all-time record, quietly. It reads the career fields, not the
             scoped ones, so a season board still shows who somebody is rather
-            than what they did since August. */}
+            than what they did since August. The leader says the same thing in
+            volt: the form strip took the width the match count used to have,
+            and a W-L record carries its own sample size. */}
         {leader ? (
           <span className="num mt-1 block truncate text-[9px] font-bold tracking-[0.08em] text-volt/70">
-            FØRER · {careerRecord} · {entry.career_matches} KAMPE
+            FØRER · {careerRecord}
           </span>
         ) : (
           <span className="num mt-0.5 block truncate text-[9px] leading-none tabular-nums text-dim">
@@ -133,13 +139,15 @@ export function LadderRow({
         )}
       </span>
 
-      {/* The leader trades their form strip for the biggest numeral on the
-          ladder. Five dots and a 44px number do not both fit at 390px, and
-          the number is the point. */}
-      {leader ? null : <FormDots form={entry.form} className="shrink-0" />}
+      {/* Every row carries its form strip, the leader included. The name is
+          what gives way at 390px, and a truncated name costs less than a
+          missing week of results. */}
+      <FormDots form={entry.form} className="shrink-0" />
 
-      <span className={cn("flex shrink-0 flex-col items-end", leader ? "" : "w-[60px]")}>
-        <span className={cn("num-tight font-black", leader ? "text-hero" : "text-stat-sm", numberTone)}>
+      {/* Wide enough for a four-digit rating at this size: a numeral that
+          overflows its own column lands in the form strip's lap. */}
+      <span className={cn("flex shrink-0 flex-col items-end", leader ? "w-[74px]" : "w-[60px]")}>
+        <span className={cn("num-tight font-black", leader ? "text-stat" : "text-stat-sm", numberTone)}>
           {number}
         </span>
         <span className="num text-[9px] leading-none text-dim">
