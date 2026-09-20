@@ -590,6 +590,10 @@ def set_selection(db: DbSession, event_id: str, player_ids: Sequence[str]) -> li
         .all()
     ):
         db.delete(row)
+    # The old squad has to leave the table before the new one arrives: a flush
+    # orders inserts ahead of deletes, and the ordinary edit -- swap one name,
+    # keep the other five -- would land on UNIQUE(event_id, player_id).
+    db.flush()
     for player_id in unique:
         db.add(EventSelection(id=new_id("selection"), event_id=event_id, player_id=player_id))
     db.commit()

@@ -674,3 +674,146 @@ def test_adding_a_guest_moves_nobody_rating(client, db) -> None:
     client.post("/api/players/guest", json={"name": "Bjarne Bolden"})
 
     assert ratings() == before
+
+
+# --------------------------------------------------------------------------
+# What the fixture screen reads
+# --------------------------------------------------------------------------
+
+
+def test_a_picked_player_who_never_answered_is_still_being_chased(client, db) -> None:
+    """The team sheet writes "Intet svar" next to that name and the "mangler
+    svar" list keeps it. Being picked is not an answer, so it cannot quietly
+    close a question somebody still has to go and ask."""
+    _seed(db)
+    make_event(db, "e1", "season-1", date(2099, 1, 1), type="match")
+    login(client, "boss", "9999")
+
+    client.put("/api/events/e1/selection", json={"player_ids": ["p1"]})
+    body = client.get("/api/events/e1").json()
+
+    assert [p["id"] for p in body["selected"]] == ["p1"]
+    assert "p1" in [p["id"] for p in body["unanswered"]]
+    assert body["counts"]["unanswered"] == 8
+
+
+def test_picking_somebody_who_said_ikke_klar_leaves_the_no_standing(client, db) -> None:
+    """An admin may pick a player who said no -- half this team says yes in the
+    group chat and never opens the app. The screen flags that rather than
+    hiding it, which only works because the no survives the pick."""
+    _seed(db)
+    make_event(db, "e1", "season-1", date(2099, 1, 1), type="match")
+    login(client, "regular", "1234")
+    client.put("/api/events/e1/response", json={"state": "no"})
+    login(client, "boss", "9999")
+
+    client.put("/api/events/e1/selection", json={"player_ids": ["regular"]})
+    body = client.get("/api/events/e1").json()
+
+    answers = {row["player"]["id"]: row["state"] for row in body["responses"]}
+    assert answers["regular"] == "no"
+    assert body["counts"]["no"] == 1
+    assert body["counts"]["yes"] == 0
+    assert [p["id"] for p in body["selected"]] == ["regular"]
+
+
+def test_klar_and_udtaget_are_two_lists_that_only_happen_to_overlap(client, db) -> None:
+    """Four klar, two of them picked, and one picked who said nothing. The
+    reserves the screen shows are the klar names that are not in the squad --
+    worked out on the way to the pixels, never stored and never inferred back."""
+    _seed(db)
+    make_event(db, "e1", "season-1", date(2099, 1, 1), type="match")
+    for pid in ("p1", "p2", "p3", "p4"):
+        service.set_response(db, "e1", pid, "yes")
+    login(client, "boss", "9999")
+
+    client.put("/api/events/e1/selection", json={"player_ids": ["p1", "p2", "p5"]})
+    body = client.get("/api/events/e1").json()
+
+    klar = {row["player"]["id"] for row in body["responses"] if row["state"] == "yes"}
+    squad = {p["id"] for p in body["selected"]}
+    assert klar == {"p1", "p2", "p3", "p4"}
+    assert squad == {"p1", "p2", "p5"}
+    assert klar - squad == {"p3", "p4"}
+
+
+def test_a_squad_may_be_larger_than_the_number_of_places(client, db) -> None:
+    """Seven picked for six places is something an admin does on the way to
+    deciding. The sheet says so in words; it does not refuse the write and
+    lose the other six."""
+    _seed(db)
+    make_event(db, "e1", "season-1", date(2099, 1, 1), type="match")
+    login(client, "boss", "9999")
+
+    body = client.put(
+        "/api/events/e1/selection",
+        json={"player_ids": [*SQUAD, "regular"]},
+    ).json()
+
+    assert body["capacity"] == 6
+    assert body["selected_count"] == 7
+
+
+def test_a_locked_fixture_still_takes_a_corrected_squad(client, db) -> None:
+    """Låst points at the answers, not at the person who locked it. An admin
+    who spots a wrong name on a finished team sheet fixes it in place."""
+    _seed(db)
+    make_event(db, "e1", "season-1", date(2099, 1, 1), type="match")
+    login(client, "boss", "9999")
+    client.put("/api/events/e1/selection", json={"player_ids": ["p1", "p2"]})
+
+    client.patch("/api/events/e1", json={"status": "locked"})
+    body = client.put("/api/events/e1/selection", json={"player_ids": ["p1", "p3"]}).json()
+
+    assert body["status"] == "locked"
+    assert [p["id"] for p in body["selected"]] == ["p1", "p3"]
+
+
+def test_an_aflyst_fixture_takes_no_squad_at_all(client, db) -> None:
+    """Why "Sæt holdet" is dead on a cancelled fixture instead of failing once
+    it has been pressed."""
+    _seed(db)
+    make_event(db, "e1", "season-1", date(2099, 1, 1), type="match", status="cancelled")
+    login(client, "boss", "9999")
+
+    response = client.put("/api/events/e1/selection", json={"player_ids": ["p1"]})
+
+    assert response.status_code == 400
+
+
+def test_deleting_a_fixture_takes_the_squad_with_it(client, db) -> None:
+    """Nothing is left pointing at a date that no longer exists."""
+    from rammeslag.modules.events.models import EventSelection
+
+    _seed(db)
+    make_event(db, "e1", "season-1", date(2099, 1, 1), type="match")
+    login(client, "boss", "9999")
+    client.put("/api/events/e1/selection", json={"player_ids": list(SQUAD)})
+
+    assert client.delete("/api/events/e1").status_code == 204
+    assert db.query(EventSelection).count() == 0
+
+
+def test_setting_a_squad_never_reaches_a_rating(client, db) -> None:
+    """Picking six for a Saturday against another club is not a match, and
+    there is nothing on this screen that could turn it into one."""
+    _seed(db)
+    make_session(db, "s1", "season-1", date(2025, 9, 1))
+    make_match(
+        db,
+        "m1",
+        "s1",
+        datetime(2025, 9, 1, 18, 0, tzinfo=UTC),
+        ("p1", "p2"),
+        ("p3", "p4"),
+        [(6, 2)],
+    )
+    make_event(db, "e1", "season-1", date(2099, 1, 1), type="match")
+    before = client.get("/api/ladder?season=all").json()["entries"]
+    login(client, "boss", "9999")
+
+    client.put("/api/events/e1/selection", json={"player_ids": list(SQUAD)})
+    client.patch("/api/events/e1", json={"status": "locked"})
+
+    assert db.query(Match).count() == 1
+    assert client.get("/api/ladder?season=all").json()["entries"] == before
