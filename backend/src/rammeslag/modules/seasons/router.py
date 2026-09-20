@@ -7,7 +7,7 @@ from datetime import UTC, datetime
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session as DbSession
 
-from rammeslag.deps import get_db, require_admin
+from rammeslag.deps import current_user, get_db
 from rammeslag.modules.players.models import Player
 from rammeslag.modules.seasons import service
 from rammeslag.modules.seasons.models import Season
@@ -50,9 +50,9 @@ def _as_out(db: DbSession, season: Season) -> SeasonOut:
 def create_season(
     payload: SeasonCreate,
     db: DbSession = Depends(get_db),
-    admin: Player = Depends(require_admin),
+    player: Player = Depends(current_user),
 ) -> SeasonOut:
-    """Add a season. Admin only.
+    """Add a season.
 
     Sessions cannot exist outside a season, so this is what unblocks recording
     a new one after the calendar moves past the last season's end date.
@@ -68,9 +68,9 @@ def update_season(
     season_id: str,
     payload: SeasonUpdate,
     db: DbSession = Depends(get_db),
-    admin: Player = Depends(require_admin),
+    player: Player = Depends(current_user),
 ) -> SeasonOut:
-    """Rename a season or move its dates. Admin only.
+    """Rename a season or move its dates.
 
     Narrowing the dates is refused if it would strand sessions already inside
     the season.

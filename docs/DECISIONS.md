@@ -40,7 +40,7 @@ K=20 gives roughly 10-point moves and a spread that passes the straight-face
 test. Because ratings are replayed rather than accumulated, this is
 re-tunable forever.
 
-## 4. Open to read, PIN to write, admin to delete
+## 4. Open to read, PIN to write
 
 Checking the ladder is a glance and should cost nothing; entering a result
 is deliberate. Per-player PINs give real identity — needed for bødekasse and
@@ -220,15 +220,16 @@ in `modules/events/` ever constructing a `Match`.
 `POST /api/players/guest` needs a login but not an admin, takes a name and
 nothing else, and enters the guest at `SEED_RATING` with no PIN.
 
-`POST /api/players` stays admin-only and still requires `entry_rating`,
-because decision 4's reasoning holds for a member joining an established
-field. It does not hold for a guest: the person adding them is holding a
-phone on a Sunday afternoon, and routing that through an admin means the
-roster is wrong until somebody else wakes up. An admin can correct the rating
-afterwards, or flip `is_guest` and make them a member for real.
+`POST /api/players` still requires `entry_rating`, because a member joining
+an established field is a judgement somebody has to make. Since decision 16 it
+needs only a login, the same as this route — the difference that remains is
+the rating: a guest enters at `SEED_RATING` because nobody has judged them,
+and a member enters where whoever added them said. It stays a separate route
+because it can only ever mint a guest with no PIN and no admin flag, which is
+a useful thing to be able to say about a route.
 
-A separate route rather than opening up the existing one, so that everything
-the whole team can reach is a guest with no PIN and no admin flag.
+An admin can correct the rating afterwards, or flip `is_guest` and make a
+guest a member for real.
 
 Adding a name that already exists returns that player instead of failing. Two
 people adding the same guest to the same Sunday is a collision of intent, and
@@ -301,3 +302,44 @@ the third way in again, with a nicer name.
 `POST /api/sessions` still exists and is still tested. `scripts/import_history.py`
 is the caller that needs it, and the contract does not shrink to fit the UI.
 Nothing in the web app calls it.
+
+## 17. Admin is the squad and the entry rating, and nothing else
+
+Ten friends who already share a group chat do not need an app to adjudicate
+who may type what. The first cut of admin guarded every delete, every calendar
+entry and every answer typed on somebody else's behalf, and all three were the
+wrong thing to guard: a wrong score sat on the ladder until an admin woke up,
+a fixture nobody had entered stayed unentered, and "jeg er på" in the group
+chat could not be transcribed by whoever read it.
+
+What is left is two things a flat team genuinely cannot hold:
+
+- **The squad.** Selection, the planned line-ups, and editing an answer once
+  the fixture is locked. Availability is not selection (decision 12), and the
+  whole point of that separation is that being picked is one person's decision
+  rather than a thing that emerges from who shouted loudest. Since decision 16
+  this also gates opening a training's evening, because setting the kampe is
+  what opens it -- a member who wants an evening without a plan still makes one
+  the way `scripts/import_history.py` does, through `POST /api/sessions`.
+- **The entry rating.** One admin's private opinion of how good each teammate
+  is, sitting in a column. Everything else on that screen is the team's; this
+  column is the reason the screen still asks who is looking.
+
+Deletes went to every member because the rating engine is a replay
+(decision 6). A deleted match is not a hole in a ledger — the ratings are
+recomputed from what is left, and re-entering the evening restores them
+exactly. That is what makes a delete safe to hand out, and it is why the same
+reasoning would not apply to an app that patched ratings incrementally.
+
+Two guards keep the remaining flag from being decoration, and both exist
+because without them the boundary is a suggestion: only an admin grants or
+removes admin, and only an admin sets a PIN that is not their own. A member
+who could do either could promote themselves, or log in as an admin, and walk
+straight into both of the things above. Creating a player with a PIN is not
+covered by the second guard — nobody is logged in as a player that did not
+exist a moment ago.
+
+Rejected: making the whole team admin. It is the honest reading of how this
+group works, and it costs exactly one thing — everybody would see what the
+admin who entered them thinks they are worth, which is the one number in this
+app that was never meant to be published.

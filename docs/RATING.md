@@ -9,13 +9,15 @@ regenerating `fixtures/expected_ratings.json` in the same commit.
 Matches where `source = 'internal'`, replayed in chronological order by
 `played_at`, ties broken by `match_id`.
 
-Every player starts at their own **entry rating**, a required field set by an
-admin when the player is added. It is **not shown anywhere in the dashboard**
-except the admin player screen where it is set: it is the admin's private
-judgement of how strong someone is, and it stays between admins. The API
-returns it; the UI must not surface it to players. A newcomer joining an established field is
-not a 1000-rated player, and the admin is better placed to judge that than
-any formula. `SEED_RATING` is the suggested default and the fallback for a
+Every player starts at their own **entry rating**, a required field set when
+the player is added. It is **shown to admins and to nobody else**: it is a
+private judgement of how strong a teammate is, and it stays between admins.
+The API returns it to anyone who asks; the UI must not surface it to players.
+Any member can add a player and say where they enter, because somebody has to
+be able to on a Sunday afternoon — but the number is never read back onto a
+screen they can see, and correcting one afterwards is an admin's. A newcomer
+joining an established field is not a 1000-rated player, and a human is
+better placed to judge that than any formula. `SEED_RATING` is the suggested default and the fallback for a
 player with no entry rating recorded.
 
 The engine sorts defensively rather than trusting input order. `match_id` is

@@ -25,15 +25,16 @@ export default function AdminPlayersPage() {
   const [editing, setEditing] = useState<Editing>(null);
 
   const isAdmin = me.data?.is_admin ?? false;
+  const isMember = Boolean(me.data);
   const all = players.data ?? [];
   const members = all.filter((p) => !p.is_guest);
   const guests = all.filter((p) => p.is_guest);
 
-  if (!me.isPending && !isAdmin) {
+  if (!me.isPending && !isMember) {
     return (
       <div className="py-16 text-center">
-        <p className="text-body font-semibold">Kun for administratorer.</p>
-        <p className="mt-1 text-mini text-mute">Spillerlisten redigeres af holdets admin.</p>
+        <p className="text-body font-semibold">Log ind for at rette spillere.</p>
+        <p className="mt-1 text-mini text-mute">Alle på holdet kan rette listen.</p>
         <Link href="/" className="mt-5 inline-block text-mini font-semibold text-volt">
           Tilbage til stigen
         </Link>
@@ -55,12 +56,14 @@ export default function AdminPlayersPage() {
             admin — so this line does not pretend to know. */}
         <span className="text-[10px] text-dim">{player.is_guest ? "Gæst" : "Medlem"}</span>
       </span>
-      <span className="shrink-0 text-right">
-        <span className="num block text-[13px] font-bold tabular-nums">
-          {formatRating(player.entry_rating)}
+      {isAdmin ? (
+        <span className="shrink-0 text-right">
+          <span className="num block text-[13px] font-bold tabular-nums">
+            {formatRating(player.entry_rating)}
+          </span>
+          <span className="block text-[9px] tracking-[0.1em] text-dim">INDGANG</span>
         </span>
-        <span className="block text-[9px] tracking-[0.1em] text-dim">INDGANG</span>
-      </span>
+      ) : null}
       <svg viewBox="0 0 8 12" className="h-3 w-2 shrink-0 text-dim" aria-hidden>
         <path d="M1 1l5 5-5 5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" />
       </svg>
@@ -88,8 +91,9 @@ export default function AdminPlayersPage() {
         </span>
       </div>
       <p className="mt-1 text-mini text-mute">
-        Indgangsratingen er et skøn, ikke en formel. Den kan rettes bagefter — hele historikken
-        spilles om.
+        {isAdmin
+          ? "Indgangsratingen er et skøn, ikke en formel. Den kan rettes bagefter — hele historikken spilles om."
+          : "Alle på holdet kan tilføje og rette spillere. Indgangsratingen er holdets admins."}
       </p>
 
       <Button

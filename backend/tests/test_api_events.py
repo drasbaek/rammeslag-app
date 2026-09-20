@@ -118,10 +118,12 @@ def test_the_same_player_may_appear_in_a_later_round() -> None:
 # --------------------------------------------------------------------------
 
 
-def test_only_an_admin_creates_an_event(client, db) -> None:
+def test_any_member_puts_a_date_in_the_calendar(client, db) -> None:
+    """Whoever hears about the fixture first types it in."""
     _seed(db)
-    login(client, "regular", "1234")
+    assert client.post("/api/events", json={"type": "training"}).status_code == 401
 
+    login(client, "regular", "1234")
     response = client.post(
         "/api/events",
         json={
@@ -133,7 +135,7 @@ def test_only_an_admin_creates_an_event(client, db) -> None:
         },
     )
 
-    assert response.status_code == 403
+    assert response.status_code == 201
 
 
 def test_a_fixture_takes_a_squad_of_six_without_being_told(client, db) -> None:
@@ -325,14 +327,18 @@ def test_silence_and_ved_ikke_stay_different_things(client, db) -> None:
     assert "Regular Reg" in [p["name"] for p in after_clear["unanswered"]]
 
 
-def test_you_cannot_answer_for_another_member(client, db) -> None:
+def test_any_member_answers_for_another_member(client, db) -> None:
+    """The group chat is the source of truth and always was. Whoever reads
+    "jeg er på" there types it in, and ``added_by`` records who did."""
     _seed(db)
     make_event(db, "e1", "season-1", date(2099, 1, 1))
     login(client, "regular", "1234")
 
-    response = client.put("/api/events/e1/response/p1", json={"state": "yes"})
+    body = client.put("/api/events/e1/response/p1", json={"state": "yes"}).json()
 
-    assert response.status_code == 403
+    assert body["counts"]["yes"] == 1
+    written = db.query(EventResponse).filter_by(event_id="e1", player_id="p1").one()
+    assert written.added_by == "regular"
 
 
 def test_anyone_may_answer_for_a_guest(client, db) -> None:
@@ -554,12 +560,16 @@ def test_an_empty_note_clears_it(client, db) -> None:
     assert client.patch("/api/events/e1", json={"note": "  "}).json()["note"] is None
 
 
-def test_deleting_an_event_is_admin_only(client, db) -> None:
+def test_deleting_an_event_needs_a_login_and_nothing_more(client, db) -> None:
+    """A date that turned out to be wrong comes down the same way it went up.
+    The evening that was actually played is not reachable from here -- see
+    the test below."""
     _seed(db)
     make_event(db, "e1", "season-1", date(2099, 1, 1))
-    login(client, "regular", "1234")
+    assert client.delete("/api/events/e1").status_code == 401
 
-    assert client.delete("/api/events/e1").status_code == 403
+    login(client, "regular", "1234")
+    assert client.delete("/api/events/e1").status_code == 204
 
 
 def test_deleting_an_event_takes_its_answers_and_leaves_its_session(client, db) -> None:

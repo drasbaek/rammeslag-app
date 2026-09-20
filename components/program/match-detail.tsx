@@ -39,6 +39,10 @@ import type { EventDetailOut, PlayerOut } from "@/lib/types";
  */
 export function MatchDetail({ event }: { event: EventDetailOut }) {
   const me = useMe();
+  // Two different questions. Anyone logged in edits the fixture itself; only
+  // an admin picks who plays it, and only an admin moves an answer once the
+  // squad is locked.
+  const isMember = Boolean(me.data);
   const isAdmin = Boolean(me.data?.is_admin);
   const [picking, setPicking] = useState(false);
 
@@ -59,12 +63,15 @@ export function MatchDetail({ event }: { event: EventDetailOut }) {
 
   const unconfirmed = event.selected.filter((player) => stateOf(player) !== "yes").length;
   const cancelled = event.status === "cancelled";
-  // An admin answers for anyone, and still does so on a locked fixture —
+  // Anyone on the team answers for anyone — the group chat was always the
+  // source of truth. What is still an admin's is doing it on a locked
+  // fixture, which is how a late withdrawal gets recorded under a team sheet
+  // that has already gone out. A cancelled fixture refuses every write, an
   // that is how a late withdrawal gets recorded. A cancelled fixture refuses
   // every write, an admin's included, so there the control would be a button
   // that offers a 400. This is availability only: it hangs off the answer
   // list at the bottom and never off the squad block above.
-  const mayOverride = isAdmin && !cancelled;
+  const mayOverride = isMember && !cancelled && (isAdmin || event.status !== "locked");
 
   return (
     <div className="space-y-5">
@@ -221,7 +228,7 @@ export function MatchDetail({ event }: { event: EventDetailOut }) {
         }
       />
 
-      {isAdmin ? <MatchAdminBar event={event} /> : null}
+      {isMember ? <MatchAdminBar event={event} /> : null}
 
       {picking ? (
         <MatchSquadPicker event={event} open onOpenChange={setPicking} />

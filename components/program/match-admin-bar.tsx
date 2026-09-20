@@ -14,13 +14,14 @@ const CAPTION: Record<EventStatus, string> = {
 };
 
 /**
- * The three things only an admin does to a fixture: låse, aflyse, slette.
+ * The three things that happen to a fixture after it is created: låse,
+ * aflyse, slette. Anyone on the team does all three.
  *
  * Låsning is the one with teeth. It does not pick anybody and it does not
- * change an answer — it stops the answers moving, so the team sheet an admin
- * has just written stays the one people turn up to. Aflysning is reversible on
- * purpose: a cancelled fixture keeps every answer, because the hall falls
- * through more often than the team does.
+ * change an answer — it stops the answers moving, so the team sheet stays the
+ * one people turn up to, and from then on only an admin edits an answer.
+ * Aflysning is reversible on purpose: a cancelled fixture keeps every answer,
+ * because the hall falls through more often than the team does.
  */
 export function MatchAdminBar({ event }: { event: EventDetailOut }) {
   const router = useRouter();
@@ -62,7 +63,7 @@ export function MatchAdminBar({ event }: { event: EventDetailOut }) {
 
   return (
     <div className="border-t border-line-soft pt-4">
-      <span className="eyebrow block pb-2">Admin</span>
+      <span className="eyebrow block pb-2">Kampen</span>
 
       <div className="grid grid-cols-2 gap-2">
         {event.status === "open" ? (

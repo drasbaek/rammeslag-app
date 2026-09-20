@@ -31,14 +31,16 @@ def test_anyone_may_read_seasons(client, db) -> None:
     assert [s["name"] for s in response.json()] == [EFTERAAR[0]]
 
 
-def test_creating_a_season_needs_admin(client, db) -> None:
+def test_creating_a_season_needs_a_login_and_nothing_more(client, db) -> None:
+    """Sessions cannot exist outside a season, so an admin-only season is an
+    admin-only evening once the calendar rolls past the last end date."""
     _seed(db)
     payload = {"name": "Efterår 2026", "starts_on": "2026-09-01", "ends_on": "2026-12-20"}
 
     assert client.post("/api/seasons", json=payload).status_code == 401
 
     login(client, "regular", "1234")
-    assert client.post("/api/seasons", json=payload).status_code == 403
+    assert client.post("/api/seasons", json=payload).status_code == 201
 
 
 # --------------------------------------------------------------------------

@@ -27,7 +27,7 @@ function Lockup() {
   );
 }
 
-function AdminLink() {
+function RosterLink() {
   return (
     <Link
       href="/admin/players"
@@ -57,7 +57,7 @@ function TopBar() {
         <Lockup />
         {player ? (
           <div className="flex items-center gap-2">
-            {player.is_admin ? <AdminLink /> : null}
+            <RosterLink />
             <Link href={`/players/${player.id}`} aria-label="Min profil">
               <Avatar name={player.name} size="sm" accent />
             </Link>

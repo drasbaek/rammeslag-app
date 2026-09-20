@@ -224,7 +224,9 @@ Game totals are derived by summing `match_sets`, never stored.
 ## API contract
 
 All routes are under `/api`. Reads are public. Writes need a player session
-cookie. Deletes need admin.
+cookie. Admin is the squad -- selection, the plan, and an answer under a
+locked team sheet -- plus the two guards that keep the flag from being
+decoration: granting admin, and setting somebody else's PIN.
 
 ```
 GET    /api/health
@@ -247,17 +249,17 @@ POST   /api/sessions/{id}/close        auth   Refused while a planned kamp has
                                               no score.
 PATCH  /api/sessions/{id}              auth   Re-dating moves its matches.
 POST   /api/matches                    auth
-DELETE /api/sessions/{id}              admin
-DELETE /api/matches/{id}               admin
+DELETE /api/sessions/{id}              auth   Replay, so re-enterable.
+DELETE /api/matches/{id}               auth   Replay, so re-enterable.
 
 GET    /api/events?scope=&season=&type=   upcoming | past | all
 GET    /api/events/{id}                Detail: answers, squad, planned line-ups.
-POST   /api/events                     admin
-PATCH  /api/events/{id}                admin  Re-dating re-resolves the season.
-DELETE /api/events/{id}                admin  Never touches a linked session.
+POST   /api/events                     auth
+PATCH  /api/events/{id}                auth   Re-dating re-resolves the season.
+DELETE /api/events/{id}                auth   Never touches a linked session.
 
 PUT    /api/events/{id}/response              auth   Your own answer.
-PUT    /api/events/{id}/response/{player}     auth   A guest's, or admin: anyone's.
+PUT    /api/events/{id}/response/{player}     auth   Anyone's. Locked: admin.
 DELETE /api/events/{id}/response/{player}     auth   Back to no answer.
 
 PUT    /api/events/{id}/selection      admin  The whole squad, at once.
@@ -266,7 +268,10 @@ PUT    /api/events/{id}/matchups       admin  The whole plan, at once. On a
                                               opens the session it is played
                                               into and links it.
 
+POST   /api/players                    auth   is_admin: admin only.
+PATCH  /api/players/{id}               auth   is_admin, and another's pin: admin.
 POST   /api/players/guest              auth   Name only. Seed rating, no PIN.
+GET    /api/seasons, POST, PATCH       auth   An evening needs a season to exist.
 ```
 
 Selection and the plan are whole-list `PUT`s rather than per-row writes: an
