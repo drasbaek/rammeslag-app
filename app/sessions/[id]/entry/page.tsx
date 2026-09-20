@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { AttendancePicker } from "@/components/entry/attendance-picker";
 import { PlayerPicker } from "@/components/entry/player-picker";
 import { ScorePad, type SetDraft } from "@/components/entry/score-pad";
+import { PlannedList } from "@/components/session/planned-list";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SectionHeader } from "@/components/ui/section";
@@ -22,7 +23,7 @@ import { readAttendance, writeAttendance } from "@/lib/attendance";
 import { firstName, formatDateLong, delta } from "@/lib/format";
 import { haptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
-import type { PlayerOut } from "@/lib/types";
+import type { PlannedGameOut, PlayerOut } from "@/lib/types";
 
 /**
  * Rotation that keeps the evening even: the four who have played least, drawn
@@ -87,6 +88,23 @@ export default function EntryPage() {
   const data = session.data;
   const everyone = useMemo(() => players.data ?? [], [players.data]);
   const matches = useMemo(() => data?.matches ?? [], [data?.matches]);
+  /** The træning's kampe, and which of them still need a score. */
+  const planned = useMemo(() => data?.planned ?? [], [data?.planned]);
+  const missing = planned.filter((game) => game.match_id === null).length;
+
+  /**
+   * Everybody on the plan. This is the evening's squad as the server knows
+   * it, so it is the same on every phone — unlike `lib/attendance`, which is
+   * one person's answer on one device. An evening with a plan therefore never
+   * opens by asking who is here: it was decided when the kampe were set.
+   */
+  const plannedPlayers = useMemo<string[]>(() => {
+    const ids = new Set<string>();
+    for (const game of planned) {
+      for (const player of [...game.team_a, ...game.team_b]) ids.add(player.id);
+    }
+    return [...ids];
+  }, [planned]);
 
   /**
    * Who is at the hall: the answer this phone gave, or — on a phone joining an
@@ -94,10 +112,11 @@ export default function EntryPage() {
    * Derived rather than stored, so a second device picks the evening up
    * without being asked a question the matches already answer.
    */
-  const present = useMemo<string[]>(
-    () => chosen ?? participants(matches).map((p) => p.id),
-    [chosen, matches],
-  );
+  const present = useMemo<string[]>(() => {
+    if (chosen) return chosen;
+    if (plannedPlayers.length > 0) return plannedPlayers;
+    return participants(matches).map((p) => p.id);
+  }, [chosen, plannedPlayers, matches]);
 
   /** Tonight's squad, in the roster's own alphabetical order. */
   const squad = useMemo<PlayerOut[]>(() => {
@@ -133,6 +152,18 @@ export default function EntryPage() {
     [squad, playedTonight, nudge],
   );
 
+  /**
+   * A planned kamp, straight into the picker: hold A first, in the order the
+   * plan wrote them, which is the order "Gem kamp" will save them in. It fills
+   * the names and nothing else — the score is still typed and still saved by
+   * hand, so a plan on its own never becomes a match.
+   */
+  const pickPlanned = (game: PlannedGameOut) => {
+    setSelected([...game.team_a, ...game.team_b].map((player) => player.id));
+    setShowPicker(false);
+    setError(null);
+  };
+
   const toggle = (playerId: string) => {
     setError(null);
     const next = selected.includes(playerId)
@@ -153,7 +184,7 @@ export default function EntryPage() {
    * and a grid that quietly leaves out the three who just arrived is worse
    * than one tap.
    */
-  const answered = chosen !== null;
+  const answered = chosen !== null || plannedPlayers.length > 0;
   const asking = draft !== null || (Boolean(data) && !answered);
   /** What the tick marks show: the edit in progress, else tonight's squad. */
   const answer = draft ?? present;
@@ -333,6 +364,21 @@ export default function EntryPage() {
             </section>
           ) : (
             <>
+              {/* The evening's own list, first: on a planned Sunday the job is
+                  never "pick four", it is "which of these six is mine". One
+                  tap fills the four names below in the order the plan set
+                  them, and the score pad is the next thing on screen. */}
+              {planned.length > 0 ? (
+                <div className="mt-4">
+                  <PlannedList
+                    planned={planned}
+                    matches={matches}
+                    selected={selected}
+                    onPick={pickPlanned}
+                  />
+                </div>
+              ) : null}
+
               <section className="mt-4">
                 <SectionHeader
                   title="Hold"
@@ -488,18 +534,35 @@ export default function EntryPage() {
             </section>
           ) : null}
 
+          {/* Closing is what turns the evening into the report, so it waits
+              for the last score. The API refuses it too — a button that is
+              only disabled is a rule that is not true. */}
           {data.status === "open" && !asking ? (
-            <Button
-              variant="ghost"
-              className="mx-auto mt-6 block"
-              disabled={closeSession.isPending}
-              onClick={() => {
-                haptic("success");
-                closeSession.mutateAsync().then(() => router.push(`/sessions/${id}`));
-              }}
-            >
-              Luk træningssessionen
-            </Button>
+            <div className="mt-6 text-center">
+              <Button
+                variant="ghost"
+                className="mx-auto block"
+                disabled={closeSession.isPending || missing > 0}
+                onClick={() => {
+                  haptic("success");
+                  closeSession
+                    .mutateAsync()
+                    .then(() => router.push(`/sessions/${id}`))
+                    .catch((cause: Error) => {
+                      haptic("warn");
+                      setError(cause.message);
+                    });
+                }}
+              >
+                Luk træningen
+              </Button>
+              {missing > 0 ? (
+                <p className="mt-1.5 text-[10px] leading-snug text-dim">
+                  Mangler {missing} {missing === 1 ? "resultat" : "resultater"}, før aftenen kan
+                  gøres op.
+                </p>
+              ) : null}
+            </div>
           ) : null}
 
           {/* Pinned above the tab bar, clear of the round entry button that

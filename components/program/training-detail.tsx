@@ -26,8 +26,9 @@ import type { EventDetailOut, PlayerOut, ResponseState } from "@/lib/types";
  * go looking: eight members and four guests is a full Sunday that took work.
  *
  * Everything below the meter answers "and now what": bring somebody, set the
- * kampe, open the evening. Nothing on this screen writes a kamp — the plan is
- * a whiteboard and the scores are typed on the entry screen.
+ * kampe, go and type the results in. Nothing on this screen writes a kamp —
+ * the plan is a whiteboard, and setting it opens an empty evening that every
+ * score is still typed into one at a time.
  */
 export function TrainingDetail({ event }: { event: EventDetailOut }) {
   const gate = useAuthGate();
@@ -177,17 +178,31 @@ export function TrainingDetail({ event }: { event: EventDetailOut }) {
         </div>
       ) : null}
 
-      {/* Planning comes before the evening does: the kampe are set once the
-          Sunday is full, and the aften is opened on the day. */}
+      {/* Setting the kampe is what starts the evening, so it is the loudest
+          thing here once the Sunday is full — and the caption says what it
+          does, because it creates a row in træningshistorikken. */}
       {isAdmin && !cancelled ? (
-        <Button variant="solid" className="w-full" onClick={() => setPlanning(true)}>
-          {event.matchups.length > 0 ? "Ret kampene" : "Sæt kampene"}
-        </Button>
+        <div>
+          <Button
+            variant={event.matchups.length > 0 ? "solid" : "volt"}
+            size="lg"
+            className="w-full"
+            onClick={() => setPlanning(true)}
+          >
+            {event.matchups.length > 0 ? "Ret kampene" : "Sæt kampene"}
+          </Button>
+          {event.matchups.length === 0 ? (
+            <p className="mt-1.5 text-center text-[10px] leading-snug text-dim">
+              Når kampene er sat, står aftenen klar i historikken, og alle kan skrive deres egne
+              resultater ind.
+            </p>
+          ) : null}
+        </div>
       ) : null}
 
       <TrainingPlan matchups={event.matchups} />
 
-      <TrainingHandover event={event} isAdmin={isAdmin} />
+      <TrainingHandover event={event} />
 
       <AvailabilityList event={event} type="training" action={rowAction} />
 

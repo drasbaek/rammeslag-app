@@ -281,19 +281,16 @@ export function setSelection(id: string, body: SelectionIn): Promise<EventDetail
     : mock.setSelection(id, body);
 }
 
-/** The plan, replaced wholesale. A whiteboard: none of this becomes a match. */
+/**
+ * The plan, replaced wholesale — and the one thing that opens an evening.
+ *
+ * A whiteboard: none of this becomes a match. Saving a non-empty plan for a
+ * training also creates the session its results go into, so the answer comes
+ * back with `session_id` set. The session is empty; every score is still
+ * typed in one kamp at a time.
+ */
 export function setMatchups(id: string, body: MatchupsIn): Promise<EventDetailOut> {
   return live
     ? http<EventDetailOut>(`/events/${id}/matchups`, { method: "PUT", body: JSON.stringify(body) })
     : mock.setMatchups(id, body);
-}
-
-/**
- * Open the evening a training's results go into. Creates an empty session —
- * who actually played is still decided by the matches typed into it.
- */
-export function createSessionForEvent(id: string): Promise<SessionOut> {
-  return live
-    ? http<SessionOut>(`/events/${id}/session`, { method: "POST" })
-    : mock.createSessionForEvent(id);
 }

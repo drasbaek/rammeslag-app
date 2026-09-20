@@ -29,7 +29,6 @@ import type {
   SeasonOut,
   SeasonUpdate,
   SelectionIn,
-  SessionCreate,
   SessionDetailOut,
   SessionOut,
   SessionUpdate,
@@ -161,18 +160,6 @@ export function useUpdateSeason() {
       // Moving a season's dates moves which sessions fall inside it, and the
       // profile's per-season numbers with them.
       void client.invalidateQueries({ queryKey: ["profile"] });
-    },
-  });
-}
-
-export function useCreateSession() {
-  const client = useQueryClient();
-  return useMutation({
-    mutationFn: (body: SessionCreate) => api.createSession(body),
-    // The caller navigates straight into the new session's entry screen, so
-    // the list behind it has to know the evening exists before it is read.
-    onSuccess: () => {
-      void client.invalidateQueries({ queryKey: ["sessions"] });
     },
   });
 }
@@ -330,13 +317,25 @@ export function useSetSelection(eventId: string) {
   });
 }
 
+/**
+ * Setting the kampe. Still not a result — the ladder is deliberately left
+ * alone, because nothing here can have moved a rating.
+ *
+ * The evening is created by the same write, so the history list has to be
+ * told: it has one more row in it than it did a moment ago, and the "+" menu
+ * reads that same list to find the evening it should offer.
+ */
 export function useSetMatchups(eventId: string) {
   const client = useQueryClient();
   return useMutation({
     mutationFn: (body: MatchupsIn) => api.setMatchups(eventId, body),
-    // A plan, not a result. Nothing derived from matches can have moved, so
-    // the ladder and the sessions are deliberately left alone.
-    onSuccess: (detail) => client.setQueryData(keys.event(eventId), detail),
+    onSuccess: (detail) => {
+      client.setQueryData(keys.event(eventId), detail);
+      void client.invalidateQueries({ queryKey: ["sessions"] });
+      if (detail.session_id) {
+        void client.invalidateQueries({ queryKey: keys.session(detail.session_id) });
+      }
+    },
   });
 }
 
@@ -347,22 +346,6 @@ export function useCreateGuest() {
     mutationFn: (body: GuestCreate) => api.createGuest(body),
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: keys.players() });
-    },
-  });
-}
-
-/**
- * Opens the evening a training's results go into. The new session shows up in
- * the history list, and the event now points at it.
- */
-export function useCreateSessionForEvent(eventId: string) {
-  const client = useQueryClient();
-  return useMutation({
-    mutationFn: () => api.createSessionForEvent(eventId),
-    onSuccess: () => {
-      void client.invalidateQueries({ queryKey: ["sessions"] });
-      void client.invalidateQueries({ queryKey: keys.event(eventId) });
-      void client.invalidateQueries({ queryKey: ["events"] });
     },
   });
 }

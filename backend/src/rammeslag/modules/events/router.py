@@ -27,7 +27,6 @@ from rammeslag.modules.events.schemas import (
 from rammeslag.modules.matches.schemas import player_out
 from rammeslag.modules.players.models import Player
 from rammeslag.modules.seasons.schemas import SeasonRef
-from rammeslag.modules.sessions.schemas import SessionOut
 
 router = APIRouter(prefix="/api", tags=["events"])
 
@@ -243,7 +242,12 @@ def set_matchups(
     db: DbSession = Depends(get_db),
     admin: Player = Depends(require_admin),
 ) -> EventDetailOut:
-    # A plan, not a result. Nothing written here reaches the rating engine.
+    """Set the kampe, which is also what opens the evening they go into.
+
+    A plan, not a result: nothing written here reaches the rating engine, and
+    the session that comes back on ``session_id`` is empty. Every score in it
+    is still typed in one kamp at a time, on the entry screen.
+    """
     service.set_matchups(
         db,
         event_id,
@@ -256,31 +260,6 @@ def set_matchups(
             )
             for m in payload.matchups
         ],
+        created_by=admin.id,
     )
     return get_event(event_id, db=db, viewer=admin)
-
-
-@router.post("/events/{event_id}/session", response_model=SessionOut, status_code=201)
-def create_session_for_event(
-    event_id: str,
-    db: DbSession = Depends(get_db),
-    admin: Player = Depends(require_admin),
-) -> SessionOut:
-    """Open the evening a training's results go into.
-
-    An empty session, exactly like the "+" button makes. Who actually played
-    is still decided by the matches that get typed into it.
-    """
-    from rammeslag.modules.seasons import service as season_service
-
-    play_session = service.create_session_for(db, event_id, created_by=admin.id)
-    season = season_service.get_season(db, play_session.season_id)
-    return SessionOut(
-        id=play_session.id,
-        season=SeasonRef(id=season.id, name=season.name),
-        played_on=play_session.played_on,
-        type=play_session.type,
-        status=play_session.status,
-        note=play_session.note,
-        match_count=0,
-    )

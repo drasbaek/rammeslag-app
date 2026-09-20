@@ -5,14 +5,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Sheet } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import {
-  useCreateSession,
-  useDeleteSession,
-  useMe,
-  useSeasons,
-  useUpdateSession,
-} from "@/lib/queries";
-import { seasonFor, seasonRange, todayISO } from "@/lib/seasons";
+import { useDeleteSession, useMe, useSeasons, useUpdateSession } from "@/lib/queries";
+import { seasonFor, seasonRange } from "@/lib/seasons";
 import { sessionTypeLabel } from "@/lib/format";
 import { haptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
@@ -43,41 +37,44 @@ export interface EditableSession {
 }
 
 /**
- * Start an evening, or correct one that was written down wrong.
+ * Correct an evening that was written down wrong.
  *
- * The date is free on purpose: most of what goes in here is a backfill of
- * evenings already played, and locking it to today would make the app useless
- * for exactly the job it is being opened for. The season is never chosen — the
- * backend resolves it from the date — so the form shows which season the date
- * lands in while it is being picked, and says so out loud when it lands in
- * none. That is the one failure this form exists to make survivable.
+ * It only ever edits. Starting an evening from here was the app's second way
+ * to create a Sunday — the first being a træning in Program, which is the one
+ * the rest of the team answers — and two doors onto the same room is how a
+ * date ends up existing twice. An evening is now opened by setting a
+ * træning's kampe and by nothing else.
  *
- * Editing is the same form with the same rules. Moving the date moves the
- * evening's matches with it and every rating is replayed from the matches, so
- * a correction here re-computes the ladder without anything being recalculated
- * by hand. Deleting does the same thing with nothing left behind, which is why
- * it is admin-only and asks twice.
+ * The date is still free, because a date typed in from memory is typed in
+ * wrong sometimes. The season is never chosen — the backend resolves it from
+ * the date — so the form shows which season the date lands in while it is
+ * being picked, and says so out loud when it lands in none. That is the one
+ * failure this form exists to make survivable.
+ *
+ * Moving the date moves the evening's matches with it and every rating is
+ * replayed from the matches, so a correction here re-computes the ladder
+ * without anything being recalculated by hand. Deleting does the same thing
+ * with nothing left behind, which is why it is admin-only and asks twice.
  */
 export function SessionForm({
   open,
   onOpenChange,
-  session = null,
+  session,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** The evening being corrected, or null to start a new one. */
-  session?: EditableSession | null;
+  /** The evening being corrected. There is no "new" here any more. */
+  session: EditableSession;
 }) {
   const router = useRouter();
   const me = useMe();
-  const create = useCreateSession();
-  const update = useUpdateSession(session?.id ?? "");
-  const remove = useDeleteSession(session?.id ?? "");
+  const update = useUpdateSession(session.id);
+  const remove = useDeleteSession(session.id);
   const seasons = useSeasons();
 
-  const [playedOn, setPlayedOn] = useState(session?.played_on ?? todayISO());
-  const [type, setType] = useState<SessionType>(session?.type ?? "training");
-  const [note, setNote] = useState(session?.note ?? "");
+  const [playedOn, setPlayedOn] = useState(session.played_on);
+  const [type, setType] = useState<SessionType>(session.type);
+  const [note, setNote] = useState(session.note ?? "");
   const [error, setError] = useState<string | null>(null);
   /** The delete button asks twice. Nothing here is undoable. */
   const [confirming, setConfirming] = useState(false);
@@ -86,7 +83,7 @@ export function SessionForm({
   // Only trustworthy once the seasons are actually here; until then the form
   // says nothing rather than accusing a perfectly good date.
   const uncovered = Boolean(playedOn) && !seasons.isPending && !season;
-  const pending = create.isPending || update.isPending || remove.isPending;
+  const pending = update.isPending || remove.isPending;
 
   const fail = (cause: Error) => {
     haptic("warn");
@@ -99,26 +96,11 @@ export function SessionForm({
       haptic("warn");
       return;
     }
-    const trimmed = note.trim();
-
-    if (session) {
-      update
-        .mutateAsync({ played_on: playedOn, type, note: trimmed })
-        .then(() => {
-          haptic("success");
-          onOpenChange(false);
-        })
-        .catch(fail);
-      return;
-    }
-
-    create
-      .mutateAsync({ played_on: playedOn, type, note: trimmed ? trimmed : null })
-      .then((created) => {
+    update
+      .mutateAsync({ played_on: playedOn, type, note: note.trim() })
+      .then(() => {
         haptic("success");
         onOpenChange(false);
-        // Creating an evening and writing the first score is one motion.
-        router.push(`/sessions/${created.id}/entry`);
       })
       .catch(fail);
   };
@@ -143,12 +125,8 @@ export function SessionForm({
     <Sheet
       open={open}
       onOpenChange={onOpenChange}
-      title={session ? "Ret træningssession" : "Ny træningssession"}
-      description={
-        session
-          ? "Flyttes datoen, flytter aftenens kampe med — og ratingen spilles om."
-          : "Vælg datoen aftenen blev spillet. Sæsonen følger af datoen."
-      }
+      title="Ret træningen"
+      description="Flyttes datoen, flytter aftenens kampe med — og ratingen spilles om."
     >
       <div className="space-y-3">
         <label className="block">
@@ -247,20 +225,14 @@ export function SessionForm({
           disabled={pending}
           onClick={submit}
         >
-          {session
-            ? update.isPending
-              ? "Gemmer…"
-              : "Gem ændringer"
-            : create.isPending
-              ? "Opretter…"
-              : "Opret og indtast kampe"}
+          {update.isPending ? "Gemmer…" : "Gem ændringer"}
         </Button>
 
         {/* Deleting an evening deletes its kampe and replays the ladder without
             them. There is no undo, so it lives under a line of its own, asks
             twice, and is only offered to an admin — which is who the API lets
             do it anyway. */}
-        {session && me.data?.is_admin ? (
+        {me.data?.is_admin ? (
           <div className="border-t border-line-soft pt-3">
             <Button
               variant={confirming ? "danger" : "ghost"}
@@ -272,7 +244,7 @@ export function SessionForm({
                 ? "Sletter…"
                 : confirming
                   ? "Tryk igen for at slette for altid"
-                  : "Slet træningssessionen"}
+                  : "Slet træningen"}
             </Button>
             <p className="mt-1.5 text-center text-[10px] leading-snug text-dim">
               {confirming

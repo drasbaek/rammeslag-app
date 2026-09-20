@@ -191,6 +191,13 @@ export interface SessionOut {
   status: SessionStatus;
   note: string | null;
   match_count: number;
+  /** The training this evening was planned as, or null for an imported one. */
+  event_id: EventId | null;
+  /**
+   * Kampe on the training's plan. `match_count` against this is "tre af seks
+   * skrevet ind" — the only progress this app has.
+   */
+  planned_count: number;
 }
 
 /** One recap line. `delta` is rating moved inside the session. */
@@ -211,6 +218,22 @@ export interface RecapOut {
   bundprop: PlayerDeltaOut | null;
 }
 
+/**
+ * A kamp off the training's plan, and the result somebody typed in for it.
+ *
+ * `match_id` is null until then. This is never a match: a plan does not
+ * become one on its own, and the pairing is made on read by matching the two
+ * pairs of names.
+ */
+export interface PlannedGameOut {
+  round: number;
+  court: number;
+  /** Exactly two each. */
+  team_a: PlayerOut[];
+  team_b: PlayerOut[];
+  match_id: MatchId | null;
+}
+
 export interface SessionDetailOut {
   id: SessionId;
   season: SeasonRef;
@@ -218,7 +241,10 @@ export interface SessionDetailOut {
   type: SessionType;
   status: SessionStatus;
   note: string | null;
+  event_id: EventId | null;
   matches: MatchOut[];
+  /** In round and court order. Empty for an evening with no training. */
+  planned: PlannedGameOut[];
   recap: RecapOut;
 }
 
