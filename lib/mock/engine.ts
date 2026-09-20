@@ -8,9 +8,10 @@
  */
 
 export const SEED_RATING = 1000.0;
-export const K_STANDARD = 20.0;
-export const K_PROVISIONAL = 40.0;
+export const K_STANDARD = 28.0;
+export const K_PROVISIONAL = 56.0;
 export const PROVISIONAL_MATCHES = 5;
+export const MOV_SCALE = 1.75;
 export const ELO_SCALE = 400.0;
 
 export interface MatchInput {
@@ -19,6 +20,8 @@ export interface MatchInput {
   played_at: string;
   team_a: [string, string];
   team_b: [string, string];
+  /** Per-set games, in the order played. The rating reads this, not the totals. */
+  sets: Array<{ games_a: number; games_b: number }>;
   games_a: number;
   games_b: number;
 }
@@ -37,13 +40,10 @@ export interface ReplayResult {
   matchesPlayed: Record<string, number>;
 }
 
-export function verdict(gamesFor: number, gamesAgainst: number): "W" | "L" | "D" {
-  if (gamesFor > gamesAgainst) return "W";
-  if (gamesFor < gamesAgainst) return "L";
-  return "D";
-}
-
-/** Display-only set verdict: two clear games, or 7-6. See docs/RATING.md. */
+/**
+ * A set is won on a two-game lead, or at 7-6. A level set belongs to nobody.
+ * Normative: this feeds the rating. See docs/RATING.md.
+ */
 export function setVerdict(gamesA: number, gamesB: number): "a" | "b" | null {
   const diff = Math.abs(gamesA - gamesB);
   if (diff >= 2) return gamesA > gamesB ? "a" : "b";
@@ -51,6 +51,42 @@ export function setVerdict(gamesA: number, gamesB: number): "a" | "b" | null {
     return gamesA > gamesB ? "a" : "b";
   }
   return null;
+}
+
+/** Team A's observed score: sets decide, games break a tie on sets. */
+export function observedScore(sets: Array<{ games_a: number; games_b: number }>): number {
+  let takenA = 0;
+  let takenB = 0;
+  for (const set of sets) {
+    const won = setVerdict(set.games_a, set.games_b);
+    if (won === "a") takenA += 1;
+    else if (won === "b") takenB += 1;
+  }
+  if (takenA > takenB) return 1;
+  if (takenB > takenA) return 0;
+
+  const gamesA = sets.reduce((sum, set) => sum + set.games_a, 0);
+  const gamesB = sets.reduce((sum, set) => sum + set.games_b, 0);
+  if (gamesA > gamesB) return 1;
+  if (gamesB > gamesA) return 0;
+  return 0.5;
+}
+
+/** W / L / D for the side whose observed score this is. */
+export function verdictFromScore(score: number): "W" | "L" | "D" {
+  if (score === 1) return "W";
+  if (score === 0) return "L";
+  return "D";
+}
+
+/**
+ * Proportional margin term. The arguments are the WINNER's game totals, so a
+ * side that takes the sets while trailing on games earns no bonus rather than
+ * a perverse one.
+ */
+export function marginMultiplier(gamesWon: number, gamesLost: number): number {
+  const total = gamesWon + gamesLost;
+  return 1 + (MOV_SCALE * Math.max(0, gamesWon - gamesLost)) / total;
 }
 
 function chronological(matches: MatchInput[]): MatchInput[] {
@@ -93,9 +129,13 @@ export function replay(
     const ea = 1 / (1 + Math.pow(10, (rb - ra) / ELO_SCALE));
     const eb = 1 - ea;
 
-    const sa = match.games_a > match.games_b ? 1 : match.games_a < match.games_b ? 0 : 0.5;
+    const sa = observedScore(match.sets);
     const sb = 1 - sa;
-    const mov = 1 + Math.abs(match.games_a - match.games_b) / total;
+    // The margin follows the winner; a draw is level on games either way.
+    const mov =
+      sa < 0.5
+        ? marginMultiplier(match.games_b, match.games_a)
+        : marginMultiplier(match.games_a, match.games_b);
 
     const deltas: Record<string, number> = {};
     const after: Record<string, number> = {};

@@ -1,10 +1,14 @@
 /**
  * The only file in the frontend that knows where data comes from.
  *
- * Flip `API_MODE` to "live" (or set NEXT_PUBLIC_API_MODE=live) once FastAPI is
- * reachable: every function below speaks the contract in
- * `frontend/lib/types.ts`, which mirrors `/api/openapi.json`, and the mock
- * answers with the same shapes. Nothing else in the app changes.
+ * Live is the default, and the mock is opt-in via NEXT_PUBLIC_API_MODE=mock.
+ * It used to be the other way round, which meant a deployment that simply had
+ * no env var set served `lib/mock/seed.ts` -- PRNG-generated players with
+ * invented ratings -- and looked entirely plausible doing it. A deployment
+ * that cannot reach FastAPI should fail visibly, not quietly invent a ladder.
+ *
+ * Every function below speaks the contract in `lib/types.ts`, which mirrors
+ * `/api/openapi.json`, and the mock answers with the same shapes.
  */
 
 import * as mock from "@/lib/mock";
@@ -28,7 +32,7 @@ import type {
 } from "@/lib/types";
 
 export const API_MODE: "mock" | "live" =
-  process.env.NEXT_PUBLIC_API_MODE === "live" ? "live" : "mock";
+  process.env.NEXT_PUBLIC_API_MODE === "mock" ? "mock" : "live";
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE ?? "";
 

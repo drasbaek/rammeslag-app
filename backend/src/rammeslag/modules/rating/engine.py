@@ -24,17 +24,35 @@ WIN = "W"
 LOSS = "L"
 DRAW = "D"
 
+#: `set_winner` results. Sets feed the rating, so this rule is normative.
+SET_A = 1
+SET_B = -1
+SET_NONE = 0
+
 
 @dataclass(frozen=True)
 class MatchInput:
-    """One internal match, reduced to what the rating depends on."""
+    """One internal match, reduced to what the rating depends on.
+
+    `sets` holds each set's games as (a, b), in the order they were played.
+    The game totals are derived from it rather than carried beside it, so the
+    two can never disagree -- the shape `matches.service.MatchRow` already
+    uses.
+    """
 
     match_id: str
     played_at: datetime
     team_a: tuple[str, str]
     team_b: tuple[str, str]
-    games_a: int
-    games_b: int
+    sets: tuple[tuple[int, int], ...]
+
+    @property
+    def games_a(self) -> int:
+        return sum(games for games, _ in self.sets)
+
+    @property
+    def games_b(self) -> int:
+        return sum(games for _, games in self.sets)
 
 
 @dataclass(frozen=True)
@@ -62,19 +80,63 @@ def expected_score(rating_for: float, rating_against: float) -> float:
     return 1.0 / (1.0 + 10.0 ** ((rating_against - rating_for) / ELO_SCALE))
 
 
-def observed_score(games_for: int, games_against: int) -> float:
-    """Observed score from total games won, not sets."""
-    if games_for > games_against:
+def set_winner(games_a: int, games_b: int) -> int:
+    """Which side took one set: SET_A, SET_B, or SET_NONE for neither.
+
+    A set is won on a two-game lead, or at 7-6. These are timed sessions, so
+    sets end unfinished at 4-3 or 5-4 routinely and those count for neither
+    side.
+    """
+    if (games_a, games_b) == (7, 6):
+        return SET_A
+    if (games_a, games_b) == (6, 7):
+        return SET_B
+    if games_a - games_b >= 2:
+        return SET_A
+    if games_b - games_a >= 2:
+        return SET_B
+    return SET_NONE
+
+
+def sets_won(sets: Sequence[tuple[int, int]]) -> tuple[int, int]:
+    """Sets taken by A and by B. Unfinished sets count for neither."""
+    winners = [set_winner(games_a, games_b) for games_a, games_b in sets]
+    return winners.count(SET_A), winners.count(SET_B)
+
+
+def observed_score(sets: Sequence[tuple[int, int]]) -> float:
+    """Team A's observed score. Sets decide the match; games break a set tie.
+
+    Sets are what the players believe they won -- 6-0 6-7 6-7 is a win for B,
+    however the 32 games fell. But timed sets end level often enough that sets
+    alone leave a fifth of the history undecided, so the game count breaks a
+    tie on sets rather than calling those matches draws.
+    """
+    taken_a, taken_b = sets_won(sets)
+    if taken_a > taken_b:
         return 1.0
-    if games_for < games_against:
+    if taken_b > taken_a:
+        return 0.0
+
+    games_a = sum(games for games, _ in sets)
+    games_b = sum(games for _, games in sets)
+    if games_a > games_b:
+        return 1.0
+    if games_b > games_a:
         return 0.0
     return 0.5
 
 
-def margin_multiplier(games_a: int, games_b: int) -> float:
-    """Proportional margin term, because match length varies from 7 to 24 games."""
-    total = games_a + games_b
-    return 1.0 + MOV_SCALE * abs(games_a - games_b) / total
+def margin_multiplier(games_won: int, games_lost: int) -> float:
+    """Proportional margin term, because match length varies from 7 to 24 games.
+
+    The arguments are the game totals of the side that WON the match, so the
+    margin follows the winner. A side that takes the sets while trailing on
+    games has a negative margin: that earns no bonus rather than a perverse
+    one, so the term is clamped at zero and such a match moves by K alone.
+    """
+    total = games_won + games_lost
+    return 1.0 + MOV_SCALE * max(0, games_won - games_lost) / total
 
 
 def k_factor(matches_so_far: int) -> float:
@@ -120,8 +182,8 @@ def compute(
         for player_id in team_a + team_b:
             seed(player_id)
 
-        score_a = observed_score(match.games_a, match.games_b)
-        score_b = observed_score(match.games_b, match.games_a)
+        score_a = observed_score(match.sets)
+        score_b = 1.0 - score_a
 
         rating_a = (ratings[team_a[0]] + ratings[team_a[1]]) / 2.0
         rating_b = (ratings[team_b[0]] + ratings[team_b[1]]) / 2.0
@@ -133,7 +195,13 @@ def compute(
             # A match with no games played does not affect ratings at all.
             deltas = {player_id: 0.0 for player_id in team_a + team_b}
         else:
-            mov = margin_multiplier(match.games_a, match.games_b)
+            # The margin belongs to whoever won, so a side that took the sets
+            # while losing the game count gets none. A draw is level on games,
+            # which makes the order irrelevant there.
+            if score_a < 0.5:
+                mov = margin_multiplier(match.games_b, match.games_a)
+            else:
+                mov = margin_multiplier(match.games_a, match.games_b)
             deltas = {}
             sides = ((team_a, score_a, expected_a), (team_b, score_b, expected_b))
             for team, score, expected in sides:

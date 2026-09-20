@@ -159,13 +159,19 @@ def test_a_member_who_missed_the_season_is_absent_from_that_season_board() -> No
 
 
 def test_entry_ratings_seed_the_ladder() -> None:
-    """A newcomer an admin rates at 1200 does not enter as a 1000-rated player."""
+    """A newcomer an admin rates highly does not enter as a 1000-rated player."""
     rows = _six_matches()
-    ladder = _ladder(rows, _players(GUEST, newcomer=1200.0))
+    # Seeded above whatever the rotation produced, so this test is about the
+    # entry rating being honoured and not about what the K constants happen to
+    # be worth over six matches.
+    top = max(entry.rating for entry in _ladder(rows, _players(GUEST)).entries)
+    seeded = top + 100.0
+
+    ladder = _ladder(rows, _players(GUEST, newcomer=seeded))
     by_id = {e.player_id: e for e in ladder.entries}
     # Never played, so the rating is exactly what the admin set -- and that is
     # enough to top an all-time ladder.
-    assert by_id["newcomer"].rating == pytest.approx(1200.0)
+    assert by_id["newcomer"].rating == pytest.approx(seeded)
     assert by_id["newcomer"].rank == 1
 
 
