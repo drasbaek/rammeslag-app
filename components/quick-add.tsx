@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { PlayerForm } from "@/components/admin/player-form";
+import { EventForm } from "@/components/program/event-form";
 import { SessionForm } from "@/components/session/session-form";
 import { useAuthGate } from "@/components/auth/auth-gate";
 import { Sheet } from "@/components/ui/sheet";
@@ -26,7 +27,7 @@ interface QuickAdd {
 
 const Context = createContext<QuickAdd | null>(null);
 
-type Surface = null | "menu" | "session" | "player";
+type Surface = null | "menu" | "session" | "player" | "match" | "training";
 
 function Row({
   title,
@@ -92,6 +93,23 @@ function PadelIcon() {
     <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden>
       <rect x="3" y="3.5" width="14" height="13" rx="2" stroke="currentColor" strokeWidth="1.6" fill="none" />
       <path d="M3 10h14M10 3.5v13" stroke="currentColor" strokeWidth="1.3" />
+    </svg>
+  );
+}
+
+function CalendarIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden>
+      <rect x="2.5" y="4" width="15" height="13.5" rx="2.5" stroke="currentColor" strokeWidth="1.6" fill="none" />
+      <path d="M2.5 8.5h15M6.5 2.5v3M13.5 2.5v3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function ShieldIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden>
+      <path d="M10 2.6l6 2.2v5.1c0 3.4-2.4 6.2-6 7.5-3.6-1.3-6-4.1-6-7.5V4.8z" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -164,6 +182,31 @@ export function QuickAddProvider({ children }: { children: ReactNode }) {
             }}
           />
 
+          {/* Forward-looking, unlike everything above it: these two put a
+              date in the calendar for people to answer, rather than writing
+              down something that already happened. */}
+          <Row
+            title="Ny kamp"
+            hint={admin ? "Modstander, sted og tid" : "Kun administratorer"}
+            icon={<ShieldIcon />}
+            disabled={!admin}
+            onClick={() => {
+              haptic("tap");
+              setSurface("match");
+            }}
+          />
+
+          <Row
+            title="Ny træning"
+            hint={admin ? "Søndag, med baner" : "Kun administratorer"}
+            icon={<CalendarIcon />}
+            disabled={!admin}
+            onClick={() => {
+              haptic("tap");
+              setSurface("training");
+            }}
+          />
+
           <Row
             title="Ny spiller"
             hint={admin ? "Medlem eller gæst" : "Kun administratorer"}
@@ -183,6 +226,12 @@ export function QuickAddProvider({ children }: { children: ReactNode }) {
       ) : null}
       {surface === "player" ? (
         <PlayerForm key="new-player" open onOpenChange={() => setSurface(null)} player={null} />
+      ) : null}
+      {surface === "match" ? (
+        <EventForm key="new-match" open onOpenChange={() => setSurface(null)} type="match" />
+      ) : null}
+      {surface === "training" ? (
+        <EventForm key="new-training" open onOpenChange={() => setSurface(null)} type="training" />
       ) : null}
     </Context.Provider>
   );

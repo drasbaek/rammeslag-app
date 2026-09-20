@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from rammeslag.config import get_settings
+from rammeslag.modules.events.router import router as events_router
 from rammeslag.modules.matches.router import router as matches_router
 from rammeslag.modules.matches.service import DomainError
 from rammeslag.modules.players.router import auth_router
@@ -59,6 +60,7 @@ def create_app() -> FastAPI:
     app.include_router(seasons_router)
     app.include_router(sessions_router)
     app.include_router(matches_router)
+    app.include_router(events_router)
     return app
 
 

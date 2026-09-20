@@ -258,3 +258,6 @@ yarn-error.log*
 .vercel
 *.tsbuildinfo
 next-env.d.ts
+
+# Agent worktrees: full checkouts of this repo, living inside it.
+.claude/worktrees/

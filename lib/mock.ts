@@ -28,12 +28,24 @@ import {
 import { PROVISIONAL_MATCHES } from "@/lib/types";
 import type {
   CurvePoint,
+  EventCountsOut,
+  EventCreate,
+  EventDetailOut,
+  EventMatchupOut,
+  EventOut,
+  EventScope,
+  EventStatus,
+  EventType,
+  EventUpdate,
+  EventResponseOut,
+  GuestCreate,
   HighlightsOut,
   LadderEntryOut,
   LadderOut,
   LadderScope,
   MatchCreate,
   MatchOut,
+  MatchupsIn,
   MeOut,
   PairStatOut,
   PlayerCreate,
@@ -41,11 +53,13 @@ import type {
   PlayerOut,
   PlayerUpdate,
   ProfileOut,
+  ResponseState,
   SeasonCreate,
   SeasonOut,
   SeasonUpdate,
   SeasonRef,
   SeasonStatOut,
+  SelectionIn,
   SessionCreate,
   SessionDetailOut,
   SessionOut,
@@ -841,6 +855,363 @@ export async function deleteSession(id: string): Promise<null> {
   sessionById.delete(id);
   sessionList.splice(sessionList.indexOf(session), 1);
   return delay(null);
+}
+
+/* ---- Events -------------------------------------------------------------
+ * The calendar half of the app: fixtures and Sunday trainings, and who has
+ * said they can come. Same shapes as `/api/events`, same rules — in
+ * particular, availability and selection are kept apart here too, because a
+ * mock that quietly conflated them would hide the one bug that matters.
+ * -------------------------------------------------------------------------- */
+
+interface MockEvent {
+  id: string;
+  season_id: string;
+  type: EventType;
+  held_on: string;
+  start_time: string;
+  venue: string;
+  opponent: string | null;
+  capacity: number;
+  status: EventStatus;
+  note: string | null;
+  session_id: string | null;
+}
+
+interface MockResponse {
+  state: ResponseState;
+  added_by: string | null;
+  updated_at: string;
+}
+
+const SEASON_ID = CURRENT_SEASON.id;
+
+const eventList: MockEvent[] = [
+  {
+    id: "ev-1",
+    season_id: SEASON_ID,
+    type: "training",
+    held_on: "2026-09-27",
+    start_time: "10:00:00",
+    venue: "Pakhus77",
+    opponent: null,
+    capacity: 12,
+    status: "open",
+    note: null,
+    session_id: null,
+  },
+  {
+    id: "ev-2",
+    season_id: SEASON_ID,
+    type: "match",
+    held_on: "2026-10-17",
+    start_time: "18:00:00",
+    venue: "Pakhus77",
+    opponent: "Piverts",
+    capacity: 6,
+    status: "open",
+    note: null,
+    session_id: null,
+  },
+  {
+    id: "ev-3",
+    season_id: SEASON_ID,
+    type: "match",
+    held_on: "2026-10-23",
+    start_time: "18:00:00",
+    venue: "Grenaa",
+    opponent: "Padelmaster",
+    capacity: 6,
+    status: "open",
+    note: "Kør samlet fra Pakhus77",
+    session_id: null,
+  },
+];
+
+const eventById = new Map(eventList.map((e) => [e.id, e]));
+const responsesByEvent = new Map<string, Map<string, MockResponse>>();
+const selectionsByEvent = new Map<string, string[]>();
+const matchupsByEvent = new Map<string, MatchupsIn["matchups"]>();
+
+/** A plausible spread of answers, so the tallies on screen are not all zero. */
+function seedResponses(): void {
+  const members = roster.filter((p) => !p.is_guest);
+  const pattern: ResponseState[] = ["yes", "yes", "no", "yes", "maybe", "yes", "yes", "no"];
+  for (const event of eventList) {
+    const answers = new Map<string, MockResponse>();
+    members.slice(0, 9).forEach((p, i) => {
+      answers.set(p.id, {
+        state: pattern[i % pattern.length],
+        added_by: p.id,
+        updated_at: `${event.held_on}T09:00:00+02:00`,
+      });
+    });
+    responsesByEvent.set(event.id, answers);
+  }
+}
+seedResponses();
+
+function responsesOf(eventId: string): Map<string, MockResponse> {
+  let found = responsesByEvent.get(eventId);
+  if (!found) {
+    found = new Map();
+    responsesByEvent.set(eventId, found);
+  }
+  return found;
+}
+
+function mockEvent(id: string): MockEvent {
+  const found = eventById.get(id);
+  if (!found) throw new Error(`Ukendt begivenhed: ${id}`);
+  return found;
+}
+
+function countsOf(eventId: string): EventCountsOut {
+  const answers = [...responsesOf(eventId).values()].map((r) => r.state);
+  const members = roster.filter((p) => !p.is_guest).length;
+  return {
+    yes: answers.filter((s) => s === "yes").length,
+    no: answers.filter((s) => s === "no").length,
+    maybe: answers.filter((s) => s === "maybe").length,
+    // Guests can push the answered count past the membership.
+    unanswered: Math.max(0, members - answers.length),
+  };
+}
+
+function toEventOut(event: MockEvent): EventOut {
+  const counts = countsOf(event.id);
+  return {
+    id: event.id,
+    season: seasonRef(event.season_id),
+    type: event.type,
+    held_on: event.held_on,
+    start_time: event.start_time,
+    venue: event.venue,
+    opponent: event.opponent,
+    capacity: event.capacity,
+    status: event.status,
+    note: event.note,
+    session_id: event.session_id,
+    counts,
+    selected_count: (selectionsByEvent.get(event.id) ?? []).length,
+    surplus: counts.yes - event.capacity,
+    my_state: authed ? (responsesOf(event.id).get(authed.id)?.state ?? null) : null,
+  };
+}
+
+/** Today in Copenhagen, as an ISO date. The real API decides this server-side. */
+function todayISO(): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Europe/Copenhagen" }).format(new Date());
+}
+
+export async function getEvents(
+  scope: EventScope = "upcoming",
+  type?: EventType,
+): Promise<EventOut[]> {
+  const cutoff = todayISO();
+  const rows = eventList
+    .filter((e) => !type || e.type === type)
+    .filter((e) =>
+      scope === "all" ? true : scope === "past" ? e.held_on < cutoff : e.held_on >= cutoff,
+    )
+    .sort((a, b) =>
+      scope === "past"
+        ? b.held_on.localeCompare(a.held_on) || b.start_time.localeCompare(a.start_time)
+        : a.held_on.localeCompare(b.held_on) || a.start_time.localeCompare(b.start_time),
+    );
+  return delay(rows.map(toEventOut));
+}
+
+export async function getEvent(id: string): Promise<EventDetailOut> {
+  const event = mockEvent(id);
+  const answers = responsesOf(id);
+
+  const responses: EventResponseOut[] = [...answers.entries()]
+    .filter(([playerId]) => playerById.has(playerId))
+    .map(([playerId, row]) => ({
+      player: playerOut(playerId),
+      state: row.state,
+      added_by: row.added_by,
+      updated_at: row.updated_at,
+    }))
+    .sort((a, b) => a.player.name.localeCompare(b.player.name, "da"));
+
+  // Members only: nobody asked the guests, so their silence is not an
+  // outstanding question.
+  const unanswered = roster
+    .filter((p) => !p.is_guest && !answers.has(p.id))
+    .map((p) => playerOut(p.id))
+    .sort((a, b) => a.name.localeCompare(b.name, "da"));
+
+  const selected = (selectionsByEvent.get(id) ?? [])
+    .filter((pid) => playerById.has(pid))
+    .map(playerOut)
+    .sort((a, b) => a.name.localeCompare(b.name, "da"));
+
+  const matchups: EventMatchupOut[] = (matchupsByEvent.get(id) ?? []).map((m) => ({
+    round: m.round,
+    court: m.court,
+    team_a: m.team_a.map(playerOut),
+    team_b: m.team_b.map(playerOut),
+  }));
+
+  return delay({ ...toEventOut(event), responses, unanswered, selected, matchups });
+}
+
+export async function setMyResponse(eventId: string, state: ResponseState): Promise<EventOut> {
+  if (!authed) throw new Error("Du skal være logget ind for at gøre det.");
+  return setResponseFor(eventId, authed.id, state);
+}
+
+export async function setResponseFor(
+  eventId: string,
+  playerId: string,
+  state: ResponseState,
+): Promise<EventOut> {
+  if (!authed) throw new Error("Du skal være logget ind for at gøre det.");
+  const event = mockEvent(eventId);
+  if (event.status === "cancelled") throw new Error("Begivenheden er aflyst.");
+  // You answer for yourself, for a guest, or — as an admin — for anyone.
+  const subject = playerById.get(playerId);
+  const allowed = authed.id === playerId || authed.is_admin || subject?.is_guest;
+  if (!allowed) throw new Error("Du kan kun svare for dig selv og for gæster.");
+
+  responsesOf(eventId).set(playerId, {
+    state,
+    added_by: authed.id,
+    updated_at: new Date().toISOString(),
+  });
+  return delay(toEventOut(event));
+}
+
+export async function clearResponse(eventId: string, playerId: string): Promise<EventOut> {
+  if (!authed) throw new Error("Du skal være logget ind for at gøre det.");
+  const event = mockEvent(eventId);
+  if (event.status === "cancelled") throw new Error("Begivenheden er aflyst.");
+  const subject = playerById.get(playerId);
+  const allowed = authed.id === playerId || authed.is_admin || subject?.is_guest;
+  if (!allowed) throw new Error("Du kan kun svare for dig selv og for gæster.");
+
+  responsesOf(eventId).delete(playerId);
+  return delay(toEventOut(event));
+}
+
+export async function createEvent(body: EventCreate): Promise<EventOut> {
+  if (!authed?.is_admin) throw new Error("Kun en administrator kan gøre det.");
+  const season = seasonList.find(
+    (s) => s.starts_on <= body.held_on && body.held_on <= s.ends_on,
+  );
+  if (!season) throw new Error("Der findes ingen sæson, der dækker den dato.");
+
+  const created: MockEvent = {
+    id: `ev-new-${eventList.length + 1}`,
+    season_id: season.id,
+    type: body.type,
+    held_on: body.held_on,
+    start_time: body.start_time.length === 5 ? `${body.start_time}:00` : body.start_time,
+    venue: body.venue.trim(),
+    // A training never carries an opponent, whatever is sent.
+    opponent: body.type === "match" ? (body.opponent?.trim() || null) : null,
+    capacity: body.capacity ?? (body.type === "match" ? 6 : 12),
+    status: "open",
+    note: body.note?.trim() ? body.note.trim() : null,
+    session_id: null,
+  };
+  eventList.push(created);
+  eventById.set(created.id, created);
+  return delay(toEventOut(created));
+}
+
+export async function updateEvent(id: string, body: EventUpdate): Promise<EventOut> {
+  if (!authed?.is_admin) throw new Error("Kun en administrator kan gøre det.");
+  const event = mockEvent(id);
+
+  if (body.held_on !== undefined && body.held_on !== event.held_on) {
+    const season = seasonList.find(
+      (s) => s.starts_on <= body.held_on! && body.held_on! <= s.ends_on,
+    );
+    if (!season) throw new Error("Der findes ingen sæson, der dækker den dato.");
+    event.held_on = body.held_on;
+    event.season_id = season.id;
+  }
+  if (body.start_time !== undefined) {
+    event.start_time = body.start_time.length === 5 ? `${body.start_time}:00` : body.start_time;
+  }
+  if (body.venue !== undefined) event.venue = body.venue.trim();
+  if (body.opponent !== undefined && event.type === "match") {
+    event.opponent = body.opponent?.trim() || null;
+  }
+  if (body.capacity !== undefined) event.capacity = body.capacity;
+  if (body.status !== undefined) event.status = body.status;
+  if (body.note !== undefined) event.note = body.note.trim() ? body.note.trim() : null;
+  return delay(toEventOut(event));
+}
+
+export async function deleteEvent(id: string): Promise<null> {
+  if (!authed?.is_admin) throw new Error("Kun en administrator kan gøre det.");
+  const event = mockEvent(id);
+  eventById.delete(id);
+  eventList.splice(eventList.indexOf(event), 1);
+  responsesByEvent.delete(id);
+  selectionsByEvent.delete(id);
+  matchupsByEvent.delete(id);
+  return delay(null);
+}
+
+/** The squad, replaced wholesale. Nothing here touches anybody's answer. */
+export async function setSelection(id: string, body: SelectionIn): Promise<EventDetailOut> {
+  if (!authed?.is_admin) throw new Error("Kun en administrator kan gøre det.");
+  mockEvent(id);
+  selectionsByEvent.set(id, [...new Set(body.player_ids)]);
+  return getEvent(id);
+}
+
+/** The plan, replaced wholesale. A whiteboard: none of this becomes a match. */
+export async function setMatchups(id: string, body: MatchupsIn): Promise<EventDetailOut> {
+  if (!authed?.is_admin) throw new Error("Kun en administrator kan gøre det.");
+  mockEvent(id);
+  matchupsByEvent.set(id, body.matchups);
+  return getEvent(id);
+}
+
+export async function createSessionForEvent(id: string): Promise<SessionOut> {
+  if (!authed?.is_admin) throw new Error("Kun en administrator kan gøre det.");
+  const event = mockEvent(id);
+  if (event.type !== "training") throw new Error("Kun en træning kan blive til en session.");
+  if (event.status === "cancelled") throw new Error("Træningen er aflyst.");
+  if (event.session_id) throw new Error("Der er allerede oprettet en session for træningen.");
+
+  const created = await createSession({
+    played_on: event.held_on,
+    type: "training",
+    note: event.note,
+  });
+  event.session_id = created.id;
+  return created;
+}
+
+/**
+ * Any logged-in player, not just an admin. Enters at the seed rating and gets
+ * no PIN. An existing name comes back as itself rather than as an error: two
+ * people adding the same guest is a collision of intent, not a mistake.
+ */
+export async function createGuest(body: GuestCreate): Promise<PlayerOut> {
+  if (!authed) throw new Error("Du skal være logget ind for at gøre det.");
+  const clean = body.name.trim();
+  if (!clean) throw new Error("Gæsten skal have et navn.");
+  const existing = roster.find((p) => p.name === clean);
+  if (existing) return delay(playerOut(existing.id));
+
+  const created: MeOut = {
+    id: `p-guest-${roster.length + 1}`,
+    name: clean,
+    is_guest: true,
+    is_admin: false,
+    entry_rating: SEED_RATING,
+  };
+  roster.push(created);
+  playerById.set(created.id, created);
+  return delay(playerOut(created.id));
 }
 
 export { OPEN_SESSION_ID };

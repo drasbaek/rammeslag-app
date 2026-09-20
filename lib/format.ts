@@ -7,6 +7,17 @@ function toDate(value: string): Date {
   return new Date(value.length === 10 ? `${value}T12:00:00+02:00` : value);
 }
 
+/**
+ * "søndag 27. september" -> "Søndag 27. september".
+ *
+ * A JS helper rather than CSS: `capitalize` would upper-case the month too,
+ * which Danish does not, and `::first-letter` does not apply to an inline
+ * element.
+ */
+export function sentenceCase(value: string): string {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
 export function formatDateLong(value: string): string {
   return new Intl.DateTimeFormat("da-DK", {
     weekday: "long",
@@ -115,4 +126,71 @@ export const SESSION_TYPE_LABEL: Record<string, string> = {
 /** Never blank: an unknown type from a newer backend still reads as something. */
 export function sessionTypeLabel(type: string): string {
   return SESSION_TYPE_LABEL[type] ?? "Session";
+}
+
+/* ---- Events -------------------------------------------------------------- */
+
+export const EVENT_TYPE_LABEL: Record<string, string> = {
+  match: "Kamp",
+  training: "Træning",
+};
+
+/** Never blank: an unknown type from a newer backend still reads as something. */
+export function eventTypeLabel(type: string): string {
+  return EVENT_TYPE_LABEL[type] ?? "Begivenhed";
+}
+
+export const EVENT_STATUS_LABEL: Record<string, string> = {
+  open: "Åben",
+  locked: "Låst",
+  cancelled: "Aflyst",
+};
+
+/**
+ * "18:00:00" -> "18.00". Danish writes a period between hours and minutes,
+ * and the seconds the API sends are never anything but zero.
+ */
+export function clock(value: string): string {
+  return value.slice(0, 5).replace(":", ".");
+}
+
+/** "18:00:00" -> "18:00", which is what an <input type="time"> wants back. */
+export function clockInput(value: string): string {
+  return value.slice(0, 5);
+}
+
+/**
+ * The two features answer the same question in different words. A fixture
+ * borrows the old spreadsheet's wording exactly — Klar, Ikke klar, Ved ikke —
+ * because that is what the team has been typing for a season. A Sunday is
+ * plainer: you are coming or you are not.
+ */
+export function responseLabel(state: string, type: string): string {
+  if (type === "training") {
+    return { yes: "Kommer", no: "Kommer ikke", maybe: "Måske" }[state] ?? "Uafklaret";
+  }
+  return { yes: "Klar", no: "Ikke klar", maybe: "Ved ikke" }[state] ?? "Uafklaret";
+}
+
+/** Capacity back into baner, rounded up. Mirrors events/service.py courts_for. */
+export function courtsFor(capacity: number): number {
+  return Math.ceil(capacity / 4);
+}
+
+/** "3 baner", and "1 bane" for the Sunday somebody only got one. */
+export function courtCount(capacity: number): string {
+  const courts = courtsFor(capacity);
+  return `${courts} ${courts === 1 ? "bane" : "baner"}`;
+}
+
+/**
+ * How far off a full squad we are. `+4` is four spare, `−2` is two short.
+ *
+ * Deliberately not phrased as "vi er klar": this counts who said they are
+ * available, which is not the same as who is playing. The screens that show
+ * it say so in words next to it.
+ */
+export function surplus(value: number): string {
+  if (value === 0) return "±0";
+  return value > 0 ? `+${value}` : `−${Math.abs(value)}`;
 }

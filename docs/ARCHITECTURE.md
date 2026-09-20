@@ -39,6 +39,7 @@ backend/
       seasons/
       sessions/
       matches/
+      events/
       rating/
   migrations/              Alembic.
   tests/
@@ -48,7 +49,8 @@ lib/api.ts                 Typed client generated from OpenAPI.
 lib/attendance.ts          Who is at the hall tonight, per session, in
                            localStorage. Deliberately not an API
                            resource: a session is its matches, and this
-                           only has to survive a reload.
+                           only has to survive a reload. An event's
+                           yes-list pre-fills it; it is still local.
 public/                    Manifest and icons.
 package.json               The Next.js app lives at the repo root, because
                            Vercel detects the framework from a root
@@ -105,6 +107,42 @@ above roughly 5,000 matches, not before.
 Only matches with `source = 'internal'` reach the engine. RankedIN data,
 when it arrives, is display-only.
 
+## Events are not sessions
+
+A **session** is retrospective: an evening defined by the matches played on
+it. An **event** is prospective: a date people answer before it exists.
+They are separate tables and separate modules.
+
+Folding a planned Sunday into `sessions` would put empty future rows into the
+history list and into every reader that walks sessions, none of which asked
+for a calendar. `sessions` stays the record of what happened.
+
+Two kinds live in one table, discriminated by `type`, the same way
+`session.type` works:
+
+- `match` — a league fixture against another club. Availability and the squad
+  an admin picks. **No score is ever recorded.** These are not internal
+  doubles and nothing about them reaches the ladder.
+- `training` — a Sunday. Availability, a court count, and once it has been
+  played a link to the `session` its results went into.
+
+Three rules hold this together, and an agent changing this module must keep
+all three:
+
+1. **Availability is never selection.** `event_responses` and
+   `event_selections` are separate tables and nothing derives one from the
+   other. Saying "klar" is a tilmelding; being picked is an admin's decision.
+   Every screen that shows them puts them under different headings.
+2. **`event_matchups` is a whiteboard.** Planned line-ups have no score and
+   never become `Match` rows by themselves. Score entry writes matches, from
+   the same screen every other result goes through. Nothing in `modules/events/`
+   imports the rating engine, writes a `Match`, or can move
+   `fixtures/expected_ratings.json`.
+3. **`events.session_id` is the one nullable FK in the schema**, and it is
+   deliberate. Rule 6 in AGENTS.md forbids a nullable FK *where a type column
+   would do* — here one would not. A training has a session only after it has
+   been played, so this is optional state over time, not a discriminator.
+
 ## Schema
 
 ```
@@ -124,6 +162,21 @@ matches(id, session_id FK NOT NULL, played_at, source,
         source : internal | rankedin
 
 match_sets(id, match_id FK, set_number, games_a, games_b)
+```
+
+```
+events(id, season_id FK, type, held_on, start_time, venue, opponent,
+       capacity, status, note, session_id FK NULL, created_by, created_at)
+       type     : match | training
+       status   : open | locked | cancelled
+       capacity : player slots. A fixture's squad (6), or courts x 4 (12).
+
+event_responses(id, event_id FK, player_id FK, state, added_by, updated_at)
+       state    : yes | no | maybe
+       UNIQUE(event_id, player_id). No row means "has not answered".
+
+event_selections(id, event_id FK, player_id FK, created_at)
+event_matchups(id, event_id FK, round, court, 4 x player_id)
 ```
 
 `session_id` is **NOT NULL**. A one-off game creates a `casual` session; a
@@ -158,7 +211,27 @@ PATCH  /api/sessions/{id}              auth   Re-dating moves its matches.
 POST   /api/matches                    auth
 DELETE /api/sessions/{id}              admin
 DELETE /api/matches/{id}               admin
+
+GET    /api/events?scope=&season=&type=   upcoming | past | all
+GET    /api/events/{id}                Detail: answers, squad, planned line-ups.
+POST   /api/events                     admin
+PATCH  /api/events/{id}                admin  Re-dating re-resolves the season.
+DELETE /api/events/{id}                admin  Never touches a linked session.
+
+PUT    /api/events/{id}/response              auth   Your own answer.
+PUT    /api/events/{id}/response/{player}     auth   A guest's, or admin: anyone's.
+DELETE /api/events/{id}/response/{player}     auth   Back to no answer.
+
+PUT    /api/events/{id}/selection      admin  The whole squad, at once.
+PUT    /api/events/{id}/matchups       admin  The whole plan, at once.
+POST   /api/events/{id}/session        admin  Training only. Opens the evening.
+
+POST   /api/players/guest              auth   Name only. Seed rating, no PIN.
 ```
+
+Selection and the plan are whole-list `PUT`s rather than per-row writes: an
+admin picks a squad as one decision, and a stream of row edits would need an
+ordering story it does not have.
 
 The OpenAPI schema FastAPI emits at `/api/openapi.json` is the contract.
 `lib/api.ts` is generated from it. There is no second description

@@ -15,6 +15,7 @@ from rammeslag.config import get_settings
 from rammeslag.db import Base, normalize_database_url
 
 # Importing every module's models is what populates Base.metadata.
+from rammeslag.modules.events import models as events_models  # noqa: F401
 from rammeslag.modules.matches import models as matches_models  # noqa: F401
 from rammeslag.modules.players import models as players_models  # noqa: F401
 from rammeslag.modules.seasons import models as seasons_models  # noqa: F401

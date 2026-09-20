@@ -16,6 +16,7 @@ from rammeslag.modules.players import service
 from rammeslag.modules.players.models import Player
 from rammeslag.modules.players.schemas import (
     CurvePoint,
+    GuestCreate,
     HighlightsOut,
     LadderEntryOut,
     LadderOut,
@@ -69,6 +70,22 @@ def create_player(
         is_admin=payload.is_admin,
         pin=payload.pin,
     )
+
+
+@router.post("/players/guest", response_model=PlayerOut, status_code=201)
+def create_guest(
+    payload: GuestCreate,
+    db: DbSession = Depends(get_db),
+    player: Player = Depends(current_user),
+) -> Player:
+    """Add a guest. Any logged-in player, not just an admin.
+
+    Deliberately a route of its own rather than an opening-up of
+    ``POST /players``: this one can only ever mint a guest with no PIN and no
+    admin flag, so letting the whole team reach it hands nobody anything but
+    a name on Sunday's list.
+    """
+    return service.create_guest(db, name=payload.name)
 
 
 @router.patch("/players/{player_id}", response_model=PlayerOut)
