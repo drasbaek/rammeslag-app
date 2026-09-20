@@ -1102,6 +1102,9 @@ export async function createEvent(body: EventCreate): Promise<EventOut> {
     (s) => s.starts_on <= body.held_on && body.held_on <= s.ends_on,
   );
   if (!season) throw new Error("Der findes ingen sæson, der dækker den dato.");
+  if (!body.venue?.trim() && body.type !== "training") {
+    throw new Error("Begivenheden skal have et sted.");
+  }
 
   const created: MockEvent = {
     id: `ev-new-${eventList.length + 1}`,
@@ -1109,7 +1112,9 @@ export async function createEvent(body: EventCreate): Promise<EventOut> {
     type: body.type,
     held_on: body.held_on,
     start_time: body.start_time.length === 5 ? `${body.start_time}:00` : body.start_time,
-    venue: body.venue.trim(),
+    // Same default as the API: a training is in the home hall unless it is
+    // told otherwise, and a fixture with nowhere to be is refused.
+    venue: body.venue?.trim() || (body.type === "training" ? "Pakhus77" : ""),
     // A training never carries an opponent, whatever is sent.
     opponent: body.type === "match" ? (body.opponent?.trim() || null) : null,
     capacity: body.capacity ?? (body.type === "match" ? 6 : 12),

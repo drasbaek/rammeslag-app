@@ -2,12 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { EventRow } from "@/components/program/event-row";
-import { EventForm } from "@/components/program/event-form";
-import { Button } from "@/components/ui/button";
 import { Segmented } from "@/components/ui/segmented";
 import { RowSkeletons } from "@/components/ui/skeleton";
 import { useEvents, useMe } from "@/lib/queries";
 import { haptic } from "@/lib/haptics";
+import { cn } from "@/lib/utils";
 import type { EventScope, EventType } from "@/lib/types";
 
 /**
@@ -18,17 +17,38 @@ import type { EventScope, EventType } from "@/lib/types";
  * checking their phone on a Tuesday: a date they have to say yes or no to.
  * Splitting them into two tabs would mean answering the same question in two
  * places.
+ *
+ * The type filter below the scope toggle does not split them. It is a view
+ * over the one list — same rows, same answering flow, fewer of them — for the
+ * people who do think of the two as different things: an admin chasing six
+ * klar for Saturday does not want eight Sundays in the way. It is a chip row
+ * rather than a second Segmented so it reads as secondary to Kommende /
+ * Tidligere, and it resets to Alle on every visit, because a filter that
+ * survives a page you left is a filter that hides a kamp from you next week.
  */
+
+/** "all" is not an `EventType`: it is the absence of the query parameter. */
+type TypeFilter = "all" | EventType;
+
+const TYPE_FILTERS: { value: TypeFilter; label: string }[] = [
+  { value: "all", label: "Alle" },
+  { value: "match", label: "Kampe" },
+  { value: "training", label: "Træning" },
+];
+
 export default function ProgramPage() {
   const me = useMe();
   const [scope, setScope] = useState<EventScope>("upcoming");
-  const [creating, setCreating] = useState<EventType | null>(null);
-  const events = useEvents(scope);
+  const [type, setType] = useState<TypeFilter>("all");
+  const events = useEvents(scope, type === "all" ? undefined : type);
 
-  const isAdmin = Boolean(me.data?.is_admin);
   const rows = useMemo(() => events.data ?? [], [events.data]);
 
-  /** How many upcoming events this player still owes an answer on. */
+  /**
+   * How many events this player still owes an answer on. The filter narrows
+   * the request, so this counts what is actually on screen — the header says
+   * how much of the list you are looking at, never how much exists.
+   */
   const owed = useMemo(
     () =>
       scope === "upcoming" && me.data
@@ -36,6 +56,37 @@ export default function ProgramPage() {
         : 0,
     [rows, scope, me.data],
   );
+
+  const empty =
+    scope === "upcoming"
+      ? type === "match"
+        ? {
+            title: "Ingen kampe på vej",
+            body: "Der står ingen kampe i kalenderen. Vælg Alle for også at se træninger.",
+          }
+        : type === "training"
+          ? {
+              title: "Ingen træninger på vej",
+              body: "Der står ingen træninger i kalenderen. Vælg Alle for også at se kampe.",
+            }
+          : {
+              title: "Ikke noget i kalenderen",
+              body: "Når en kamp eller en træning er sat op, kan alle melde til og fra herinde.",
+            }
+      : type === "match"
+        ? {
+            title: "Ingen tidligere kampe",
+            body: "Overståede kampe samler sig her. Vælg Alle for også at se træninger.",
+          }
+        : type === "training"
+          ? {
+              title: "Ingen tidligere træninger",
+              body: "Overståede træninger samler sig her. Vælg Alle for også at se kampe.",
+            }
+          : {
+              title: "Ingen tidligere datoer",
+              body: "Kampe og træninger, der er overstået, samler sig her.",
+            };
 
   return (
     <div>
@@ -62,28 +113,32 @@ export default function ProgramPage() {
         />
       </div>
 
-      {isAdmin ? (
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <Button
-            variant="solid"
-            onClick={() => {
-              haptic("tap");
-              setCreating("match");
-            }}
-          >
-            Ny kamp
-          </Button>
-          <Button
-            variant="solid"
-            onClick={() => {
-              haptic("tap");
-              setCreating("training");
-            }}
-          >
-            Ny træning
-          </Button>
-        </div>
-      ) : null}
+      {/* Chips, not a second sliding pill: this is a narrowing of the list
+          above it, and it costs one row of height instead of three. */}
+      <div role="group" aria-label="Filtrer efter type" className="mt-2 flex gap-1.5 px-1">
+        {TYPE_FILTERS.map((option) => {
+          const active = option.value === type;
+          return (
+            <button
+              key={option.value}
+              type="button"
+              aria-pressed={active}
+              onClick={() => {
+                if (!active) haptic("tap");
+                setType(option.value);
+              }}
+              className={cn(
+                "rounded-pill border px-3 py-1 text-[11px] font-semibold tracking-wide transition-colors",
+                active
+                  ? "border-volt/50 bg-volt/10 text-chalk"
+                  : "border-line bg-ink-900 text-dim active:text-chalk",
+              )}
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
 
       {events.isPending ? (
         <div className="mt-4">
@@ -91,14 +146,8 @@ export default function ProgramPage() {
         </div>
       ) : rows.length === 0 ? (
         <div className="mt-6 rounded-card border border-line bg-ink-850/60 px-4 py-8 text-center">
-          <p className="text-body font-bold tracking-tight">
-            {scope === "upcoming" ? "Ikke noget i kalenderen" : "Ingen tidligere datoer"}
-          </p>
-          <p className="mx-auto mt-1.5 max-w-[34ch] text-mini text-mute">
-            {scope === "upcoming"
-              ? "Når en kamp eller en træning er sat op, kan alle melde til og fra herinde."
-              : "Kampe og træninger, der er overstået, samler sig her."}
-          </p>
+          <p className="text-body font-bold tracking-tight">{empty.title}</p>
+          <p className="mx-auto mt-1.5 max-w-[34ch] text-mini text-mute">{empty.body}</p>
         </div>
       ) : (
         <div className="mt-4 space-y-1.5">
@@ -107,14 +156,6 @@ export default function ProgramPage() {
           ))}
         </div>
       )}
-
-      {creating ? (
-        <EventForm
-          open
-          onOpenChange={(open) => !open && setCreating(null)}
-          type={creating}
-        />
-      ) : null}
     </div>
   );
 }
