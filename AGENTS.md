@@ -31,6 +31,14 @@ This file is the single source of truth for agents. `CLAUDE.md` points here.
 
 6. **No nullable foreign keys** where a type column would do. Ask why the
    old schema's nullable `season_id` needed a paragraph of explanation.
+   There is exactly one nullable FK in the schema, `events.session_id`, and
+   `docs/ARCHITECTURE.md` says why. Adding a second one needs the same
+   argument, in writing.
+
+7. **Nothing in `modules/events/` may write a match.** Availability, squads
+   and planned line-ups never reach the rating engine. A league fixture has
+   no score in this app at all. If a change makes `modules/events/` import
+   `rating/` or construct a `Match`, it is the wrong change — see rule 3.
 
 ## Language
 
@@ -51,6 +59,10 @@ chat, so it is allowed to be funny.
 - **Never show `entry_rating` outside the admin player screen.** It is an
   admin's private judgement of how good someone is. The API returns it; the
   dashboard must not put it in front of the player it describes.
+- **Availability is never dressed up as selection.** Saying "klar" is a
+  tilmelding. Being picked is an admin's decision, under its own heading,
+  in different words. A screen that blurs the two is telling ten people
+  they are playing when six of them are.
 - **Every stat shows its sample size.** "3-1 with Klaus" — never an
   unqualified claim of chemistry from four matches. The app does not
   pretend to know more than it does.

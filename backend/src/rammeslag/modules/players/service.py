@@ -544,6 +544,42 @@ def create_player(
     return player
 
 
+def create_guest(db: DbSession, *, name: str) -> Player:
+    """Add a guest, from wherever a guest is being added.
+
+    Unlike :func:`create_player` this needs no admin and no entry rating. A
+    guest is somebody a member is bringing on Sunday, and the person bringing
+    them is holding a phone at the time -- routing that through an admin would
+    mean the roster is wrong until someone else wakes up.
+
+    They enter at ``SEED_RATING``, because that is the honest answer when
+    nobody has judged them. An admin's judgement is still available: the
+    player screen can correct the rating, or flip ``is_guest`` and make them a
+    member. And they get no PIN, because a guest does not log in.
+
+    An existing name is returned rather than refused. Two people typing the
+    same guest into the same Sunday is a collision of intent, not an error,
+    and a duplicate player would quietly split that guest's record in two.
+    """
+    clean = name.strip()
+    if not clean:
+        raise DomainError("Gæsten skal have et navn.")
+    existing = db.execute(select(Player).where(Player.name == clean)).scalar_one_or_none()
+    if existing is not None:
+        return existing
+    player = Player(
+        id=new_id(PLAYER_ID_PREFIX),
+        name=clean,
+        is_guest=True,
+        is_admin=False,
+        entry_rating=SEED_RATING,
+        pin_hash=None,
+    )
+    db.add(player)
+    db.commit()
+    return player
+
+
 def update_player(
     db: DbSession,
     player_id: str,

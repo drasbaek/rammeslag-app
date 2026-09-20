@@ -18,9 +18,27 @@ export type SeasonId = string;
 export type SessionId = string;
 export type MatchId = string;
 
+export type EventId = string;
+
 export type SessionType = "training" | "casual" | "social" | "tournament";
 export type SessionStatus = "open" | "closed";
 export type MatchSource = "internal" | "rankedin";
+
+/**
+ * A `match` is a league fixture against another club: availability and a
+ * squad, never a score. A `training` is a Sunday, and the only one of the
+ * two that ever turns into a session with results.
+ */
+export type EventType = "match" | "training";
+
+/** `locked`: the squad is picked and only an admin still edits. */
+export type EventStatus = "open" | "locked" | "cancelled";
+
+/** Klar, ikke klar, ved ikke. No answer at all is the absence of a row. */
+export type ResponseState = "yes" | "no" | "maybe";
+
+/** `scope` on GET /api/events. Today counts as upcoming. */
+export type EventScope = "upcoming" | "past" | "all";
 
 /** Verdict by total games won. See docs/RATING.md, "Derived views". */
 export type Verdict = "W" | "L" | "D";
@@ -204,6 +222,79 @@ export interface SessionDetailOut {
   recap: RecapOut;
 }
 
+/* ---- Events -------------------------------------------------------------
+ * The things people answer BEFORE they happen. A session is retrospective —
+ * an evening defined by the matches played on it — and an event is the
+ * opposite, which is why they are different resources.
+ * -------------------------------------------------------------------------- */
+
+/** Four players to a court. A training's capacity is baner x this. */
+export const COURT_CAPACITY = 4;
+
+export interface EventCountsOut {
+  yes: number;
+  no: number;
+  maybe: number;
+  /** Members with no answer at all. Guests are never counted: nobody asked them. */
+  unanswered: number;
+}
+
+export interface EventOut {
+  id: EventId;
+  season: SeasonRef;
+  type: EventType;
+  /** ISO date */
+  held_on: string;
+  /** "HH:MM:SS", Copenhagen wall clock. */
+  start_time: string;
+  venue: string;
+  /** Fixtures only. Always null for a training. */
+  opponent: string | null;
+  /** Player slots: a squad of six, or baner x 4. */
+  capacity: number;
+  status: EventStatus;
+  note: string | null;
+  /** Set once a training's results have somewhere to go. */
+  session_id: SessionId | null;
+  counts: EventCountsOut;
+  /**
+   * How many an admin has picked. Deliberately separate from `counts.yes`:
+   * being available is not being selected, and nothing derives one from the
+   * other.
+   */
+  selected_count: number;
+  /** `counts.yes - capacity`. The old spreadsheet's bottom row. */
+  surplus: number;
+  /** Your own answer, or null when you have not answered or are logged out. */
+  my_state: ResponseState | null;
+}
+
+export interface EventResponseOut {
+  player: PlayerOut;
+  state: ResponseState;
+  /** Differs from `player.id` only for a guest: the member who brought them. */
+  added_by: PlayerId | null;
+  /** ISO datetime */
+  updated_at: string;
+}
+
+/** A planned line-up. Never a result — these do not become matches by themselves. */
+export interface EventMatchupOut {
+  round: number;
+  court: number;
+  /** Exactly two each. */
+  team_a: PlayerOut[];
+  team_b: PlayerOut[];
+}
+
+export interface EventDetailOut extends EventOut {
+  responses: EventResponseOut[];
+  /** Members still to be heard from. */
+  unanswered: PlayerOut[];
+  selected: PlayerOut[];
+  matchups: EventMatchupOut[];
+}
+
 /* ---- Profile ------------------------------------------------------------ */
 
 export interface CurvePoint {
@@ -329,6 +420,67 @@ export interface SeasonUpdate {
   name?: string;
   starts_on?: string;
   ends_on?: string;
+}
+
+/** POST /api/events. Admin. The season is resolved server-side from the date. */
+export interface EventCreate {
+  type: EventType;
+  /** ISO date */
+  held_on: string;
+  /** "HH:MM" or "HH:MM:SS" */
+  start_time: string;
+  venue: string;
+  /** Fixtures only; ignored for a training. */
+  opponent?: string | null;
+  /** Omitted means six for a fixture, twelve (three baner) for a training. */
+  capacity?: number;
+  note?: string | null;
+}
+
+/** PATCH /api/events/{id}. Admin. Omitted means unchanged. */
+export interface EventUpdate {
+  held_on?: string;
+  start_time?: string;
+  venue?: string;
+  opponent?: string | null;
+  capacity?: number;
+  status?: EventStatus;
+  /** An empty string clears the note. */
+  note?: string;
+}
+
+/** PUT /api/events/{id}/response. */
+export interface ResponseIn {
+  state: ResponseState;
+}
+
+/** PUT /api/events/{id}/selection. The whole squad, written as one decision. */
+export interface SelectionIn {
+  player_ids: PlayerId[];
+}
+
+export interface MatchupIn {
+  round: number;
+  court: number;
+  /** Exactly two each, and all four distinct. */
+  team_a: PlayerId[];
+  team_b: PlayerId[];
+}
+
+/** PUT /api/events/{id}/matchups. The whole plan, written as one decision. */
+export interface MatchupsIn {
+  matchups: MatchupIn[];
+}
+
+/**
+ * POST /api/players/guest. Any logged-in player, not just an admin.
+ *
+ * A route of its own rather than an opening-up of POST /players: all it can
+ * ever create is a guest with no PIN and no admin flag, entering at the seed
+ * rating because nobody has judged them yet.
+ */
+export interface GuestCreate {
+  name: string;
 }
 
 export interface PlayerCreate {

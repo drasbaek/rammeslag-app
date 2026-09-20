@@ -75,9 +75,23 @@ function TopBar() {
   );
 }
 
+/**
+ * Four tabs around the "+". Two to the left, two to the right, so the button
+ * stays in the optical middle as the app grows.
+ *
+ * "Træningshistorik" was the old label and it no longer fits: at five columns
+ * a tab is about 75px, which is eight characters at 9px. It is "Historik"
+ * now, and the screen it opens still says the long name at the top.
+ *
+ * Bødekasse is here before it exists. A disabled tab is a promise the layout
+ * has to keep anyway — adding the fifth column later would re-space the other
+ * four and move every tab under the thumb that had learned where it was.
+ */
 const TABS = [
-  { href: "/", label: "Stigen", icon: "ladder" },
-  { href: "/sessions", label: "Træningshistorik", icon: "calendar" },
+  { href: "/", label: "Stigen", icon: "ladder", ready: true },
+  { href: "/program", label: "Program", icon: "calendar", ready: true },
+  { href: "/sessions", label: "Historik", icon: "history", ready: true },
+  { href: "/boedekasse", label: "Bødekasse", icon: "coin", ready: false },
 ] as const;
 
 function TabIcon({ name, active }: { name: string; active: boolean }) {
@@ -91,12 +105,30 @@ function TabIcon({ name, active }: { name: string; active: boolean }) {
       </svg>
     );
   }
+  if (name === "calendar") {
+    return (
+      <svg viewBox="0 0 20 20" className="h-5 w-5" aria-hidden>
+        <rect x="2.5" y="4" width="15" height="13.5" rx="3" stroke={stroke} strokeWidth="1.6" fill="none" />
+        <path d="M2.5 8.5h15M6.5 2.5v3M13.5 2.5v3" stroke={stroke} strokeWidth="1.6" strokeLinecap="round" />
+        <circle cx="7" cy="12.5" r="1.2" fill={stroke} />
+        <circle cx="11.5" cy="12.5" r="1.2" fill={stroke} opacity="0.5" />
+      </svg>
+    );
+  }
+  if (name === "coin") {
+    return (
+      <svg viewBox="0 0 20 20" className="h-5 w-5" aria-hidden>
+        <circle cx="10" cy="10" r="7" stroke={stroke} strokeWidth="1.6" fill="none" />
+        <path d="M12 7.3a2.6 2.6 0 00-4.3 1.9c0 2.4 4.3 1.1 4.3 3.4A2.6 2.6 0 018 13.9M10 5.6v1.2M10 13.2v1.2" stroke={stroke} strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  // History: the clock that has been round once already.
   return (
     <svg viewBox="0 0 20 20" className="h-5 w-5" aria-hidden>
-      <rect x="2.5" y="4" width="15" height="13.5" rx="3" stroke={stroke} strokeWidth="1.6" fill="none" />
-      <path d="M2.5 8.5h15" stroke={stroke} strokeWidth="1.6" />
-      <circle cx="7" cy="12.5" r="1.2" fill={stroke} />
-      <circle cx="11.5" cy="12.5" r="1.2" fill={stroke} opacity="0.5" />
+      <path d="M3.2 10a6.8 6.8 0 106.8-6.8A6.8 6.8 0 004.4 5.6" stroke={stroke} strokeWidth="1.6" fill="none" strokeLinecap="round" />
+      <path d="M2.6 2.9v3h3" stroke={stroke} strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M10 6.3V10l2.5 1.6" stroke={stroke} strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -108,6 +140,30 @@ function TabIcon({ name, active }: { name: string; active: boolean }) {
 function Tab({ tab, pathname }: { tab: (typeof TABS)[number]; pathname: string }) {
   const active = tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href);
 
+  const inner = (
+    <>
+      <TabIcon name={tab.icon} active={active} />
+      <span className="max-w-full truncate text-[9px] font-bold uppercase tracking-[0.04em]">
+        {tab.label}
+      </span>
+    </>
+  );
+
+  // A tab with nothing behind it yet is dimmed and inert rather than hidden.
+  // Tapping it and landing on an empty screen would be worse than seeing that
+  // it is not ready.
+  if (!tab.ready) {
+    return (
+      <span
+        aria-disabled
+        title="Kommer senere"
+        className="flex min-w-0 flex-col items-center gap-1 py-2 text-dim opacity-40"
+      >
+        {inner}
+      </span>
+    );
+  }
+
   return (
     <Link
       href={tab.href}
@@ -117,10 +173,7 @@ function Tab({ tab, pathname }: { tab: (typeof TABS)[number]; pathname: string }
         active ? "text-volt" : "text-dim",
       )}
     >
-      <TabIcon name={tab.icon} active={active} />
-      <span className="max-w-full truncate text-[9px] font-bold uppercase tracking-[0.04em]">
-        {tab.label}
-      </span>
+      {inner}
     </Link>
   );
 }
@@ -134,12 +187,13 @@ function BottomNav() {
       className="fixed inset-x-0 bottom-0 z-30 border-t border-line-soft bg-ink-950/90 backdrop-blur-xl"
       style={{ paddingBottom: "var(--safe-b)" }}
     >
-      {/* Three equal columns with the button in the middle one. The "+" is
-          centred by the layout, not by an offset, and the two tabs are mirror
+      {/* Five equal columns with the button in the middle one. The "+" is
+          centred by the layout, not by an offset, and the tabs are mirror
           images of each other around it — which is what makes the icons, the
           labels and the button read as one row instead of two groups. */}
-      <div className="mx-auto grid h-16 w-full max-w-[520px] grid-cols-3 items-center px-2">
+      <div className="mx-auto grid h-16 w-full max-w-[520px] grid-cols-5 items-center px-1">
         <Tab tab={TABS[0]} pathname={pathname} />
+        <Tab tab={TABS[1]} pathname={pathname} />
 
         {/* The notch. Pinned to the middle column and lifted a fixed 20px above
             the tab row, so "raised" is a stated distance rather than the
@@ -162,7 +216,8 @@ function BottomNav() {
           </button>
         </div>
 
-        <Tab tab={TABS[1]} pathname={pathname} />
+        <Tab tab={TABS[2]} pathname={pathname} />
+        <Tab tab={TABS[3]} pathname={pathname} />
       </div>
     </nav>
   );

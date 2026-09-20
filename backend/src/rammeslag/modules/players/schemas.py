@@ -27,6 +27,17 @@ class PlayerCreate(BaseModel):
     pin: str | None = Field(default=None, min_length=4, max_length=64)
 
 
+class GuestCreate(BaseModel):
+    """A guest, added by whoever is bringing them along.
+
+    No entry rating and no PIN: a guest enters at the seed because nobody has
+    judged them yet, and a guest never logs in. Both are an admin's to correct
+    later on the player screen.
+    """
+
+    name: str = Field(min_length=1, max_length=120)
+
+
 class PlayerUpdate(BaseModel):
     """Every field optional. Flipping ``is_guest`` promotes a guest to a member."""
 

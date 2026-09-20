@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import Iterator
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, date, datetime, time, timedelta
 
 import pytest
 from sqlalchemy import Engine, create_engine, event
@@ -30,6 +30,12 @@ from rammeslag import db as db_module
 from rammeslag.config import reset_settings_cache
 from rammeslag.db import Base
 from rammeslag.deps import reset_serializer_cache
+from rammeslag.modules.events.models import (  # noqa: F401
+    Event,
+    EventMatchup,
+    EventResponse,
+    EventSelection,
+)
 from rammeslag.modules.matches.models import Match, MatchSet
 from rammeslag.modules.players.models import Player
 from rammeslag.modules.rating.constants import SEED_RATING
@@ -174,6 +180,38 @@ def make_session(
     db.add(play_session)
     db.commit()
     return play_session
+
+
+def make_event(
+    db: DbSession,
+    event_id: str,
+    season_id: str,
+    held_on: date,
+    *,
+    type: str = "training",
+    start_time: time = time(18, 0),
+    venue: str = "Pakhus77",
+    opponent: str | None = None,
+    capacity: int | None = None,
+    status: str = "open",
+    note: str | None = None,
+) -> Event:
+    event = Event(
+        id=event_id,
+        season_id=season_id,
+        type=type,
+        held_on=held_on,
+        start_time=start_time,
+        venue=venue,
+        opponent=opponent,
+        capacity=capacity if capacity is not None else (6 if type == "match" else 12),
+        status=status,
+        note=note,
+        created_at=datetime(2025, 8, 1, tzinfo=UTC),
+    )
+    db.add(event)
+    db.commit()
+    return event
 
 
 def make_match(

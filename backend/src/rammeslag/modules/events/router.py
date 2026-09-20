@@ -1,0 +1,282 @@
+"""Event routes. HTTP only.
+
+Reads are public, the same as every other read in this app: checking whether
+Sunday is on should cost nothing. Answering costs a login, picking a squad
+costs admin.
+"""
+
+from __future__ import annotations
+
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
+from sqlalchemy.orm import Session as DbSession
+
+from rammeslag.deps import current_user, get_db, optional_user, require_admin
+from rammeslag.modules.events import service
+from rammeslag.modules.events.schemas import (
+    EventCountsOut,
+    EventCreate,
+    EventDetailOut,
+    EventMatchupOut,
+    EventOut,
+    EventResponseOut,
+    EventUpdate,
+    MatchupsIn,
+    ResponseIn,
+    SelectionIn,
+)
+from rammeslag.modules.matches.schemas import player_out
+from rammeslag.modules.players.models import Player
+from rammeslag.modules.seasons.schemas import SeasonRef
+from rammeslag.modules.sessions.schemas import SessionOut
+
+router = APIRouter(prefix="/api", tags=["events"])
+
+NOT_YOUR_ANSWER = "Du kan kun svare for dig selv og for gæster."
+
+
+def _event_out(view: service.EventView) -> EventOut:
+    return EventOut(
+        id=view.id,
+        season=SeasonRef(id=view.season_id, name=view.season_name),
+        type=view.type,
+        held_on=view.held_on,
+        start_time=view.start_time,
+        venue=view.venue,
+        opponent=view.opponent,
+        capacity=view.capacity,
+        status=view.status,
+        note=view.note,
+        session_id=view.session_id,
+        counts=EventCountsOut(
+            yes=view.counts.yes,
+            no=view.counts.no,
+            maybe=view.counts.maybe,
+            unanswered=view.counts.unanswered,
+        ),
+        selected_count=view.selected_count,
+        surplus=view.surplus,
+        my_state=view.my_state,
+    )
+
+
+@router.get("/events", response_model=list[EventOut])
+def list_events(
+    scope: str = Query(default="upcoming", description="upcoming | past | all"),
+    season: str | None = Query(default=None, description="Season id."),
+    type: str | None = Query(default=None, description="match | training"),
+    db: DbSession = Depends(get_db),
+    viewer: Player | None = Depends(optional_user),
+) -> list[EventOut]:
+    events = service.list_events(db, scope=scope, season_id=season, type=type)
+    views = service.build_views(db, events, viewer_id=viewer.id if viewer else None)
+    return [_event_out(view) for view in views]
+
+
+@router.get("/events/{event_id}", response_model=EventDetailOut)
+def get_event(
+    event_id: str,
+    db: DbSession = Depends(get_db),
+    viewer: Player | None = Depends(optional_user),
+) -> EventDetailOut:
+    detail = service.get_detail(db, event_id, viewer_id=viewer.id if viewer else None)
+    base = _event_out(detail.event)
+    return EventDetailOut(
+        **base.model_dump(),
+        responses=[
+            EventResponseOut(
+                player=player_out(r.player),
+                state=r.state,
+                added_by=r.added_by,
+                updated_at=r.updated_at,
+            )
+            for r in detail.responses
+        ],
+        unanswered=[player_out(p) for p in detail.unanswered],
+        selected=[player_out(p) for p in detail.selected],
+        matchups=[
+            EventMatchupOut(
+                round=m.round,
+                court=m.court,
+                team_a=[player_out(p) for p in m.team_a],
+                team_b=[player_out(p) for p in m.team_b],
+            )
+            for m in detail.matchups
+        ],
+    )
+
+
+@router.post("/events", response_model=EventOut, status_code=201)
+def create_event(
+    payload: EventCreate,
+    db: DbSession = Depends(get_db),
+    admin: Player = Depends(require_admin),
+) -> EventOut:
+    event = service.create_event(
+        db,
+        type=payload.type,
+        held_on=payload.held_on,
+        start_time=payload.start_time,
+        venue=payload.venue,
+        opponent=payload.opponent,
+        capacity=payload.capacity,
+        note=payload.note,
+        created_by=admin.id,
+    )
+    return _event_out(service.build_views(db, [event], viewer_id=admin.id)[0])
+
+
+@router.patch("/events/{event_id}", response_model=EventOut)
+def update_event(
+    event_id: str,
+    payload: EventUpdate,
+    db: DbSession = Depends(get_db),
+    admin: Player = Depends(require_admin),
+) -> EventOut:
+    event = service.update_event(
+        db,
+        event_id,
+        held_on=payload.held_on,
+        start_time=payload.start_time,
+        venue=payload.venue,
+        opponent=payload.opponent,
+        capacity=payload.capacity,
+        status=payload.status,
+        note=payload.note,
+    )
+    return _event_out(service.build_views(db, [event], viewer_id=admin.id)[0])
+
+
+@router.delete("/events/{event_id}", status_code=204)
+def delete_event(
+    event_id: str,
+    db: DbSession = Depends(get_db),
+    admin: Player = Depends(require_admin),
+) -> Response:
+    service.delete_event(db, event_id)
+    return Response(status_code=204)
+
+
+# --------------------------------------------------------------------------
+# Answers
+# --------------------------------------------------------------------------
+
+
+def _may_answer_for(db: DbSession, actor: Player, player_id: str) -> None:
+    """You answer for yourself. You answer for a guest, because somebody has
+    to and it is the person who brought them. An admin answers for anyone,
+    which is how a name that only ever replies in the group chat gets in.
+    Nobody else votes on your behalf."""
+    if actor.id == player_id or actor.is_admin:
+        return
+    subject = db.get(Player, player_id)
+    if subject is not None and subject.is_guest:
+        return
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=NOT_YOUR_ANSWER)
+
+
+@router.put("/events/{event_id}/response", response_model=EventOut)
+def set_my_response(
+    event_id: str,
+    payload: ResponseIn,
+    db: DbSession = Depends(get_db),
+    player: Player = Depends(current_user),
+) -> EventOut:
+    """Answer for yourself. Klar, ikke klar, ved ikke."""
+    service.set_response(db, event_id, player.id, payload.state, added_by=player.id)
+    event = service.get_event(db, event_id)
+    return _event_out(service.build_views(db, [event], viewer_id=player.id)[0])
+
+
+@router.put("/events/{event_id}/response/{player_id}", response_model=EventOut)
+def set_response_for(
+    event_id: str,
+    player_id: str,
+    payload: ResponseIn,
+    db: DbSession = Depends(get_db),
+    actor: Player = Depends(current_user),
+) -> EventOut:
+    """Answer on someone's behalf. This is how a guest joins a training."""
+    _may_answer_for(db, actor, player_id)
+    service.set_response(db, event_id, player_id, payload.state, added_by=actor.id)
+    event = service.get_event(db, event_id)
+    return _event_out(service.build_views(db, [event], viewer_id=actor.id)[0])
+
+
+@router.delete("/events/{event_id}/response/{player_id}", response_model=EventOut)
+def clear_response(
+    event_id: str,
+    player_id: str,
+    db: DbSession = Depends(get_db),
+    actor: Player = Depends(current_user),
+) -> EventOut:
+    """Back to no answer, and the way a guest is taken off the list again."""
+    _may_answer_for(db, actor, player_id)
+    service.clear_response(db, event_id, player_id)
+    event = service.get_event(db, event_id)
+    return _event_out(service.build_views(db, [event], viewer_id=actor.id)[0])
+
+
+# --------------------------------------------------------------------------
+# Squad and plan
+# --------------------------------------------------------------------------
+
+
+@router.put("/events/{event_id}/selection", response_model=EventDetailOut)
+def set_selection(
+    event_id: str,
+    payload: SelectionIn,
+    db: DbSession = Depends(get_db),
+    admin: Player = Depends(require_admin),
+) -> EventDetailOut:
+    service.set_selection(db, event_id, payload.player_ids)
+    return get_event(event_id, db=db, viewer=admin)
+
+
+@router.put("/events/{event_id}/matchups", response_model=EventDetailOut)
+def set_matchups(
+    event_id: str,
+    payload: MatchupsIn,
+    db: DbSession = Depends(get_db),
+    admin: Player = Depends(require_admin),
+) -> EventDetailOut:
+    # A plan, not a result. Nothing written here reaches the rating engine.
+    service.set_matchups(
+        db,
+        event_id,
+        [
+            service.MatchupInput(
+                round=m.round,
+                court=m.court,
+                team_a=(m.team_a[0], m.team_a[1]),
+                team_b=(m.team_b[0], m.team_b[1]),
+            )
+            for m in payload.matchups
+        ],
+    )
+    return get_event(event_id, db=db, viewer=admin)
+
+
+@router.post("/events/{event_id}/session", response_model=SessionOut, status_code=201)
+def create_session_for_event(
+    event_id: str,
+    db: DbSession = Depends(get_db),
+    admin: Player = Depends(require_admin),
+) -> SessionOut:
+    """Open the evening a training's results go into.
+
+    An empty session, exactly like the "+" button makes. Who actually played
+    is still decided by the matches that get typed into it.
+    """
+    from rammeslag.modules.seasons import service as season_service
+
+    play_session = service.create_session_for(db, event_id, created_by=admin.id)
+    season = season_service.get_season(db, play_session.season_id)
+    return SessionOut(
+        id=play_session.id,
+        season=SeasonRef(id=season.id, name=season.name),
+        played_on=play_session.played_on,
+        type=play_session.type,
+        status=play_session.status,
+        note=play_session.note,
+        match_count=0,
+    )

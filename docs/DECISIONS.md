@@ -160,3 +160,82 @@ No custom domain server — FastAPI's OpenAPI schema is already a machine-
 readable contract, and restating it would mean maintaining it twice.
 
 Repo-local skills are weighted above MCP entirely.
+
+## 11. Events are a separate resource from sessions
+
+A `session` is an evening that happened, defined by its matches. Planned
+kampe and søndagstræninger are the opposite — a date people answer before it
+exists — so they get their own table and their own module.
+
+Rejected: a `planned` status on `sessions`. It is the smaller diff, and it
+would put empty future rows into the history list and into every reader that
+walks sessions. The ladder is safe either way, because ratings replay from
+matches, but "sessions" would stop meaning "what happened" and every reader
+would need a filter it did not ask for.
+
+Rejected: two tables, one per feature. A fixture and a training differ in two
+fields out of ten and are answered by the same person on the same screen.
+Variation lives in `type`, the same as it does for sessions.
+
+## 12. Availability is not selection, and the schema says so
+
+`event_responses` and `event_selections` are separate tables, and no code
+path derives either from the other. An admin can pick a player who never
+answered, and ten people saying klar for a squad of six leaves four of them
+not playing.
+
+This is the one thing the feature had to get right. The old spreadsheet only
+ever answered "who is available" and the team read it correctly because it
+could not say anything else. An app that merged the two would be telling ten
+people they are playing.
+
+The same rule runs through the UI: availability and the squad are always
+different headings, and the word "udtaget" appears nowhere near the toggle.
+
+## 13. Planned line-ups never become matches
+
+`event_matchups` stores who an admin has put on which court in which round,
+before the training. It has no score, and nothing turns it into a `Match`.
+
+Score entry is still the only thing in the app that writes a match, from the
+same screen every other result goes through. That is what keeps the whole
+events module unable to move `fixtures/expected_ratings.json` — a property
+that is checked by a test, not just asserted here.
+
+Rejected: materialising planned matchups as scoreless `Match` rows to be
+filled in later. It would put rows with no sets in front of the rating
+engine, which is the one input it is documented not to validate.
+
+## 14. A guest is an ordinary player, added by whoever is bringing them
+
+`POST /api/players/guest` needs a login but not an admin, takes a name and
+nothing else, and enters the guest at `SEED_RATING` with no PIN.
+
+`POST /api/players` stays admin-only and still requires `entry_rating`,
+because decision 4's reasoning holds for a member joining an established
+field. It does not hold for a guest: the person adding them is holding a
+phone on a Sunday afternoon, and routing that through an admin means the
+roster is wrong until somebody else wakes up. An admin can correct the rating
+afterwards, or flip `is_guest` and make them a member for real.
+
+A separate route rather than opening up the existing one, so that everything
+the whole team can reach is a guest with no PIN and no admin flag.
+
+Adding a name that already exists returns that player instead of failing. Two
+people adding the same guest to the same Sunday is a collision of intent, and
+a second row would quietly split that guest's record in two.
+
+## 15. Five tabs, with bødekasse dark before it exists
+
+Stigen · Program · + · Historik · Bødekasse. The last one is dimmed and
+inert.
+
+Kampe and træninger share the Program tab because they are two things to the
+people organising them and exactly one thing to the person checking their
+phone: a date to answer. Bødekasse is in the layout early because adding a
+fifth column later would re-space the other four and move every tab out from
+under the thumb that had learned where it was.
+
+`Træningshistorik` became `Historik`: at five columns a tab is about 75px,
+which is eight characters at 9px. The screen it opens still says the long
+name at the top.

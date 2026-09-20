@@ -8,17 +8,27 @@ import {
 } from "@tanstack/react-query";
 import * as api from "@/lib/api";
 import type {
+  EventCreate,
+  EventDetailOut,
+  EventOut,
+  EventScope,
+  EventType,
+  EventUpdate,
+  GuestCreate,
   LadderOut,
   LadderScope,
   MatchCreate,
+  MatchupsIn,
   MeOut,
   PlayerCreate,
   PlayerOut,
   PlayerUpdate,
   ProfileOut,
+  ResponseState,
   SeasonCreate,
   SeasonOut,
   SeasonUpdate,
+  SelectionIn,
   SessionCreate,
   SessionDetailOut,
   SessionOut,
@@ -33,6 +43,9 @@ export const keys = {
   sessions: (seasonId?: string) => ["sessions", seasonId ?? "all"] as const,
   session: (id: string) => ["session", id] as const,
   profile: (id: string) => ["profile", id] as const,
+  events: (scope: EventScope, type?: EventType) =>
+    ["events", scope, type ?? "begge"] as const,
+  event: (id: string) => ["event", id] as const,
   me: () => ["me"] as const,
 };
 
@@ -203,6 +216,153 @@ export function useCloseSession(sessionId: string) {
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: keys.session(sessionId) });
       void client.invalidateQueries({ queryKey: ["sessions"] });
+    },
+  });
+}
+
+
+/* ---- Events -------------------------------------------------------------
+ * Answering is the one write in this app that people do casually, standing in
+ * a queue, several at once. So every mutation below writes the event straight
+ * into the cache from the response rather than refetching: the toggle lands
+ * instantly and the tally is the server's, not a guess.
+ * -------------------------------------------------------------------------- */
+
+export function useEvents(
+  scope: EventScope = "upcoming",
+  type?: EventType,
+): UseQueryResult<EventOut[]> {
+  return useQuery({
+    queryKey: keys.events(scope, type),
+    queryFn: () => api.fetchEvents(scope, type),
+    placeholderData: (previous) => previous,
+  });
+}
+
+export function useEvent(id: string): UseQueryResult<EventDetailOut> {
+  return useQuery({
+    queryKey: keys.event(id),
+    queryFn: () => api.fetchEvent(id),
+    enabled: Boolean(id),
+  });
+}
+
+/**
+ * An answer changes the tally on the row AND the detail screen, and the two
+ * are separate queries. The response carries the fresh counts, so the list is
+ * patched in place and only the detail — which also carries the per-player
+ * rows — is refetched.
+ */
+function patchEvent(client: ReturnType<typeof useQueryClient>, event: EventOut): void {
+  client.setQueriesData<EventOut[]>({ queryKey: ["events"] }, (previous) =>
+    previous?.map((row) => (row.id === event.id ? { ...row, ...event } : row)),
+  );
+  void client.invalidateQueries({ queryKey: keys.event(event.id) });
+}
+
+export function useSetMyResponse(eventId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (state: ResponseState) => api.setMyResponse(eventId, state),
+    onSuccess: (event) => patchEvent(client, event),
+  });
+}
+
+/** A guest you are bringing, or — if you are an admin — anyone at all. */
+export function useSetResponseFor(eventId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ playerId, state }: { playerId: string; state: ResponseState }) =>
+      api.setResponseFor(eventId, playerId, state),
+    onSuccess: (event) => patchEvent(client, event),
+  });
+}
+
+export function useClearResponse(eventId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (playerId: string) => api.clearResponse(eventId, playerId),
+    onSuccess: (event) => patchEvent(client, event),
+  });
+}
+
+export function useCreateEvent() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (body: EventCreate) => api.createEvent(body),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ["events"] });
+    },
+  });
+}
+
+/** Re-dating an event can move it between seasons and in and out of "upcoming". */
+export function useUpdateEvent(eventId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (body: EventUpdate) => api.updateEvent(eventId, body),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ["events"] });
+      void client.invalidateQueries({ queryKey: keys.event(eventId) });
+    },
+  });
+}
+
+export function useDeleteEvent(eventId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: () => api.deleteEvent(eventId),
+    onSuccess: () => {
+      client.removeQueries({ queryKey: keys.event(eventId) });
+      void client.invalidateQueries({ queryKey: ["events"] });
+    },
+  });
+}
+
+export function useSetSelection(eventId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (body: SelectionIn) => api.setSelection(eventId, body),
+    onSuccess: (detail) => {
+      client.setQueryData(keys.event(eventId), detail);
+      void client.invalidateQueries({ queryKey: ["events"] });
+    },
+  });
+}
+
+export function useSetMatchups(eventId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (body: MatchupsIn) => api.setMatchups(eventId, body),
+    // A plan, not a result. Nothing derived from matches can have moved, so
+    // the ladder and the sessions are deliberately left alone.
+    onSuccess: (detail) => client.setQueryData(keys.event(eventId), detail),
+  });
+}
+
+/** Any logged-in player, not just an admin. */
+export function useCreateGuest() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (body: GuestCreate) => api.createGuest(body),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: keys.players() });
+    },
+  });
+}
+
+/**
+ * Opens the evening a training's results go into. The new session shows up in
+ * the history list, and the event now points at it.
+ */
+export function useCreateSessionForEvent(eventId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: () => api.createSessionForEvent(eventId),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ["sessions"] });
+      void client.invalidateQueries({ queryKey: keys.event(eventId) });
+      void client.invalidateQueries({ queryKey: ["events"] });
     },
   });
 }
