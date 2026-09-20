@@ -4,7 +4,7 @@ import type { LadderEntryOut } from "@/lib/types";
 import { FormDots } from "@/components/ui/form-dots";
 import { Movement } from "@/components/ui/movement";
 import { ProvisionalMark } from "@/components/ladder/provisional-mark";
-import { rating as formatRating, delta, firstName } from "@/lib/format";
+import { rating as formatRating, delta, firstName, recordLine } from "@/lib/format";
 
 /**
  * The deep end of the warm zone, and the last MEMBER on the ladder — a guest
@@ -62,6 +62,7 @@ export function BundpropRow({
   innerRef?: (node: HTMLElement | null) => void;
 }) {
   const number = seasonMode ? delta(entry.rating_gained, 0) : formatRating(entry.rating);
+  const careerRecord = recordLine(entry.career_wins, entry.career_losses, entry.career_draws);
   const gap = above
     ? Math.round(
         seasonMode ? above.rating_gained - entry.rating_gained : above.rating - entry.rating,
@@ -80,7 +81,7 @@ export function BundpropRow({
       style={{ "--zone": zoneDepth } as CSSProperties}
       className="zone-bottom animate-rise relative block overflow-hidden rounded-row bg-ink-850/70 transition-colors active:bg-ink-800"
     >
-      <div className="flex items-center gap-2.5 px-3 pb-1 pt-2.5">
+      <div className="flex items-center gap-2 px-2.5 pb-1 pt-2.5">
         <span className="num-tight w-5 shrink-0 text-right text-[15px] font-bold tabular-nums text-bund/80">
           {entry.rank}
         </span>
@@ -89,11 +90,18 @@ export function BundpropRow({
           <Movement movement={entry.movement} />
         </span>
 
-        <span className="flex min-w-0 flex-1 items-center gap-1.5">
-          <span className="min-w-0 truncate text-body font-bold tracking-tight">{entry.name}</span>
-          {entry.provisional ? (
-            <ProvisionalMark careerMatches={entry.career_matches} threshold={threshold} />
-          ) : null}
+        <span className="min-w-0 flex-1">
+          <span className="flex items-center gap-1.5">
+            <span className="min-w-0 truncate text-[14px] font-bold tracking-tight">{entry.name}</span>
+            {entry.provisional ? (
+              <ProvisionalMark careerMatches={entry.career_matches} threshold={threshold} />
+            ) : null}
+          </span>
+          {/* The same career record every other row carries. Being last is not
+              a reason to drop the line that says what the season actually was. */}
+          <span className="num mt-0.5 block truncate text-[9px] leading-none tabular-nums text-dim">
+            {careerRecord}
+          </span>
         </span>
 
         <FormDots form={entry.form} className="shrink-0" />
@@ -106,7 +114,7 @@ export function BundpropRow({
         </span>
       </div>
 
-      <div className="flex items-center gap-2 px-3 pb-2.5 pt-0.5">
+      <div className="flex items-center gap-2 px-2.5 pb-2.5 pt-0.5">
         <span className="inline-flex shrink-0 items-center gap-1 rounded-[4px] border border-bund/35 bg-bund/10 px-1.5 py-[2px] text-[9px] font-black tracking-[0.14em] text-bund/90">
           <Plug className="h-[10px] w-[10px] shrink-0" />
           BUNDPROP

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { PairStatOut } from "@/lib/types";
-import { firstName, recordLine } from "@/lib/format";
+import { recordLine } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export type PairKind = "partner" | "burden" | "nemesis" | "prey";
@@ -57,9 +57,12 @@ export function PairCard({
         {recordLine(record.wins, record.losses, record.draws)}
       </p>
 
-      <p className="relative mt-1.5 truncate text-[13px] font-bold tracking-tight">
+      {/* The whole name, not just the given one. Two Mikkels answer to "Mikkel",
+          and a chemistry card that names the wrong one is worse than a card that
+          wraps. It wraps instead of truncating: the name is the point of the card. */}
+      <p className="relative mt-1.5 text-[13px] font-bold leading-tight tracking-tight break-words">
         <span className="font-normal text-dim">{copy.preposition} </span>
-        {firstName(record.name)}
+        {record.name}
       </p>
 
       <p className="num relative mt-1 text-[10px] text-dim">

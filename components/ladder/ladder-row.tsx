@@ -68,7 +68,7 @@ export function LadderRow({
         } as CSSProperties
       }
       className={cn(
-        "animate-rise relative flex items-center gap-2.5 overflow-hidden rounded-row border px-3 transition-colors",
+        "animate-rise relative flex items-center gap-2 overflow-hidden rounded-row border px-2.5 transition-colors",
         leader
           ? "h-[72px] border-volt/25 bg-[linear-gradient(100deg,rgba(0,229,255,0.10),rgba(0,229,255,0)_58%),linear-gradient(180deg,var(--color-ink-800),var(--color-ink-850))]"
           : "h-[52px] border-transparent bg-ink-850/70 active:bg-ink-800",
@@ -98,22 +98,21 @@ export function LadderRow({
       </span>
 
       <span className="min-w-0 flex-1">
+        {/* The visitor mark lives on the line below, with the record. Beside
+            the name it cost a badge and a gap — around four characters of
+            somebody's actual name — to say something the meta line can spell
+            out in full for free. */}
         <span className="flex items-center gap-1.5">
-          {/* A one-letter mark, not the word: at 390px the word GÆST costs
-              four characters of somebody's actual name. */}
-          {entry.is_guest ? (
-            <span
-              className="flex h-[15px] w-[15px] shrink-0 items-center justify-center rounded-[4px] border border-ink-500 text-[9px] font-black text-dim"
-              title="Gæst"
-              aria-label="Gæst"
-            >
-              G
-            </span>
-          ) : null}
           <span
             className={cn(
-              "min-w-0 truncate font-bold tracking-tight",
-              leader ? "text-[16px]" : entry.is_guest ? "text-[13px]" : "text-body",
+              "min-w-0 font-bold tracking-tight",
+              leader
+                // The tall row has vertical space the flat ones do not, so the
+                // leader wraps onto a second line rather than losing the end of
+                // their name. Everyone else keeps one line and truncates —
+                // at 14px that is around twenty characters.
+                ? "line-clamp-2 text-[15px] leading-tight"
+                : cn("truncate", entry.is_guest ? "text-[13px]" : "text-[14px]"),
               entry.is_guest ? "text-mute" : "",
             )}
           >
@@ -130,18 +129,18 @@ export function LadderRow({
             and a W-L record carries its own sample size. */}
         {leader ? (
           <span className="num mt-1 block truncate text-[9px] font-bold tracking-[0.08em] text-volt/70">
-            FØRER · {careerRecord}
+            {entry.is_guest ? "GÆST" : "FØRER"} · {careerRecord}
           </span>
         ) : (
           <span className="num mt-0.5 block truncate text-[9px] leading-none tabular-nums text-dim">
-            {careerRecord}
+            {entry.is_guest ? "GÆST · " + careerRecord : careerRecord}
           </span>
         )}
       </span>
 
-      {/* Every row carries its form strip, the leader included. The name is
-          what gives way at 390px, and a truncated name costs less than a
-          missing week of results. */}
+      {/* Every row carries its form strip, the leader included — the narrow
+          variant, which leaves the name column room for about twenty
+          characters before anything gives way at 390px. */}
       <FormDots form={entry.form} className="shrink-0" />
 
       {/* Wide enough for a four-digit rating at this size: a numeral that

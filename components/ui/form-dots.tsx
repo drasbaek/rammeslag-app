@@ -32,10 +32,14 @@ export function FormDots({
   className?: string;
 }) {
   const slots = [...Array(Math.max(0, 5 - form.length)).fill(null), ...form] as (Verdict | null)[];
-  const box = size === "md" ? "h-2.5 w-4" : "h-1.5 w-3";
+  // The ladder strip is the narrow one. It gives up 14px to the name column
+  // beside it, which is the difference between "Frederik Lundgaard" and
+  // "Frederik Lundga…" — five dashes still read as five dashes at 10px.
+  const box = size === "md" ? "h-2.5 w-4" : "h-1.5 w-[10px]";
+  const gap = size === "md" ? "gap-[3px]" : "gap-[2px]";
 
   return (
-    <div className={cn("flex items-center gap-[3px]", className)} aria-label="Form, seneste fem">
+    <div className={cn("flex items-center", gap, className)} aria-label="Form, seneste fem">
       {slots.map((verdict, i) => (
         <span
           key={i}

@@ -69,11 +69,11 @@ export default function LadderPage() {
         />
       </div>
 
-      <div className="mt-4 flex items-center gap-2.5 px-3 pb-1.5">
+      <div className="mt-4 flex items-center gap-2 px-2.5 pb-1.5">
         <span className="eyebrow w-5 text-right">#</span>
         <span className="w-4" />
         <span className="eyebrow flex-1">Spiller</span>
-        <span className="eyebrow w-[72px] text-center">Form</span>
+        <span className="eyebrow w-[58px] text-center">Form</span>
         <span className="eyebrow w-[60px] text-right">{seasonMode ? "Gevinst" : "Rating"}</span>
       </div>
 
