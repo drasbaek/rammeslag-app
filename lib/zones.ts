@@ -1,5 +1,3 @@
-import type { LadderEntryOut, PlayerId } from "@/lib/types";
-
 /**
  * Both ends of a standings table are tinted rather than any single row being
  * singled out: the top warms toward the leader, the bottom toward the
@@ -23,6 +21,13 @@ export const ZONE_SIZE = 4;
  * One mark per row, top to bottom. With a small field the two zones would
  * meet in the middle and the whole table would be tinted, which says nothing
  * — so the zones shrink, and below five rows there are none at all.
+ *
+ * The marks are POSITIONAL: index 0 is the top of the list and the last index
+ * is the bottom of it, whoever is standing there. On the ladder that means the
+ * warm end stays glued to the last four rows on screen when the guest toggle
+ * drops fifteen visitors into the table, instead of trailing after the four
+ * members who happened to be last with guests hidden. Being the bundprop is
+ * still a members-only title — that is the badge, and this is the tint.
  */
 export function zoneMarks(count: number, maxSize = ZONE_SIZE): (ZoneMark | null)[] {
   const marks: (ZoneMark | null)[] = Array.from({ length: count }, () => null);
@@ -33,20 +38,5 @@ export function zoneMarks(count: number, maxSize = ZONE_SIZE): (ZoneMark | null)
     marks[i] = { zone: "top", depth: (size - i) / size };
     marks[count - size + i] = { zone: "bottom", depth: (i + 1) / size };
   }
-  return marks;
-}
-
-/**
- * The ladder's zones, by player id.
- *
- * Only MEMBERS are zoned. A guest who turned up once is being measured, not
- * ranked against the team (docs/RATING.md), so they stay neutral wherever
- * they land in the list.
- */
-export function ladderZones(members: LadderEntryOut[]): Map<PlayerId, ZoneMark> {
-  const marks = new Map<PlayerId, ZoneMark>();
-  zoneMarks(members.length).forEach((mark, i) => {
-    if (mark) marks.set(members[i].player_id, mark);
-  });
   return marks;
 }

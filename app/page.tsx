@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Segmented } from "@/components/ui/segmented";
 import { RowSkeletons } from "@/components/ui/skeleton";
 import { LadderRow } from "@/components/ladder/ladder-row";
@@ -8,7 +8,7 @@ import { BundpropRow } from "@/components/ladder/bundprop-row";
 import { GuestToggle } from "@/components/ladder/guest-toggle";
 import { useFlip } from "@/components/ladder/use-flip";
 import { useLadder, useSeasons } from "@/lib/queries";
-import { ladderZones } from "@/lib/zones";
+import { zoneMarks } from "@/lib/zones";
 import { PROVISIONAL_MATCHES, type LadderScope } from "@/lib/types";
 
 export default function LadderPage() {
@@ -36,9 +36,11 @@ export default function LadderPage() {
   const bundpropId = members.length > 1 ? members[members.length - 1].player_id : null;
   const above = members.length > 1 ? members[members.length - 2] : null;
 
-  // Both ends of the table are tinted; the middle is left alone. Guests are
-  // never zoned — they are being measured, not ranked against the team.
-  const zones = useMemo(() => ladderZones(members), [members]);
+  // Both ends of the table are tinted; the middle is left alone. The marks are
+  // positional over the rows actually on screen, so turning guests on keeps the
+  // warm end at the bottom of the list instead of leaving it stranded on four
+  // members with visitors sitting below them.
+  const zones = useMemo(() => zoneMarks(entries.length), [entries.length]);
 
   return (
     <div>
@@ -79,30 +81,38 @@ export default function LadderPage() {
         <RowSkeletons count={10} />
       ) : (
         <div className="space-y-1.5">
-          {entries.map((entry, index) =>
-            entry.player_id === bundpropId ? (
-              <BundpropRow
-                key={entry.player_id}
-                entry={entry}
-                seasonMode={seasonMode}
-                threshold={threshold}
-                above={above}
-                innerRef={register(entry.player_id)}
-              />
-            ) : (
-              <Fragment key={entry.player_id}>
-                <LadderRow
+          {entries.map((entry, index) => {
+            const mark = zones[index] ?? null;
+
+            if (entry.player_id === bundpropId) {
+              return (
+                <BundpropRow
+                  key={entry.player_id}
                   entry={entry}
-                  index={index}
                   seasonMode={seasonMode}
                   threshold={threshold}
-                  zone={zones.get(entry.player_id)?.zone ?? null}
-                  zoneDepth={zones.get(entry.player_id)?.depth ?? 0}
+                  above={above}
+                  // The badge is the bundprop's, the tint is the position's. A
+                  // guest ranked below them takes the deep end of the gradient.
+                  zoneDepth={mark?.zone === "bottom" ? mark.depth : 0}
                   innerRef={register(entry.player_id)}
                 />
-              </Fragment>
-            ),
-          )}
+              );
+            }
+
+            return (
+              <LadderRow
+                key={entry.player_id}
+                entry={entry}
+                index={index}
+                seasonMode={seasonMode}
+                threshold={threshold}
+                zone={mark?.zone ?? null}
+                zoneDepth={mark?.depth ?? 0}
+                innerRef={register(entry.player_id)}
+              />
+            );
+          })}
         </div>
       )}
 

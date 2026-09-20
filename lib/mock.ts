@@ -565,6 +565,19 @@ function pick(stats: PairStatOut[], best: boolean): PairStatOut | null {
   return sorted[0];
 }
 
+/**
+ * The two placings the profile carries: among members, which is what the
+ * ladder ranks, and over the whole field with guests counted. See
+ * docs/RATING.md, "Who appears on the ladder".
+ */
+function placings(
+  values: Map<string, number>,
+  playerId: string,
+): { rank: number | null; rank_with_guests: number | null } {
+  const members = new Map([...values].filter(([pid]) => !player(pid).is_guest));
+  return { rank: rankBy(members, playerId), rank_with_guests: rankBy(values, playerId) };
+}
+
 /** Rank by a number, highest first, name as the tiebreak. */
 function rankBy(values: Map<string, number>, playerId: string): number | null {
   if (!values.has(playerId)) return null;
@@ -611,7 +624,7 @@ export async function getPlayerProfile(id: string): Promise<ProfileOut> {
         losses: seasonTally.losses,
         draws: seasonTally.draws,
         rating_gained: round1(seasonTally.delta),
-        rank: rankBy(gains, id),
+        ...placings(gains, id),
       };
     });
 
@@ -637,7 +650,7 @@ export async function getPlayerProfile(id: string): Promise<ProfileOut> {
     player: playerOut(target.id),
     rating: round1(w.ratings[id] ?? entryRatingOf(id)),
     start_rating: round1(entryRatingOf(id)),
-    rank: rankBy(everyone, id),
+    ...placings(everyone, id),
     matches_played: tally.matches,
     wins: tally.wins,
     losses: tally.losses,
