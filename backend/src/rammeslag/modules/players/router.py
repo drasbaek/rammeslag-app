@@ -125,6 +125,7 @@ def get_profile(player_id: str, db: DbSession = Depends(get_db)) -> ProfileOut:
         rating=profile.rating,
         start_rating=profile.start_rating,
         rank=profile.rank,
+        rank_with_guests=profile.rank_with_guests,
         matches_played=profile.matches_played,
         wins=profile.wins,
         losses=profile.losses,

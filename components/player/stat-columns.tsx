@@ -8,7 +8,13 @@ import { cn } from "@/lib/utils";
  * number the API never claimed.
  */
 export interface StatColumn {
+  /** Placing among members — the ladder's own ranking. */
   rank: number | null;
+  /**
+   * The same placing over the whole field, guests included. Shown under the
+   * members' placing, and only when the two differ.
+   */
+  rankWithGuests: number | null;
   rating?: number;
   rating_gained: number;
   wins: number;
@@ -18,15 +24,50 @@ export interface StatColumn {
   peak?: number;
 }
 
-function Line({ label, value, tone }: { label: string; value: string; tone?: string }) {
+function Line({
+  label,
+  value,
+  tone,
+  note,
+}: {
+  label: string;
+  value: string;
+  tone?: string;
+  /** A second, quieter reading of the same measurement, under the value. */
+  note?: string;
+}) {
   return (
     <div className="flex items-baseline justify-between gap-2 py-[5px]">
       <span className="text-[11px] text-dim">{label}</span>
-      <span className={cn("num text-[13px] font-bold tabular-nums", tone ?? "text-chalk")}>
-        {value}
+      <span className="min-w-0 text-right">
+        <span className={cn("num block text-[13px] font-bold tabular-nums", tone ?? "text-chalk")}>
+          {value}
+        </span>
+        {note ? (
+          <span className="num mt-[1px] block truncate text-[9px] leading-none text-ink-500">
+            {note}
+          </span>
+        ) : null}
       </span>
     </div>
   );
+}
+
+/**
+ * The placing, and under it the placing with guests counted — quieter, because
+ * the ladder is the team's (docs/RATING.md, "Who appears on the ladder") and a
+ * guest who turned up twice should not be what moves somebody's number.
+ *
+ * The second line only appears when the two differ, so a field with no guests
+ * above the player says one thing once. A guest's own profile has no members'
+ * placing at all: they are being measured, not ranked against the team.
+ */
+function placingLines(stats: StatColumn): { value: string; note?: string } {
+  const withGuests =
+    stats.rankWithGuests !== null && stats.rankWithGuests !== stats.rank
+      ? `nr. ${stats.rankWithGuests} med gæster`
+      : undefined;
+  return { value: stats.rank === null ? "–" : `nr. ${stats.rank}`, note: withGuests };
 }
 
 function Column({
@@ -62,7 +103,7 @@ function Column({
         <p className="py-4 text-center text-[11px] text-dim">Ingen kampe endnu.</p>
       ) : (
         <div className="mt-2 divide-y divide-line-soft">
-          <Line label="Placering" value={stats.rank === null ? "–" : `nr. ${stats.rank}`} />
+          <Line label="Placering" {...placingLines(stats)} />
           {stats.rating !== undefined ? (
             <Line label="Rating" value={formatRating(stats.rating)} />
           ) : null}

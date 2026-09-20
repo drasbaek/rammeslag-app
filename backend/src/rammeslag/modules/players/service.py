@@ -164,7 +164,10 @@ class SeasonStat:
     losses: int
     draws: int
     rating_gained: float
+    # Among members, the way the ladder ranks. ``rank_with_guests`` is the same
+    # standing measured over everyone who played inside the window.
     rank: int | None
+    rank_with_guests: int | None = None
 
 
 @dataclass
@@ -172,7 +175,11 @@ class Profile:
     player: PlayerInfo
     rating: float
     start_rating: float
+    # Placing among MEMBERS -- the ladder's own ranking. None for a guest, who
+    # has no standing on the team's ladder. ``rank_with_guests`` is the placing
+    # over the whole field that ever turned up, and is always a number.
     rank: int | None
+    rank_with_guests: int | None
     matches_played: int
     wins: int
     losses: int
@@ -431,7 +438,14 @@ def build_profile(
     everyone = players_in(all_internal)
     ratings = {pid: view.rating_of(pid) for pid in everyone}
     names = {pid: players[pid].name for pid in everyone if pid in players}
-    rank = rank_by(ratings, names).get(player_id)
+    # Two placings, because they answer two questions. The ladder ranks MEMBERS
+    # (docs/RATING.md, "Who appears on the ladder"), so that is a player's place
+    # on the team; the guest-inclusive one is the whole field that ever turned
+    # up. A guest is not on the members' ladder at all, so their ``rank`` is
+    # None and only ``rank_with_guests`` is a number.
+    member_ratings = {pid: value for pid, value in ratings.items() if not _is_guest(players, pid)}
+    rank = rank_by(member_ratings, names).get(player_id)
+    rank_with_guests = rank_by(ratings, names).get(player_id)
 
     season_stats: list[SeasonStat] = []
     for season_id, season_name, window in seasons:
@@ -439,9 +453,11 @@ def build_profile(
         s_wins, s_losses, s_draws = record_for(scope, player_id)
         gains = view.gain_between(*window)
         eligible = players_in(scope)
+        season_values = {pid: gains.get(pid, 0.0) for pid in eligible}
         season_rank = rank_by(
-            {pid: gains.get(pid, 0.0) for pid in eligible}, names
+            {pid: v for pid, v in season_values.items() if not _is_guest(players, pid)}, names
         ).get(player_id)
+        season_rank_with_guests = rank_by(season_values, names).get(player_id)
         season_stats.append(
             SeasonStat(
                 season_id=season_id,
@@ -452,6 +468,7 @@ def build_profile(
                 draws=s_draws,
                 rating_gained=round(gains.get(player_id, 0.0), 1),
                 rank=season_rank,
+                rank_with_guests=season_rank_with_guests,
             )
         )
 
@@ -474,6 +491,7 @@ def build_profile(
         rating=round(view.rating_of(player_id), 1),
         start_rating=round(match_service.seed_rating(view, player_id), 1),
         rank=rank,
+        rank_with_guests=rank_with_guests,
         matches_played=wins + losses + draws,
         wins=wins,
         losses=losses,

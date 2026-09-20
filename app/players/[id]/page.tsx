@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
+import { Wordmark } from "@/components/brand";
 import { Avatar } from "@/components/ui/avatar";
 import { FormDots } from "@/components/ui/form-dots";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -36,6 +37,7 @@ export default function PlayerProfilePage() {
     const peak = data.curve.reduce((high, point) => Math.max(high, point.rating), data.rating);
     return {
       rank: data.rank,
+      rankWithGuests: data.rank_with_guests,
       rating: data.rating,
       rating_gained: data.rating - data.start_rating,
       wins: data.wins,
@@ -52,6 +54,7 @@ export default function PlayerProfilePage() {
       seasonStat
         ? {
             rank: seasonStat.rank,
+            rankWithGuests: seasonStat.rank_with_guests,
             rating_gained: seasonStat.rating_gained,
             wins: seasonStat.wins,
             losses: seasonStat.losses,
@@ -204,7 +207,9 @@ export default function PlayerProfilePage() {
           </section>
 
           <footer className="mt-8 flex items-center justify-between border-t border-line-soft px-1 pt-3">
-            <span className="text-[9px] font-bold tracking-[0.2em] text-ink-500">RAMMESLAG FC</span>
+            {/* The logo's own wordmark, dimmed to what --color-ink-500 reads
+                as against the page: a signature, not a second header. */}
+            <Wordmark height={9} className="opacity-20" />
             <span className="num text-[9px] tracking-[0.12em] text-ink-500">
               {data.curve.length > 0
                 ? formatDateShort(data.curve[data.curve.length - 1].played_at).toUpperCase()

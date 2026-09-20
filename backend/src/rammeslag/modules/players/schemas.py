@@ -104,7 +104,9 @@ class SeasonStatOut(BaseModel):
     losses: int
     draws: int
     rating_gained: float
+    # Among members; ``rank_with_guests`` counts everyone who played.
     rank: int | None = None
+    rank_with_guests: int | None = None
 
 
 class CurvePoint(BaseModel):
@@ -129,7 +131,10 @@ class ProfileOut(BaseModel):
     player: PlayerOut
     rating: float
     start_rating: float
+    # Placing among members -- None for a guest, who is not on the team's
+    # ladder. ``rank_with_guests`` places them in the whole field.
     rank: int | None = None
+    rank_with_guests: int | None = None
     matches_played: int
     wins: int
     losses: int

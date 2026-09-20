@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { Wordmark } from "@/components/brand";
 import { MatchCard } from "@/components/session/match-card";
 import { MovementBars } from "@/components/session/movement-bars";
 import { Recap } from "@/components/session/recap";
@@ -144,7 +145,9 @@ export default function SessionDetailPage() {
           ) : null}
 
           <footer className="mt-8 flex items-center justify-between border-t border-line-soft px-1 pt-3">
-            <span className="text-[9px] font-bold tracking-[0.2em] text-ink-500">RAMMESLAG FC</span>
+            {/* The logo's own wordmark, dimmed to what --color-ink-500 reads
+                as against the page: a signature, not a second header. */}
+            <Wordmark height={9} className="opacity-20" />
             <span className="num text-[9px] tracking-[0.12em] text-ink-500">
               {formatDateShort(data.played_on).toUpperCase()}
             </span>

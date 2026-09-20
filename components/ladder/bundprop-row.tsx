@@ -11,8 +11,8 @@ import { rating as formatRating, delta, firstName } from "@/lib/format";
  * who turned up once cannot inherit the title (docs/RATING.md: guests are here
  * to be measured, members are the team).
  *
- * It is the same row as everybody else's, one line taller and one shade
- * warmer: the bottom four are already tinted, so nothing here has to shout.
+ * It is the same row as everybody else's, one line taller: the bottom four
+ * rows are already tinted, so nothing here has to shout.
  * The joke is the position, never the person, and the ribbing is warm enough
  * to be read out loud in the group chat.
  */
@@ -48,6 +48,7 @@ export function BundpropRow({
   seasonMode,
   threshold,
   above,
+  zoneDepth = 1,
   innerRef,
 }: {
   entry: LadderEntryOut;
@@ -56,6 +57,8 @@ export function BundpropRow({
   threshold: number;
   /** The member one rung up — the distance to daylight is the funny part. */
   above: LadderEntryOut | null;
+  /** 0..1, how deep into the warm zone this ROW sits. See lib/zones.ts. */
+  zoneDepth?: number;
   innerRef?: (node: HTMLElement | null) => void;
 }) {
   const number = seasonMode ? delta(entry.rating_gained, 0) : formatRating(entry.rating);
@@ -69,9 +72,12 @@ export function BundpropRow({
     <Link
       ref={innerRef as never}
       href={`/players/${entry.player_id}`}
-      // The same tint as the three rows above, at full strength: the bundprop
-      // is where the zone ends, not a separate box.
-      style={{ "--zone": 1 } as CSSProperties}
+      // The same tint as the rows above, at whatever strength its position
+      // earns: the bundprop is where the zone ends, not a separate box. With
+      // guests on, a visitor can rank below them — then the gradient ends
+      // further down and this row is no longer its deepest point. The badge
+      // stays either way, because the title is the last MEMBER's.
+      style={{ "--zone": zoneDepth } as CSSProperties}
       className="zone-bottom animate-rise relative block overflow-hidden rounded-row bg-ink-850/70 transition-colors active:bg-ink-800"
     >
       <div className="flex items-center gap-2.5 px-3 pb-1 pt-2.5">

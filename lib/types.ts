@@ -233,7 +233,10 @@ export interface SeasonStatOut {
   losses: number;
   draws: number;
   rating_gained: number;
+  /** Placing among members. Null if the player did not play in the season. */
   rank: number | null;
+  /** The same placing, measured over everyone who played — guests included. */
+  rank_with_guests: number | null;
 }
 
 export interface HighlightsOut {
@@ -252,7 +255,13 @@ export interface ProfileOut {
   rating: number;
   /** The rating the replay seeded this player from. */
   start_rating: number;
+  /**
+   * Placing among MEMBERS — the ladder's own ranking, and null for a guest,
+   * who has no standing on the team's ladder.
+   */
   rank: number | null;
+  /** The placing over the whole field that ever turned up. Always a number. */
+  rank_with_guests: number | null;
   matches_played: number;
   wins: number;
   losses: number;

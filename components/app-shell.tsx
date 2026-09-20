@@ -4,21 +4,25 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { Avatar } from "@/components/ui/avatar";
+import { Mark, Wordmark } from "@/components/brand";
 import { useAuthGate } from "@/components/auth/auth-gate";
 import { useQuickAdd } from "@/components/quick-add";
 import { useMe } from "@/lib/queries";
 import { haptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
 
-function Wordmark() {
+/**
+ * The real logo, unpacked into a horizontal lockup. The square original stacks
+ * the wordmark under the monogram, which would need most of a 56px bar to stay
+ * legible; side by side the monogram gets its full height and the wordmark sits
+ * on the bar's optical centre. Nothing is tinted: the club's mark is white, and
+ * the volt accent belongs to the numbers.
+ */
+function Lockup() {
   return (
-    <Link href="/" className="flex items-center gap-2" aria-label="Rammeslag FC, forside">
-      <span className="relative flex h-2.5 w-2.5">
-        <span className="absolute inset-0 rounded-full bg-volt" />
-        <span className="absolute inset-0 rounded-full bg-volt/40 blur-[6px]" />
-      </span>
-      <span className="text-[13px] font-extrabold tracking-[0.22em] text-chalk">RAMMESLAG</span>
-      <span className="text-[13px] font-extrabold tracking-[0.22em] text-dim">FC</span>
+    <Link href="/" className="flex items-center gap-2.5" aria-label="Rammeslag FC, forside">
+      <Mark height={28} priority />
+      <Wordmark height={11} priority />
     </Link>
   );
 }
@@ -50,7 +54,7 @@ function TopBar() {
       style={{ paddingTop: "var(--safe-t)" }}
     >
       <div className="mx-auto flex h-14 w-full max-w-[520px] items-center justify-between gap-2 px-4">
-        <Wordmark />
+        <Lockup />
         {player ? (
           <div className="flex items-center gap-2">
             {player.is_admin ? <AdminLink /> : null}
