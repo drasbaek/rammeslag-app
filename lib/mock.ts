@@ -364,7 +364,7 @@ export async function getSeasons(): Promise<SeasonOut[]> {
 }
 
 export async function createSeason(body: SeasonCreate): Promise<SeasonOut> {
-  if (!authed?.is_admin) throw new Error("Kun administratorer kan oprette sæsoner");
+  if (!authed) throw new Error("Du skal være logget ind for at gøre det.");
   if (body.ends_on < body.starts_on) throw new Error("Slutdatoen ligger før startdatoen");
   const clash = seasonList.find(
     (season) => body.starts_on <= season.ends_on && season.starts_on <= body.ends_on,
@@ -385,7 +385,7 @@ export async function createSeason(body: SeasonCreate): Promise<SeasonOut> {
 }
 
 export async function updateSeason(id: string, body: SeasonUpdate): Promise<SeasonOut> {
-  if (!authed?.is_admin) throw new Error("Kun administratorer kan rette sæsoner");
+  if (!authed) throw new Error("Du skal være logget ind for at gøre det.");
   const target = seasonById.get(id);
   if (!target) throw new Error(`Ukendt sæson: ${id}`);
 
@@ -409,7 +409,11 @@ export async function getPlayers(): Promise<PlayerOut[]> {
 }
 
 export async function createPlayer(body: PlayerCreate): Promise<PlayerOut> {
-  if (!authed?.is_admin) throw new Error("Kun administratorer kan tilføje spillere");
+  if (!authed) throw new Error("Du skal være logget ind for at gøre det.");
+  // Only an admin hands out admin. Without this the flag is decoration.
+  if (body.is_admin && !authed.is_admin) {
+    throw new Error("Kun en administrator kan give administratorrettigheder.");
+  }
   const created: MeOut = {
     id: `p-new-${roster.length + 1}`,
     name: body.name.trim(),
@@ -424,7 +428,14 @@ export async function createPlayer(body: PlayerCreate): Promise<PlayerOut> {
 }
 
 export async function updatePlayer(id: string, body: PlayerUpdate): Promise<PlayerOut> {
-  if (!authed?.is_admin) throw new Error("Kun administratorer kan rette spillere");
+  if (!authed) throw new Error("Du skal være logget ind for at gøre det.");
+  if (body.is_admin !== undefined && !authed.is_admin) {
+    throw new Error("Kun en administrator kan give administratorrettigheder.");
+  }
+  // A PIN you can overwrite is an account you can log in as.
+  if (body.pin && !authed.is_admin && authed.id !== id) {
+    throw new Error("Du kan kun ændre din egen PIN.");
+  }
   const target = player(id);
   if (body.name !== undefined) target.name = body.name.trim();
   if (body.entry_rating !== undefined) target.entry_rating = body.entry_rating;
@@ -904,9 +915,9 @@ export async function updateSession(id: string, body: SessionUpdate): Promise<Se
   return delay(toSessionOut(session, world()));
 }
 
-/** DELETE /api/sessions/{id}. Admin only, and it takes the matches with it. */
+/** DELETE /api/sessions/{id}. Any member, and it takes the matches with it. */
 export async function deleteSession(id: string): Promise<null> {
-  if (!authed?.is_admin) throw new Error("Kun administratorer kan slette en session");
+  if (!authed) throw new Error("Du skal være logget ind for at gøre det.");
   const session = sessionById.get(id);
   if (!session) throw new Error(`Ukendt aften: ${id}`);
   sessionById.delete(id);
@@ -1182,10 +1193,11 @@ export async function setResponseFor(
   if (!authed) throw new Error("Du skal være logget ind for at gøre det.");
   const event = mockEvent(eventId);
   if (event.status === "cancelled") throw new Error("Begivenheden er aflyst.");
-  // You answer for yourself, for a guest, or — as an admin — for anyone.
-  const subject = playerById.get(playerId);
-  const allowed = authed.id === playerId || authed.is_admin || subject?.is_guest;
-  if (!allowed) throw new Error("Du kan kun svare for dig selv og for gæster.");
+  // Anyone answers for anyone. Locked is the exception: the squad is picked,
+  // so only an admin still records a late withdrawal under the team sheet.
+  if (event.status === "locked" && !authed.is_admin) {
+    throw new Error("Holdet er sat, så svarene er låst. Sig det til en admin.");
+  }
 
   responsesOf(eventId).set(playerId, {
     state,
@@ -1199,16 +1211,18 @@ export async function clearResponse(eventId: string, playerId: string): Promise<
   if (!authed) throw new Error("Du skal være logget ind for at gøre det.");
   const event = mockEvent(eventId);
   if (event.status === "cancelled") throw new Error("Begivenheden er aflyst.");
-  const subject = playerById.get(playerId);
-  const allowed = authed.id === playerId || authed.is_admin || subject?.is_guest;
-  if (!allowed) throw new Error("Du kan kun svare for dig selv og for gæster.");
+  // Anyone answers for anyone. Locked is the exception: the squad is picked,
+  // so only an admin still records a late withdrawal under the team sheet.
+  if (event.status === "locked" && !authed.is_admin) {
+    throw new Error("Holdet er sat, så svarene er låst. Sig det til en admin.");
+  }
 
   responsesOf(eventId).delete(playerId);
   return delay(toEventOut(event));
 }
 
 export async function createEvent(body: EventCreate): Promise<EventOut> {
-  if (!authed?.is_admin) throw new Error("Kun en administrator kan gøre det.");
+  if (!authed) throw new Error("Du skal være logget ind for at gøre det.");
   const season = seasonList.find(
     (s) => s.starts_on <= body.held_on && body.held_on <= s.ends_on,
   );
@@ -1239,7 +1253,7 @@ export async function createEvent(body: EventCreate): Promise<EventOut> {
 }
 
 export async function updateEvent(id: string, body: EventUpdate): Promise<EventOut> {
-  if (!authed?.is_admin) throw new Error("Kun en administrator kan gøre det.");
+  if (!authed) throw new Error("Du skal være logget ind for at gøre det.");
   const event = mockEvent(id);
 
   if (body.held_on !== undefined && body.held_on !== event.held_on) {
@@ -1264,7 +1278,7 @@ export async function updateEvent(id: string, body: EventUpdate): Promise<EventO
 }
 
 export async function deleteEvent(id: string): Promise<null> {
-  if (!authed?.is_admin) throw new Error("Kun en administrator kan gøre det.");
+  if (!authed) throw new Error("Du skal være logget ind for at gøre det.");
   const event = mockEvent(id);
   eventById.delete(id);
   eventList.splice(eventList.indexOf(event), 1);

@@ -229,10 +229,10 @@ export function SessionForm({
         </Button>
 
         {/* Deleting an evening deletes its kampe and replays the ladder without
-            them. There is no undo, so it lives under a line of its own, asks
-            twice, and is only offered to an admin — which is who the API lets
-            do it anyway. */}
-        {me.data?.is_admin ? (
+            them. There is no undo, so it lives under a line of its own and
+            asks twice. Whoever spots the wrong evening fixes it: the ladder is
+            recomputed from what is left, never patched. */}
+        {me.data ? (
           <div className="border-t border-line-soft pt-3">
             <Button
               variant={confirming ? "danger" : "ghost"}

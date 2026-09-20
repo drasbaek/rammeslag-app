@@ -74,7 +74,7 @@ export function TrainingAdmin({ event }: { event: EventDetailOut }) {
 
   return (
     <div className="rounded-card border border-line bg-ink-850/40 px-4 py-3">
-      <span className="eyebrow block pb-2">Kun for admin</span>
+      <span className="eyebrow block pb-2">Træningen</span>
 
       <span className="block pb-1.5 text-[10px] font-semibold text-dim">
         Baner · {event.capacity} pladser

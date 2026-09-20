@@ -28,16 +28,18 @@ export default function AdminSeasonsPage() {
   const seasons = useSeasons();
   const [editing, setEditing] = useState<Editing>(null);
 
-  const isAdmin = me.data?.is_admin ?? false;
+  const isMember = Boolean(me.data);
   const today = todayISO();
   const all = [...(seasons.data ?? [])].sort((a, b) => (a.starts_on < b.starts_on ? 1 : -1));
   const covering = seasonFor(all, today);
 
-  if (!me.isPending && !isAdmin) {
+  if (!me.isPending && !isMember) {
     return (
       <div className="py-16 text-center">
-        <p className="text-body font-semibold">Kun for administratorer.</p>
-        <p className="mt-1 text-mini text-mute">Sæsonerne sættes af holdets admin.</p>
+        <p className="text-body font-semibold">Log ind for at rette sæsoner.</p>
+        <p className="mt-1 text-mini text-mute">
+          En aften kan ikke ligge uden for en sæson, så alle kan oprette den næste.
+        </p>
         <Link href="/" className="mt-5 inline-block text-mini font-semibold text-volt">
           Tilbage til stigen
         </Link>

@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, Query, Response
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 from sqlalchemy.orm import Session as DbSession
 
 from rammeslag.deps import (
     clear_session_cookie,
     current_user,
     get_db,
-    require_admin,
     set_session_cookie,
 )
 from rammeslag.modules.players import service
@@ -49,6 +48,34 @@ def _pair(stat: service.PairStat | None) -> PairStatOut | None:
     )
 
 
+NOT_ADMIN_GRANT = "Kun en administrator kan give administratorrettigheder."
+NOT_YOUR_PIN = "Du kan kun ændre din egen PIN."
+
+
+def _may_grant_admin(actor: Player, requested: bool | None) -> None:
+    """Only an admin hands out admin.
+
+    Without this the flag is decoration: any member could promote themselves
+    and walk into the two things admin still guards -- the squad, and what an
+    admin privately thinks everyone is worth.
+    """
+    if requested is None or actor.is_admin:
+        return
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=NOT_ADMIN_GRANT)
+
+
+def _may_set_pin(actor: Player, subject_id: str) -> None:
+    """Your own PIN is yours to change. Somebody else's is an admin's.
+
+    Same reasoning as the flag above: a PIN you can overwrite is an account you
+    can log into. Setting one on a player you are creating is not covered here
+    -- nobody is logged in as a player that did not exist a moment ago.
+    """
+    if actor.is_admin or actor.id == subject_id:
+        return
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=NOT_YOUR_PIN)
+
+
 @router.get("/players", response_model=list[PlayerOut])
 def list_players(db: DbSession = Depends(get_db)) -> list[Player]:
     return service.list_players(db)
@@ -58,10 +85,15 @@ def list_players(db: DbSession = Depends(get_db)) -> list[Player]:
 def create_player(
     payload: PlayerCreate,
     db: DbSession = Depends(get_db),
-    admin: Player = Depends(require_admin),
+    player: Player = Depends(current_user),
 ) -> Player:
-    """Add a player. Admin only, and ``entry_rating`` is required -- a request
-    without it is rejected by the schema before it reaches here."""
+    """Add a player. Any logged-in member, and ``entry_rating`` is required --
+    a request without it is rejected by the schema before it reaches here.
+
+    Whoever is standing in the hall when somebody new turns up can put them on
+    the ladder. Handing out admin with them cannot.
+    """
+    _may_grant_admin(player, payload.is_admin or None)
     return service.create_player(
         db,
         name=payload.name,
@@ -93,10 +125,13 @@ def update_player(
     player_id: str,
     payload: PlayerUpdate,
     db: DbSession = Depends(get_db),
-    admin: Player = Depends(require_admin),
+    actor: Player = Depends(current_user),
 ) -> Player:
-    """Edit a player. Admin only. Flipping ``is_guest`` promotes a guest to a
-    member, which is how someone joins the ladder for real."""
+    """Edit a player. Any logged-in member. Flipping ``is_guest`` promotes a
+    guest to a member, which is how someone joins the ladder for real."""
+    _may_grant_admin(actor, payload.is_admin)
+    if payload.pin is not None:
+        _may_set_pin(actor, player_id)
     return service.update_player(
         db,
         player_id,

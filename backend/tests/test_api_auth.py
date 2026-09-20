@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from datetime import UTC, date, datetime
 
-from rammeslag.deps import NOT_ADMIN, NOT_LOGGED_IN, issue_token, read_token
+from rammeslag.deps import NOT_LOGGED_IN, issue_token, read_token
 from rammeslag.modules.players.service import hash_pin, verify_pin
 from tests.conftest import (
     EFTERAAR,
@@ -128,13 +128,19 @@ def test_a_logged_in_player_may_write(client, db) -> None:
     assert client.post(f"/api/sessions/{response.json()['id']}/close").status_code == 200
 
 
-def test_deletes_require_admin(client, db) -> None:
+def test_deletes_need_a_login_and_nothing_more(client, db) -> None:
+    """A wrong score typed on Sunday is fixed by whoever spots it.
+
+    Routing that through an admin meant the ladder stayed wrong until somebody
+    else woke up. The replay makes a delete safe to hand out: ratings are
+    recomputed from what is left, never patched in place.
+    """
+    assert client.delete("/api/matches/m1").status_code == 401
+
     _seed(db)
     login(client, "regular", "1234")
-    response = client.delete("/api/matches/m1")
-    assert response.status_code == 403
-    assert response.json()["detail"] == NOT_ADMIN
-    assert client.delete("/api/sessions/s1").status_code == 403
+    assert client.delete("/api/matches/m1").status_code == 204
+    assert client.delete("/api/sessions/s1").status_code == 204
 
 
 def test_admin_may_delete(client, db) -> None:

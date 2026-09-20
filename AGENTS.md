@@ -56,9 +56,20 @@ chat, so it is allowed to be funny.
   layout that only works on a laptop is not done.
 - **Last place gets the bundprop treatment.** The humour is a feature that
   was explicitly asked for. Keep it affectionate.
-- **Never show `entry_rating` outside the admin player screen.** It is an
-  admin's private judgement of how good someone is. The API returns it; the
-  dashboard must not put it in front of the player it describes.
+- **Never show `entry_rating` to anybody but an admin.** It is an admin's
+  private judgement of how good a teammate is. `GET /api/players` returns it
+  to everyone, so this is a rule about screens, not a rule the API enforces:
+  the player screen is open to the whole team and the rating column on it is
+  not. Do not put it in front of the player it describes.
+
+- **Admin is two things and stays two things.** Picking a squad -- selection,
+  the planned line-ups, and editing an answer once the squad is locked -- and
+  reading an entry rating. Everything else a member does needs a login and
+  nothing more, including deleting a match or an evening: the ladder is a
+  replay, so a delete is recoverable by re-entering, and routing it through an
+  admin left the ladder wrong until somebody else woke up. Two guards keep the
+  boundary real rather than decorative: only an admin grants or removes the
+  admin flag, and only an admin sets a PIN that is not their own.
 - **Availability is never dressed up as selection.** Saying "klar" is a
   tilmelding. Being picked is an admin's decision, under its own heading,
   in different words. A screen that blurs the two is telling ten people

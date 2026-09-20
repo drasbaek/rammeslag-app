@@ -5,7 +5,7 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, Query, Response
 from sqlalchemy.orm import Session as DbSession
 
-from rammeslag.deps import current_user, get_db, require_admin
+from rammeslag.deps import current_user, get_db
 from rammeslag.modules.matches.schemas import match_out, player_out
 from rammeslag.modules.players.models import Player
 from rammeslag.modules.seasons import service as season_service
@@ -177,7 +177,7 @@ def update_session(
 def delete_session(
     session_id: str,
     db: DbSession = Depends(get_db),
-    admin: Player = Depends(require_admin),
+    player: Player = Depends(current_user),
 ) -> Response:
     # Deleting triggers a full replay. Never an inverse update.
     service.delete_session(db, session_id)

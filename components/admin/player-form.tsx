@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Sheet } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { useCreatePlayer, useUpdatePlayer } from "@/lib/queries";
+import { useCreatePlayer, useMe, useUpdatePlayer } from "@/lib/queries";
 import { haptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
 import type { PlayerOut, PlayerUpdate } from "@/lib/types";
@@ -65,6 +65,13 @@ function Choice<T extends string | boolean>({
  * means "leave it as it was" rather than "clear it". Same for the admin flag —
  * `GET /api/players` does not carry it, so on an existing player neither chip
  * starts pressed and nothing is sent until one is.
+ *
+ * Three fields are an admin's, and the API refuses them from anybody else, so
+ * the form does not offer them: the admin chips, a PIN on somebody who is not
+ * you, and the entry rating of a player who already exists. That last one is
+ * not a permission but a disclosure — a number one admin privately put on a
+ * teammate. It can still be set on a brand-new player, because somebody has to
+ * say where they enter, but it is never read back onto this screen.
  */
 export function PlayerForm({
   open,
@@ -75,14 +82,21 @@ export function PlayerForm({
   onOpenChange: (open: boolean) => void;
   player: PlayerOut | null;
 }) {
+  const me = useMe();
   const create = useCreatePlayer();
   const update = useUpdatePlayer();
+
+  const viewerIsAdmin = Boolean(me.data?.is_admin);
+  /** Editing somebody's PIN is editing their login. Yours, or an admin's job. */
+  const maySetPin = !player || viewerIsAdmin || me.data?.id === player.id;
+  /** Blank rather than pre-filled: showing it back is the disclosure. */
+  const mayReadEntryRating = !player || viewerIsAdmin;
 
   // The caller mounts this fresh per player, so the initial state is the
   // whole story — no effect resetting fields behind the user's back.
   const [name, setName] = useState(player?.name ?? "");
   const [entryRating, setEntryRating] = useState(
-    player ? String(Math.round(player.entry_rating)) : "",
+    player && viewerIsAdmin ? String(Math.round(player.entry_rating)) : "",
   );
   const [isGuest, setIsGuest] = useState(player?.is_guest ?? false);
   // null on an existing player: the roster endpoint does not say who is an
@@ -100,8 +114,13 @@ export function PlayerForm({
       haptic("warn");
       return;
     }
+    const blank = entryRating.trim() === "";
     const value = Number(entryRating);
-    if (entryRating.trim() === "" || !Number.isFinite(value) || value < 400 || value > 2000) {
+    const ratingOk = !blank && Number.isFinite(value) && value >= 400 && value <= 2000;
+    // Blank is "leave it alone" only where the field was never filled in for
+    // the reader. On a new player it is still required: somebody has to say
+    // where they enter.
+    if (!ratingOk && !(player && !mayReadEntryRating && blank)) {
       setError("Indgangsrating skal sættes — et tal mellem 400 og 2000.");
       haptic("warn");
       return;
@@ -124,8 +143,9 @@ export function PlayerForm({
     };
 
     if (player) {
-      const body: PlayerUpdate = { name: trimmed, entry_rating: value, is_guest: isGuest };
-      if (isAdmin !== null) body.is_admin = isAdmin;
+      const body: PlayerUpdate = { name: trimmed, is_guest: isGuest };
+      if (ratingOk) body.entry_rating = value;
+      if (isAdmin !== null && viewerIsAdmin) body.is_admin = isAdmin;
       if (secret !== "") body.pin = secret;
       update.mutateAsync({ id: player.id, body }).then(done).catch(fail);
     } else {
@@ -134,7 +154,7 @@ export function PlayerForm({
           name: trimmed,
           entry_rating: value,
           is_guest: isGuest,
-          is_admin: isAdmin ?? false,
+          is_admin: viewerIsAdmin ? (isAdmin ?? false) : false,
           ...(secret !== "" ? { pin: secret } : {}),
         })
         .then(done)
@@ -148,9 +168,11 @@ export function PlayerForm({
       onOpenChange={onOpenChange}
       title={player ? "Ret spiller" : "Tilføj spiller"}
       description={
-        player
-          ? "Rettes indgangsratingen, spilles hele historikken om."
-          : "Indgangsratingen er obligatorisk. Der er ingen standardværdi."
+        !player
+          ? "Indgangsratingen er obligatorisk. Der er ingen standardværdi."
+          : mayReadEntryRating
+            ? "Rettes indgangsratingen, spilles hele historikken om."
+            : "Navn og status. Indgangsratingen sættes af holdets admin."
       }
     >
       <div className="space-y-3">
@@ -165,6 +187,7 @@ export function PlayerForm({
           />
         </label>
 
+        {mayReadEntryRating ? (
         <label className="block">
           <span className="eyebrow block pb-1.5">Indgangsrating</span>
           <input
@@ -179,6 +202,7 @@ export function PlayerForm({
             1000 er forslaget, ikke reglen. En rutineret ny spiller starter højere.
           </span>
         </label>
+        ) : null}
 
         <Choice
           label="Status"
@@ -190,6 +214,7 @@ export function PlayerForm({
           ]}
         />
 
+        {maySetPin ? (
         <label className="block">
           <span className="eyebrow block pb-1.5">PIN</span>
           <input
@@ -208,14 +233,16 @@ export function PlayerForm({
               : "Uden PIN kan spilleren ikke logge ind. Den kan sættes senere."}
           </span>
         </label>
+        ) : null}
 
+        {viewerIsAdmin ? (
         <Choice
           label="Rettigheder"
           value={isAdmin}
           onChange={setIsAdmin}
           options={[
-            { value: false, label: "Spiller", hint: "Kan skrive kampe" },
-            { value: true, label: "Admin", hint: "Kan rette alt" },
+            { value: false, label: "Spiller", hint: "Alt undtagen holdet" },
+            { value: true, label: "Admin", hint: "Sætter holdet" },
           ]}
           hint={
             player
@@ -223,6 +250,7 @@ export function PlayerForm({
               : undefined
           }
         />
+        ) : null}
 
         {error ? <p className="text-mini text-loss">{error}</p> : null}
 

@@ -37,6 +37,9 @@ export function TrainingDetail({ event }: { event: EventDetailOut }) {
   const [addingGuest, setAddingGuest] = useState(false);
   const [planning, setPlanning] = useState(false);
 
+  // Anyone logged in edits the Sunday itself. Setting the kampe on it, and
+  // moving an answer once they are set, stays an admin's.
+  const isMember = Boolean(me.data);
   const isAdmin = Boolean(me.data?.is_admin);
   const cancelled = event.status === "cancelled";
   // Locked means the answers are closed to everybody but an admin, which the
@@ -47,7 +50,7 @@ export function TrainingDetail({ event }: { event: EventDetailOut }) {
   // and an admin still has to be able to record somebody dropping out after
   // the kampe are set. Only aflyst stops them, because the API refuses every
   // write there and a button that offers a 400 is worse than no button.
-  const mayOverride = isAdmin && !cancelled;
+  const mayOverride = isMember && !cancelled && (isAdmin || event.status !== "locked");
 
   const filled = event.counts.yes;
   const missing = Math.max(0, event.capacity - filled);
@@ -206,7 +209,7 @@ export function TrainingDetail({ event }: { event: EventDetailOut }) {
 
       <AvailabilityList event={event} type="training" action={rowAction} />
 
-      {isAdmin ? <TrainingAdmin event={event} /> : null}
+      {isMember ? <TrainingAdmin event={event} /> : null}
 
       {addingGuest ? (
         <TrainingGuestSheet event={event} open onOpenChange={setAddingGuest} />

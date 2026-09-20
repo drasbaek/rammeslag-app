@@ -1,13 +1,15 @@
 """Event routes. HTTP only.
 
 Reads are public, the same as every other read in this app: checking whether
-Sunday is on should cost nothing. Answering costs a login, picking a squad
-costs admin.
+Sunday is on should cost nothing. Putting a date in the calendar, answering on
+it -- for yourself or for anybody else -- and taking it down again all cost a
+login and nothing more. Admin is the squad: picking it, planning the line-up,
+and editing answers once it is picked.
 """
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
+from fastapi import APIRouter, Depends, Query, Response
 from sqlalchemy.orm import Session as DbSession
 
 from rammeslag.deps import current_user, get_db, optional_user, require_admin
@@ -29,8 +31,6 @@ from rammeslag.modules.players.models import Player
 from rammeslag.modules.seasons.schemas import SeasonRef
 
 router = APIRouter(prefix="/api", tags=["events"])
-
-NOT_YOUR_ANSWER = "Du kan kun svare for dig selv og for gæster."
 
 
 def _event_out(view: service.EventView) -> EventOut:
@@ -108,7 +108,7 @@ def get_event(
 def create_event(
     payload: EventCreate,
     db: DbSession = Depends(get_db),
-    admin: Player = Depends(require_admin),
+    player: Player = Depends(current_user),
 ) -> EventOut:
     event = service.create_event(
         db,
@@ -119,9 +119,9 @@ def create_event(
         opponent=payload.opponent,
         capacity=payload.capacity,
         note=payload.note,
-        created_by=admin.id,
+        created_by=player.id,
     )
-    return _event_out(service.build_views(db, [event], viewer_id=admin.id)[0])
+    return _event_out(service.build_views(db, [event], viewer_id=player.id)[0])
 
 
 @router.patch("/events/{event_id}", response_model=EventOut)
@@ -129,7 +129,7 @@ def update_event(
     event_id: str,
     payload: EventUpdate,
     db: DbSession = Depends(get_db),
-    admin: Player = Depends(require_admin),
+    player: Player = Depends(current_user),
 ) -> EventOut:
     event = service.update_event(
         db,
@@ -142,14 +142,14 @@ def update_event(
         status=payload.status,
         note=payload.note,
     )
-    return _event_out(service.build_views(db, [event], viewer_id=admin.id)[0])
+    return _event_out(service.build_views(db, [event], viewer_id=player.id)[0])
 
 
 @router.delete("/events/{event_id}", status_code=204)
 def delete_event(
     event_id: str,
     db: DbSession = Depends(get_db),
-    admin: Player = Depends(require_admin),
+    player: Player = Depends(current_user),
 ) -> Response:
     service.delete_event(db, event_id)
     return Response(status_code=204)
@@ -158,19 +158,6 @@ def delete_event(
 # --------------------------------------------------------------------------
 # Answers
 # --------------------------------------------------------------------------
-
-
-def _may_answer_for(db: DbSession, actor: Player, player_id: str) -> None:
-    """You answer for yourself. You answer for a guest, because somebody has
-    to and it is the person who brought them. An admin answers for anyone,
-    which is how a name that only ever replies in the group chat gets in.
-    Nobody else votes on your behalf."""
-    if actor.id == player_id or actor.is_admin:
-        return
-    subject = db.get(Player, player_id)
-    if subject is not None and subject.is_guest:
-        return
-    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=NOT_YOUR_ANSWER)
 
 
 @router.put("/events/{event_id}/response", response_model=EventOut)
@@ -196,8 +183,12 @@ def set_response_for(
     db: DbSession = Depends(get_db),
     actor: Player = Depends(current_user),
 ) -> EventOut:
-    """Answer on someone's behalf. This is how a guest joins a training."""
-    _may_answer_for(db, actor, player_id)
+    """Answer on someone's behalf.
+
+    Anyone logged in, for anyone: this is how a guest joins a training, and
+    how a name that only ever replies in the group chat gets onto the list.
+    ``added_by`` records who actually typed it.
+    """
     service.set_response(
         db, event_id, player_id, payload.state, added_by=actor.id, by_admin=actor.is_admin
     )
@@ -213,7 +204,6 @@ def clear_response(
     actor: Player = Depends(current_user),
 ) -> EventOut:
     """Back to no answer, and the way a guest is taken off the list again."""
-    _may_answer_for(db, actor, player_id)
     service.clear_response(db, event_id, player_id, by_admin=actor.is_admin)
     event = service.get_event(db, event_id)
     return _event_out(service.build_views(db, [event], viewer_id=actor.id)[0])

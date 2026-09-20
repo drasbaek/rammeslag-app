@@ -108,7 +108,10 @@ def current_user(request: Request, db: DbSession = Depends(get_db)) -> Player:
 
 
 def require_admin(player: Player = Depends(current_user)) -> Player:
-    """Admin gate. Every delete depends on this."""
+    """Admin gate. Two things depend on it: picking a squad -- selection,
+    the planned line-ups, and editing an answer once the squad is locked --
+    and reading an entry rating. Everything else a member does is
+    ``current_user``."""
     if not player.is_admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=NOT_ADMIN)
     return player
