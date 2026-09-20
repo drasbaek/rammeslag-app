@@ -11,15 +11,32 @@ from rammeslag.modules.players.models import Player
 from rammeslag.modules.seasons import service as season_service
 from rammeslag.modules.seasons.schemas import SeasonRef
 from rammeslag.modules.sessions import service
+from rammeslag.modules.sessions.models import Session as PlaySession
 from rammeslag.modules.sessions.schemas import (
     PlayerDeltaOut,
     RecapOut,
     SessionCreate,
     SessionDetailOut,
     SessionOut,
+    SessionUpdate,
 )
 
 router = APIRouter(prefix="/api", tags=["sessions"])
+
+
+def _session_out(db: DbSession, play_session: PlaySession) -> SessionOut:
+    """One saved session, with the match count the list screen sorts on."""
+    season = season_service.get_season(db, play_session.season_id)
+    counts = {s.id: c for s, c in service.list_sessions(db, play_session.season_id)}
+    return SessionOut(
+        id=play_session.id,
+        season=SeasonRef(id=season.id, name=season.name),
+        played_on=play_session.played_on,
+        type=play_session.type,
+        status=play_session.status,
+        note=play_session.note,
+        match_count=counts.get(play_session.id, 0),
+    )
 
 
 def _delta_out(delta: service.PlayerDelta | None) -> PlayerDeltaOut | None:
@@ -105,18 +122,26 @@ def close_session(
     db: DbSession = Depends(get_db),
     player: Player = Depends(current_user),
 ) -> SessionOut:
-    play_session = service.close_session(db, session_id)
-    season = season_service.get_season(db, play_session.season_id)
-    counts = {s.id: c for s, c in service.list_sessions(db, play_session.season_id)}
-    return SessionOut(
-        id=play_session.id,
-        season=SeasonRef(id=season.id, name=season.name),
-        played_on=play_session.played_on,
-        type=play_session.type,
-        status=play_session.status,
-        note=play_session.note,
-        match_count=counts.get(play_session.id, 0),
+    return _session_out(db, service.close_session(db, session_id))
+
+
+@router.patch("/sessions/{session_id}", response_model=SessionOut)
+def update_session(
+    session_id: str,
+    payload: SessionUpdate,
+    db: DbSession = Depends(get_db),
+    player: Player = Depends(current_user),
+) -> SessionOut:
+    """Edit an evening. Re-dating it moves its matches, so the ladder that is
+    replayed on the next read already accounts for the move."""
+    play_session = service.update_session(
+        db,
+        session_id,
+        played_on=payload.played_on,
+        type=payload.type,
+        note=payload.note,
     )
+    return _session_out(db, play_session)
 
 
 @router.delete("/sessions/{session_id}", status_code=204)

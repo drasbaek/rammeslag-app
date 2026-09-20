@@ -160,6 +160,7 @@ def make_session(
     *,
     type: str = "training",
     status: str = "open",
+    note: str | None = None,
 ) -> PlaySession:
     play_session = PlaySession(
         id=session_id,
@@ -167,6 +168,7 @@ def make_session(
         played_on=played_on,
         type=type,
         status=status,
+        note=note,
         created_at=datetime(2025, 8, 1, tzinfo=UTC),
     )
     db.add(play_session)

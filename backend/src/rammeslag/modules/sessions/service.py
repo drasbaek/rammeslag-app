@@ -179,6 +179,51 @@ def create_session(
     return play_session
 
 
+def update_session(
+    db: DbSession,
+    session_id: str,
+    *,
+    played_on: date | None = None,
+    type: str | None = None,
+    note: str | None = None,
+) -> PlaySession:
+    """Edit an evening. An omitted field is left alone; an empty note clears it.
+
+    Moving the date moves the matches with it. Ratings are a chronological
+    replay keyed on ``matches.played_at``, so an evening re-dated to March that
+    left its matches stamped in September would be listed in one place and
+    computed in another. The whole session shifts by the same number of days,
+    which keeps the order the matches were played in within the evening.
+
+    Nothing is recomputed here and nothing needs to be: every rating in this
+    app is replayed from the matches on read.
+    """
+    play_session = get_session(db, session_id)
+
+    # Everything that can be refused is refused before anything is written: a
+    # half-applied edit that moved the type but not the date would be worse
+    # than no edit at all.
+    if type is not None and type not in SESSION_TYPES:
+        raise DomainError("Ukendt sessionstype.")
+    moving = played_on is not None and played_on != play_session.played_on
+    season = season_service.resolve_season_for_session(db, played_on) if moving else None
+
+    if type is not None:
+        play_session.type = type
+    if note is not None:
+        play_session.note = note.strip() or None
+    if moving and season is not None and played_on is not None:
+        shift = played_on - play_session.played_on
+        matches = db.execute(select(Match).where(Match.session_id == session_id)).scalars().all()
+        for match in matches:
+            match.played_at = match.played_at + shift
+        play_session.played_on = played_on
+        play_session.season_id = season.id
+
+    db.commit()
+    return play_session
+
+
 def set_status(db: DbSession, session_id: str, status: str) -> PlaySession:
     if status not in SESSION_STATUSES:
         raise DomainError("Ukendt status.")
@@ -237,4 +282,5 @@ __all__ = [
     "get_session",
     "list_sessions",
     "set_status",
+    "update_session",
 ]

@@ -17,6 +17,16 @@ class SessionCreate(BaseModel):
     note: str | None = None
 
 
+class SessionUpdate(BaseModel):
+    """PATCH /api/sessions/{id}. Every field is optional; an omitted one is left
+    alone. An empty ``note`` clears it -- there is nothing else an empty note
+    could mean."""
+
+    played_on: date | None = None
+    type: str | None = Field(default=None, description=" | ".join(SESSION_TYPES))
+    note: str | None = None
+
+
 class SessionOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

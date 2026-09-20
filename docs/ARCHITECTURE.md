@@ -150,6 +150,7 @@ GET    /api/auth/me
 
 POST   /api/sessions                   auth
 POST   /api/sessions/{id}/close        auth
+PATCH  /api/sessions/{id}              auth   Re-dating moves its matches.
 POST   /api/matches                    auth
 DELETE /api/sessions/{id}              admin
 DELETE /api/matches/{id}               admin
