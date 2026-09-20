@@ -56,9 +56,15 @@ npm --prefix frontend install
 npm --prefix frontend run dev              # http://localhost:3000
 ```
 
-The frontend starts in **mock mode** and needs no backend at all. Point it
-at a real API with `NEXT_PUBLIC_API_MODE=live` and, if FastAPI is on another
-port, `NEXT_PUBLIC_API_BASE=http://localhost:8000`.
+The frontend talks to the **real API by default**, at `/api/*` — set
+`NEXT_PUBLIC_API_BASE=http://localhost:8000` if FastAPI is on another port.
+To work on the UI without a backend at all, opt into the fixture layer with
+`NEXT_PUBLIC_API_MODE=mock`.
+
+Mock is opt-in rather than the default because an unset env var used to mean
+a deployment served `lib/mock/seed.ts` — generated players with invented
+ratings — and looked convincing doing it. A frontend that cannot reach the
+API should say so.
 
 Tests and checks:
 

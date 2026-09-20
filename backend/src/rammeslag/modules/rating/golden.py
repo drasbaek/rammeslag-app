@@ -30,8 +30,9 @@ def to_match_inputs(history: dict[str, Any]) -> list[MatchInput]:
             played_at=parse_played_at(match["played_at"]),
             team_a=(match["team_a"][0]["id"], match["team_a"][1]["id"]),
             team_b=(match["team_b"][0]["id"], match["team_b"][1]["id"]),
-            games_a=match["games_a"],
-            games_b=match["games_b"],
+            sets=tuple(
+                (one_set["score_a"], one_set["score_b"]) for one_set in match["sets"]
+            ),
         )
         for match in history["matches"]
     ]

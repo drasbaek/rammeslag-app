@@ -21,7 +21,15 @@ from sqlalchemy.orm import Session as DbSession
 from rammeslag.db import new_id, utcnow
 from rammeslag.modules.matches.models import ID_PREFIX, Match, MatchSet
 from rammeslag.modules.rating.constants import SEED_RATING
-from rammeslag.modules.rating.engine import MatchInput, RatingResult, compute
+from rammeslag.modules.rating.engine import (
+    SET_A,
+    SET_B,
+    MatchInput,
+    RatingResult,
+    compute,
+    observed_score,
+    set_winner,
+)
 from rammeslag.modules.sessions.models import Session as PlaySession
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -241,28 +249,30 @@ def seed_rating(view: ReplayView, player_id: str) -> float:
 # --------------------------------------------------------------------------
 
 
-def games_verdict(games_a: int, games_b: int) -> str:
-    """Who won the match. Games decide, never sets. See docs/RATING.md."""
-    if games_a > games_b:
+def match_verdict(sets: Sequence[tuple[int, int]]) -> str:
+    """Who won the match: sets decide, games break a tie on sets.
+
+    Delegates to the engine so the winner the app displays and the winner the
+    rating pays out can never disagree. See docs/RATING.md.
+    """
+    score_a = observed_score(sets)
+    if score_a == 1.0:
         return TEAM_A
-    if games_a < games_b:
+    if score_a == 0.0:
         return TEAM_B
     return TEAM_NONE
 
 
 def set_verdict(games_a: int, games_b: int) -> str:
-    """Display-only rule: a set is won on a 2+ game lead, or at 7-6.
+    """Who won one set: a 2+ game lead, or 7-6. Neither side on a level set.
 
-    Timed sessions leave sets unfinished at 4-3 or 5-4 routinely; those count
-    for neither side. This never feeds the rating.
+    The engine owns this rule now that sets decide the match, so this is a
+    presentation of `rating.engine.set_winner`, not a second copy of it.
     """
-    if (games_a, games_b) == (7, 6):
+    winner = set_winner(games_a, games_b)
+    if winner == SET_A:
         return TEAM_A
-    if (games_a, games_b) == (6, 7):
-        return TEAM_B
-    if games_a - games_b >= 2:
-        return TEAM_A
-    if games_b - games_a >= 2:
+    if winner == SET_B:
         return TEAM_B
     return TEAM_NONE
 
@@ -272,7 +282,7 @@ def player_verdict(row: MatchRow, player_id: str) -> str:
     team = row.team_of(player_id)
     if team is None:
         raise ValueError(f"{player_id} did not play in {row.id}")
-    winner = games_verdict(row.games_a, row.games_b)
+    winner = match_verdict(row.sets)
     if winner == TEAM_NONE:
         return DRAW
     return WIN if winner == team else LOSS
@@ -303,8 +313,7 @@ def to_match_inputs(rows: Iterable[MatchRow]) -> list[MatchInput]:
             played_at=row.played_at,
             team_a=row.team_a,
             team_b=row.team_b,
-            games_a=row.games_a,
-            games_b=row.games_b,
+            sets=row.sets,
         )
         for row in sorted_rows(internal_rows(rows))
     ]
@@ -439,7 +448,7 @@ def build_match_views(
             sets=[(a, b, set_verdict(a, b)) for a, b in row.sets],
             games_a=row.games_a,
             games_b=row.games_b,
-            winner=games_verdict(row.games_a, row.games_b),
+            winner=match_verdict(row.sets),
             deltas={pid: round(d, 1) for pid, d in view.delta_for(row.id).items()},
         )
         for row in sorted_rows(rows)
@@ -648,10 +657,10 @@ __all__ = [
     "day_bounds",
     "delete_match",
     "form_for",
-    "games_verdict",
     "get_match",
     "load_entry_ratings",
     "load_rows",
+    "match_verdict",
     "next_played_at",
     "player_verdict",
     "players_in",

@@ -17,7 +17,14 @@ import {
   type SeedMatch,
   type SeedSession,
 } from "@/lib/mock/seed";
-import { replay, verdict, SEED_RATING, type AppliedMatch } from "@/lib/mock/engine";
+import {
+  observedScore,
+  replay,
+  setVerdict,
+  verdictFromScore,
+  SEED_RATING,
+  type AppliedMatch,
+} from "@/lib/mock/engine";
 import { PROVISIONAL_MATCHES } from "@/lib/types";
 import type {
   CurvePoint,
@@ -170,7 +177,8 @@ function isTeamA(item: AppliedMatch, playerId: string): boolean {
 
 function verdictFor(item: AppliedMatch, playerId: string): Verdict {
   const a = isTeamA(item, playerId);
-  return verdict(a ? item.match.games_a : item.match.games_b, a ? item.match.games_b : item.match.games_a);
+  const scoreA = observedScore(item.match.sets);
+  return verdictFromScore(a ? scoreA : 1 - scoreA);
 }
 
 function sessionOf(item: AppliedMatch): SeedSession {
@@ -436,18 +444,20 @@ export async function getSessions(seasonId?: string): Promise<SessionOut[]> {
   );
 }
 
-function sideOf(gamesA: number, gamesB: number): TeamSide {
-  if (gamesA > gamesB) return "A";
-  if (gamesA < gamesB) return "B";
+/** Who won the match: sets decide, games break a tie. Delegates to the engine
+ *  so the scorecard and the ladder cannot disagree. See docs/RATING.md. */
+function sideOf(sets: Array<{ games_a: number; games_b: number }>): TeamSide {
+  const scoreA = observedScore(sets);
+  if (scoreA === 1) return "A";
+  if (scoreA === 0) return "B";
   return "D";
 }
 
-/** Display-only set verdict: two clear games, or 7-6. See docs/RATING.md. */
+/** Who won one set. A presentation of the engine's rule, not a second copy. */
 function setWinner(gamesA: number, gamesB: number): TeamSide {
-  const diff = Math.abs(gamesA - gamesB);
-  if (diff >= 2 || (diff === 1 && Math.max(gamesA, gamesB) === 7)) {
-    return gamesA > gamesB ? "A" : "B";
-  }
+  const won = setVerdict(gamesA, gamesB);
+  if (won === "a") return "A";
+  if (won === "b") return "B";
   return "D";
 }
 
@@ -468,7 +478,7 @@ function toMatch(item: AppliedMatch, seed: SeedMatch): MatchOut {
     })),
     games_a: item.match.games_a,
     games_b: item.match.games_b,
-    winner: sideOf(item.match.games_a, item.match.games_b),
+    winner: sideOf(item.match.sets),
     deltas: Object.fromEntries(ids.map((id) => [id, round1(item.deltas[id] ?? 0)])),
   };
 }

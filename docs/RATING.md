@@ -30,8 +30,9 @@ provenance, but the engine reads entry ratings from the players table, which
 an admin fills in deliberately. Until they are set, everyone falls back to
 `SEED_RATING` and **these ratings will not reconcile with the old app's**.
 
-Only the game totals matter. Sets are stored and displayed, but the engine
-reads `games_a` and `games_b`, each the sum over the match's sets.
+The engine reads the **per-set scores**. Game totals are derived from them
+(`games_a` is the sum of every set's `score_a`), never carried alongside, so
+the two cannot disagree.
 
 ## Per match
 
@@ -45,23 +46,52 @@ Expected score for team A, standard logistic on a 400-point scale:
     E_a = 1 / (1 + 10 ** ((R_b - R_a) / 400))
     E_b = 1 - E_a
 
-Observed score comes from total games won, not sets:
+Observed score comes from **sets won**, with games breaking a tie on sets.
+A set is won on a two-game lead, or at 7-6; anything else counts for neither
+side (see "The set rule" below):
 
-    S_a = 1.0  if games_a > games_b
+    sets_a = the number of sets team A won
+    sets_b = the number of sets team B won
+
+    S_a = 1.0  if sets_a > sets_b
+          0.0  if sets_a < sets_b
+          otherwise, level on sets, so the game count decides:
+          1.0  if games_a > games_b
           0.0  if games_a < games_b
           0.5  if games_a == games_b
 
+    S_b = 1 - S_a
+
+Sets decide because sets are what the players believe they won. 6-0 6-7 6-7
+is a win for B by one set, however the 32 games fell, and an engine that
+reads only the game totals credits it to A. That was a real bug, not a
+tuning choice.
+
+Games are not decoration, though: timed sets end level often enough that
+sets alone leave 19 of the 98 historical matches undecided. Games resolve
+12 of those; the remaining 7 are level on both and stay draws.
+
 Margin multiplier, proportional because match length varies from 7 to 24
-games:
+games. The margin belongs to **whoever won the match**, and it is clamped at
+zero:
 
     total = games_a + games_b
-    mov   = 1 + MOV_SCALE * abs(games_a - games_b) / total
+    won   = the winner's game total,  lost = the loser's
+    mov   = 1 + MOV_SCALE * max(0, won - lost) / total
 
-`MOV_SCALE` multiplies the margin term, as written above. At 1.0 several
-placements are numerically identical; this one is normative, and the others
-diverge the moment anyone tunes it.
+The clamp is what stops the sets rule from paying a perverse bonus. A team
+that takes the sets while trailing on games — 6-0 6-7 6-7 again, B winning
+with 14 games to 18 — has a negative margin. Withholding the bonus leaves
+that match moving by K alone (`mov = 1.0`); an unclamped `abs()` would have
+handed B a 1.22x *reward* for being outplayed on games. For a draw both
+totals are equal, so `mov` is 1.0 there too.
 
-If `total == 0` no rating changes, but the match **does** count toward
+`MOV_SCALE` multiplies the margin term, as written above. Several placements
+are numerically identical at 1.0; this one is normative, and the others
+diverge the moment anyone tunes it — which is now the case, at 1.75.
+
+If `total == 0` — no games played in any set — no rating changes, but the
+match **does** count toward
 `matches_played` and toward the provisional threshold — one counter, not two.
 This is defensive only: the matches module rejects a match with no games at
 write time, so it should never reach the engine from the app.
@@ -69,8 +99,8 @@ write time, so it should never reach the engine from the app.
 Each player has their own K, so newcomers converge without making veterans
 volatile:
 
-    K_i = 40.0  if that player has played fewer than 5 matches so far
-          20.0  otherwise
+    K_i = 56.0  if that player has played fewer than 5 matches so far
+          28.0  otherwise
 
 "So far" means matches already applied during this replay, counted before
 this match is applied.
@@ -85,8 +115,9 @@ provisional. That is intended.
 ## Properties that must hold
 
 - **Winning always gains rating.** `S_T - E_T > 0` whenever team T wins,
-  since `E_T < 1` always. Any change that breaks this is a bug, not a
-  tuning decision.
+  since `E_T < 1` always, and `mov >= 1.0` always, so the margin term can
+  never scale a win down to nothing. Any change that breaks this is a bug,
+  not a tuning decision.
 - **Losing always costs rating**, by the same argument. Both directions are
   guaranteed and both are tested against every fixture match.
 - **A drawn match yields verdict `D`** for all four players, including a
@@ -101,10 +132,10 @@ provisional. That is intended.
 | Name | Value |
 |---|---|
 | `SEED_RATING` | 1000.0 (default and fallback, not a universal seed) |
-| `K_STANDARD` | 20.0 |
-| `K_PROVISIONAL` | 40.0 |
+| `K_STANDARD` | 28.0 |
+| `K_PROVISIONAL` | 56.0 (held at twice `K_STANDARD`) |
 | `PROVISIONAL_MATCHES` | 5 |
-| `MOV_SCALE` | 1.0 |
+| `MOV_SCALE` | 1.75 |
 | `ELO_SCALE` | 400.0 |
 
 All six live in `modules/rating/constants.py` and nowhere else.
@@ -121,15 +152,28 @@ anything is written:
 - at least one game in total
 - one to three sets
 
-## Set verdicts are display only
+## The set rule
 
-A set is shown as won when a team leads by two or more games, or at 7-6.
-Anything else counts for neither side — these are timed sessions, so sets
-end unfinished at 4-3 or 5-4 routinely.
+A set is won when a team leads by two or more games, or at 7-6. Anything else
+counts for neither side — these are timed sessions, so sets end unfinished at
+4-3 or 5-4 routinely.
 
-This rule does **not** feed the rating. Across all 98 historical matches the
-set verdict and the games verdict never disagree; games merely resolves 11
-matches that sets leaves level.
+This rule **is normative and feeds the rating.** It lives in
+`rating.engine.set_winner`, and `matches.service.set_verdict` is a
+presentation of it rather than a second copy — two implementations is how
+the ladder and the scorecard start disagreeing about who won.
+
+Across the 98 historical matches: 78 have sets and games agreeing, 12 are
+level on sets and resolved by games, 7 are level on both and are draws, and
+**1 is level on games and resolved by sets** — 2026-02-01, a 6-7 2-1 that
+games call 8-8. The game count alone made that a draw even though one side
+won a set and lost none. No historical match has games and sets naming
+opposite winners, but nothing prevents it: 6-0 6-7 6-7 is exactly that shape.
+
+An earlier version of this document claimed the two verdicts "never
+disagree" and that games "merely resolves 11 matches that sets leaves
+level". Both were wrong: the count is 12, and the 2026-02-01 match disagrees
+in the other direction.
 
 ## Who appears on the ladder
 
@@ -150,7 +194,9 @@ presentation filter and must never change what `compute()` is fed.
 
 ## Derived views
 
-**Form** is the last five match verdicts for a player: W, L or D by games.
+**Form** is the last five match verdicts for a player: W, L or D by the same
+sets-then-games rule the rating uses, so a player's form can never contradict
+their rating curve.
 
 **Season standing** ranks players by rating gained within a season's date
 range. The all-time rating never resets.
