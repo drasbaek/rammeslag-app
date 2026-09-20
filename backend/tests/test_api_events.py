@@ -677,6 +677,107 @@ def test_adding_a_guest_moves_nobody_rating(client, db) -> None:
 
 
 # --------------------------------------------------------------------------
+# What the Sunday screen leans on
+# --------------------------------------------------------------------------
+
+
+def test_a_guest_found_by_search_joins_a_sunday_as_an_ordinary_yes(client, db) -> None:
+    """Bringing somebody is not a third kind of attendance. The guest is a
+    player row and being on the list is a yes-answer written on their behalf,
+    which is why they land in the same tally as everybody else."""
+    _seed(db)
+    make_event(db, "e1", "season-1", date(2099, 1, 1))
+    login(client, "regular", "1234")
+
+    guest = client.post("/api/players/guest", json={"name": "Bjarne Bolden"}).json()
+    body = client.put(f"/api/events/e1/response/{guest['id']}", json={"state": "yes"}).json()
+
+    assert body["counts"]["yes"] == 1
+    detail = client.get("/api/events/e1").json()
+    assert [r["player"]["is_guest"] for r in detail["responses"]] == [True]
+
+
+def test_the_detail_says_which_of_the_yeses_are_guests(client, db) -> None:
+    """The meter splits the yeses into holdet and gæster, because four guests
+    holding up a full Sunday is a different situation from twelve members. It
+    counts them off ``responses``, so the flag has to be on every row."""
+    _seed(db)
+    make_event(db, "e1", "season-1", date(2099, 1, 1))
+    make_player(db, "g1", "Gæst Gæstesen", is_guest=True)
+    login(client, "boss", "9999")
+    for pid in ("p1", "p2", "g1"):
+        client.put(f"/api/events/e1/response/{pid}", json={"state": "yes"})
+
+    detail = client.get("/api/events/e1").json()
+    coming = [r["player"] for r in detail["responses"] if r["state"] == "yes"]
+
+    assert detail["counts"]["yes"] == 3
+    assert sum(1 for p in coming if p["is_guest"]) == 1
+
+
+def test_a_guest_comes_off_the_list_the_same_way_they_went_on(client, db) -> None:
+    """Removing is clearing the answer, and the member who brought them can do
+    it without waiting for an admin."""
+    _seed(db)
+    make_event(db, "e1", "season-1", date(2099, 1, 1))
+    make_player(db, "g1", "Gæst Gæstesen", is_guest=True)
+    login(client, "regular", "1234")
+    client.put("/api/events/e1/response/g1", json={"state": "yes"})
+
+    body = client.delete("/api/events/e1/response/g1").json()
+
+    assert body["counts"]["yes"] == 0
+    assert client.get("/api/events/e1").json()["responses"] == []
+
+
+def test_a_full_sunday_plans_three_courts_in_a_round(client, db) -> None:
+    """Twelve people on three baner is the plan the planner is shaped around:
+    every court in the round is a different four, and the next round moves
+    everybody. The API takes it in one write."""
+    _seed(db)
+    make_event(db, "e1", "season-1", date(2099, 1, 1))
+    for pid in ("p7", "p8", "p9", "p10"):
+        make_player(db, pid)
+    login(client, "boss", "9999")
+
+    body = client.put(
+        "/api/events/e1/matchups",
+        json={
+            "matchups": [
+                {"round": 1, "court": 1, "team_a": ["p1", "p2"], "team_b": ["p3", "p4"]},
+                {"round": 1, "court": 2, "team_a": ["p5", "p6"], "team_b": ["p7", "p8"]},
+                {"round": 1, "court": 3, "team_a": ["p9", "p10"], "team_b": ["regular", "boss"]},
+                {"round": 2, "court": 1, "team_a": ["p1", "p3"], "team_b": ["p5", "p7"]},
+            ]
+        },
+    ).json()
+
+    assert len(body["matchups"]) == 4
+    assert [m["round"] for m in body["matchups"]] == [1, 1, 1, 2]
+
+
+def test_a_guest_stands_on_the_whiteboard_like_anybody_else(client, db) -> None:
+    """A Sunday is filled with whoever turned up. The plan makes no distinction
+    between a member and a guest, and neither does the screen."""
+    _seed(db)
+    make_event(db, "e1", "season-1", date(2099, 1, 1))
+    make_player(db, "g1", "Gæst Gæstesen", is_guest=True)
+    login(client, "boss", "9999")
+
+    body = client.put(
+        "/api/events/e1/matchups",
+        json={
+            "matchups": [
+                {"round": 1, "court": 1, "team_a": ["p1", "g1"], "team_b": ["p3", "p4"]}
+            ]
+        },
+    ).json()
+
+    assert [p["id"] for p in body["matchups"][0]["team_a"]] == ["p1", "g1"]
+    assert db.query(Match).count() == 0
+
+
+# --------------------------------------------------------------------------
 # What the fixture screen reads
 # --------------------------------------------------------------------------
 
