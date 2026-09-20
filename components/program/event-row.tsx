@@ -12,6 +12,34 @@ import {
 import { cn } from "@/lib/utils";
 
 /**
+ * A league fixture. Drawn in the same weight as the court mark below so the
+ * two read as a pair of kinds rather than one decorated row.
+ */
+function ShieldIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 20 20" className={className} role="img" aria-label="Kamp">
+      <path
+        d="M10 2.6l6 2.2v5.1c0 3.4-2.4 6.2-6 7.5-3.6-1.3-6-4.1-6-7.5V4.8z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        fill="none"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** A Sunday: a court with a net, mirroring the padel mark on the "+" menu. */
+function CourtIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 20 20" className={className} role="img" aria-label="Træning">
+      <rect x="3" y="3.5" width="14" height="13" rx="2" stroke="currentColor" strokeWidth="1.6" fill="none" />
+      <path d="M3 10h14M10 3.5v13" stroke="currentColor" strokeWidth="1.3" />
+    </svg>
+  );
+}
+
+/**
  * One thing that has not happened yet.
  *
  * Built from the same date block as a session row, so the two tabs feel like
@@ -22,6 +50,13 @@ import { cn } from "@/lib/utils";
  * That number is `counts.yes`, and it is labelled KLAR, never something like
  * "spillere". Saying yes is availability. Who plays is decided by an admin and
  * lives on the detail screen under its own heading.
+ *
+ * A kamp and a træning are told apart by form, never by a second brand colour:
+ * a glyph in front of the title, and a date block that is raised for a fixture
+ * and flat for a Sunday. The palette has exactly one accent and the coloured
+ * tokens in this row already mean something else — win/loss/draw is the
+ * player's own answer, loss is also "we are short". A third meaning on any of
+ * them would make the row a quiz.
  */
 export function EventRow({ event, index }: { event: EventOut; index: number }) {
   const cancelled = event.status === "cancelled";
@@ -47,7 +82,15 @@ export function EventRow({ event, index }: { event: EventOut; index: number }) {
         cancelled && "opacity-55",
       )}
     >
-      <div className="flex w-11 shrink-0 flex-col items-center rounded-[10px] border border-line bg-ink-900 py-1.5">
+      <div
+        className={cn(
+          "flex w-11 shrink-0 flex-col items-center rounded-[10px] border py-1.5",
+          // The fixture's date is the one somebody else in another club also
+          // has in their calendar, so it sits a step forward: brighter edge,
+          // lighter fill. A Sunday stays flat. Weight, not hue.
+          training ? "border-line bg-ink-900" : "border-ink-500 bg-ink-800",
+        )}
+      >
         <span className="num-tight text-[19px] font-black leading-none">
           {dayNumber(event.held_on)}
         </span>
@@ -58,6 +101,14 @@ export function EventRow({ event, index }: { event: EventOut; index: number }) {
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
+          {/* The kind, before the name. An opponent already tells you it is a
+              kamp once you know the opponent; the glyph tells you before you
+              have read anything. */}
+          {training ? (
+            <CourtIcon className="h-3.5 w-3.5 shrink-0 text-mute" />
+          ) : (
+            <ShieldIcon className="h-3.5 w-3.5 shrink-0 text-mute" />
+          )}
           <span className="truncate text-body font-bold tracking-tight">
             {/* A fixture is known by who we are playing; a Sunday has no
                 opponent, so it is known by what it is. */}
@@ -105,7 +156,9 @@ export function EventRow({ event, index }: { event: EventOut; index: number }) {
           {/* A fixture is short or spare against a squad of six, so it carries
               the old sheet's ± number. A Sunday is just filling up, and
               "KLAR −6" would make six people sound like a problem rather than
-              half a hall. */}
+              half a hall. This label is also the second thing telling the two
+              kinds apart, after the glyph — which is why it stays a word and
+              not an icon. */}
           {label}
         </span>
       </div>
