@@ -12,6 +12,8 @@ from rammeslag.modules.players.schemas import PlayerOut
 class SetIn(BaseModel):
     games_a: int = Field(ge=0, le=30)
     games_b: int = Field(ge=0, le=30)
+    # A match-tie: points, not games. Only ever the third set.
+    tiebreak: bool = False
 
 
 class MatchCreate(BaseModel):
@@ -32,12 +34,19 @@ class MatchCreate(BaseModel):
         return value
 
 
+class MatchScoreUpdate(BaseModel):
+    """A corrected score. Only the sets: who played, and when, stay as entered."""
+
+    sets: list[SetIn] = Field(min_length=1, max_length=3)
+
+
 class SetOut(BaseModel):
     set_number: int
     games_a: int
     games_b: int
     # Display-only verdict: "A", "B" or "D". Never feeds the rating.
     winner: str
+    tiebreak: bool = False
 
 
 class MatchOut(BaseModel):
@@ -75,8 +84,8 @@ def match_out(view: object) -> MatchOut:
         team_a=[player_out(p) for p in view.team_a],  # type: ignore[attr-defined]
         team_b=[player_out(p) for p in view.team_b],  # type: ignore[attr-defined]
         sets=[
-            SetOut(set_number=i, games_a=a, games_b=b, winner=w)
-            for i, (a, b, w) in enumerate(view.sets, start=1)  # type: ignore[attr-defined]
+            SetOut(set_number=i, games_a=a, games_b=b, winner=w, tiebreak=t)
+            for i, (a, b, w, t) in enumerate(view.sets, start=1)  # type: ignore[attr-defined]
         ],
         games_a=view.games_a,  # type: ignore[attr-defined]
         games_b=view.games_b,  # type: ignore[attr-defined]

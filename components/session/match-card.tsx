@@ -14,11 +14,14 @@ function TeamLine({
   games,
   won,
   setResults,
+  tiebreaks,
 }: {
   names: string[];
   games: number[];
   won: boolean;
   setResults: (boolean | null)[];
+  /** Which columns are a match-tie: points, not games, so drawn differently. */
+  tiebreaks: boolean[];
 }) {
   return (
     <div className="flex items-center gap-2 py-[3px]">
@@ -48,6 +51,7 @@ function TeamLine({
             key={i}
             className={cn(
               "num-tight flex h-6 w-6 items-center justify-center rounded-[5px] text-[13px] font-bold",
+              tiebreaks[i] ? "w-7 border border-dashed border-line" : "",
               setResults[i] === true
                 ? "bg-volt/15 text-volt"
                 : setResults[i] === false
@@ -63,12 +67,24 @@ function TeamLine({
   );
 }
 
-export function MatchCard({ match, index }: { match: MatchOut; index: number }) {
+export function MatchCard({
+  match,
+  index,
+  onEdit,
+}: {
+  match: MatchOut;
+  index: number;
+  /** Given when this viewer may correct the score. Absent = read-only. */
+  onEdit?: () => void;
+}) {
   const gamesA = match.sets.map((set) => set.games_a);
   const gamesB = match.sets.map((set) => set.games_b);
   // The set verdict is display only and comes down the wire already decided:
-  // two clear games or 7-6, "D" for the timed sets that end level.
+  // two clear games or 7-6 (two clear points in a match-tie), "D" for the
+  // timed sets that end level.
   const verdicts = match.sets.map((set) => set.winner);
+  const tiebreaks = match.sets.map((set) => set.tiebreak);
+  const hasTiebreak = tiebreaks.some(Boolean);
 
   return (
     <article
@@ -78,20 +94,36 @@ export function MatchCard({ match, index }: { match: MatchOut; index: number }) 
       <div className="flex items-center justify-between px-1 pb-1">
         <span className="num text-[9px] font-bold tracking-[0.16em] text-dim">
           KAMP {index + 1}
+          {/* The dashed column is a match-tie, in points. Said once, here,
+              rather than left for somebody to read as a 10-8 set. */}
+          {hasTiebreak ? <span className="text-ink-500"> · MATCH-TIE</span> : null}
         </span>
-        <span className="num text-[9px] tracking-[0.1em] text-ink-500">{formatTime(match.played_at)}</span>
+        <span className="flex items-center gap-2">
+          <span className="num text-[9px] tracking-[0.1em] text-ink-500">{formatTime(match.played_at)}</span>
+          {onEdit ? (
+            <button
+              onClick={onEdit}
+              aria-label={`Ret resultatet i kamp ${index + 1}`}
+              className="-my-1 rounded-pill border border-line px-2 py-1 text-[9px] font-bold tracking-[0.14em] text-mute transition-colors active:border-volt/50 active:text-volt"
+            >
+              RET
+            </button>
+          ) : null}
+        </span>
       </div>
       <TeamLine
         names={match.team_a.map((player) => player.name)}
         games={gamesA}
         won={match.winner === "A"}
         setResults={verdicts.map((v) => (v === "D" ? null : v === "A"))}
+        tiebreaks={tiebreaks}
       />
       <TeamLine
         names={match.team_b.map((player) => player.name)}
         games={gamesB}
         won={match.winner === "B"}
         setResults={verdicts.map((v) => (v === "D" ? null : v === "B"))}
+        tiebreaks={tiebreaks}
       />
     </article>
   );

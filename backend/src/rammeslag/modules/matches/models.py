@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from sqlalchemy import ForeignKey, Integer, String, UniqueConstraint
+from sqlalchemy import Boolean, ForeignKey, Integer, String, UniqueConstraint, false
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from rammeslag.db import Base, UtcDateTime, new_id, utcnow
@@ -80,6 +80,11 @@ class MatchSet(Base):
     set_number: Mapped[int] = mapped_column(Integer, nullable=False)
     games_a: Mapped[int] = mapped_column(Integer, nullable=False)
     games_b: Mapped[int] = mapped_column(Integer, nullable=False)
+    # A deciding third set played as a match-tie. Its two numbers are POINTS,
+    # so it never adds to the game totals; see docs/RATING.md.
+    tiebreak: Mapped[bool] = mapped_column(
+        Boolean, nullable=False, default=False, server_default=false()
+    )
 
     match: Mapped[Match] = relationship(back_populates="sets")
 

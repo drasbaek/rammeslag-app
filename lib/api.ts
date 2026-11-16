@@ -22,6 +22,7 @@ import type {
   LadderOut,
   LadderScope,
   MatchCreate,
+  MatchScoreUpdate,
   MatchOut,
   MatchupsIn,
   MeOut,
@@ -165,6 +166,16 @@ export function createMatch(body: MatchCreate): Promise<MatchOut> {
     : mock.createMatch(body);
 }
 
+/**
+ * A wrong score, fixed on the match itself. Typing a second match beside it
+ * is a second result, and the ladder counts both.
+ */
+export function correctScore(id: string, body: MatchScoreUpdate): Promise<MatchOut> {
+  return live
+    ? http<MatchOut>(`/matches/${id}`, { method: "PATCH", body: JSON.stringify(body) })
+    : mock.correctScore(id, body);
+}
+
 export function closeSession(id: string): Promise<SessionOut> {
   return live
     ? http<SessionOut>(`/sessions/${id}/close`, { method: "POST" })
@@ -226,6 +237,13 @@ export function createGuest(body: GuestCreate): Promise<PlayerOut> {
 export async function deleteSession(id: string): Promise<null> {
   if (!live) return mock.deleteSession(id);
   await http<void>(`/sessions/${id}`, { method: "DELETE" });
+  return null;
+}
+
+/** One kamp that should not be there. The rest of history is replayed without it. */
+export async function deleteMatch(id: string): Promise<null> {
+  if (!live) return mock.deleteMatch(id);
+  await http<void>(`/matches/${id}`, { method: "DELETE" });
   return null;
 }
 

@@ -229,7 +229,7 @@ def test_season_mode_ranks_by_rating_gained_inside_the_window() -> None:
 
 def test_movement_is_measured_against_the_previous_session() -> None:
     rows = [
-        row(f"m{i}", "s1", i * 10, ("p1", "p2"), ("p3", "p4"), [(6, 5)]) for i in range(1, 6)
+        row(f"m{i}", "s1", i * 10, ("p1", "p2"), ("p3", "p4"), [(6, 4)]) for i in range(1, 6)
     ]
     # A later session where the trailing pair thrashes the leaders and flips
     # the top of the ladder.

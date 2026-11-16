@@ -196,7 +196,9 @@ matches(id, session_id FK NOT NULL, played_at, source,
         created_by FK, created_at)
         source : internal | rankedin
 
-match_sets(id, match_id FK, set_number, games_a, games_b)
+match_sets(id, match_id FK, set_number, games_a, games_b, tiebreak)
+           tiebreak : a third set played as a match-tie. Its numbers are
+                      points, and never count toward the game totals.
 ```
 
 ```
@@ -249,6 +251,8 @@ POST   /api/sessions/{id}/close        auth   Refused while a planned kamp has
                                               no score.
 PATCH  /api/sessions/{id}              auth   Re-dating moves its matches.
 POST   /api/matches                    auth
+PATCH  /api/matches/{id}               auth   The sets only. Replay, so it moves
+                                              exactly what the wrong score moved.
 DELETE /api/sessions/{id}              auth   Replay, so re-enterable.
 DELETE /api/matches/{id}               auth   Replay, so re-enterable.
 

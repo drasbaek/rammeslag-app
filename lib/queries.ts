@@ -18,6 +18,7 @@ import type {
   LadderOut,
   LadderScope,
   MatchCreate,
+  MatchScoreUpdate,
   MatchupsIn,
   MeOut,
   PlayerCreate,
@@ -106,6 +107,34 @@ export function useCreateMatch(sessionId: string) {
       void client.invalidateQueries({ queryKey: ["sessions"] });
       void client.invalidateQueries({ queryKey: ["profile"] });
     },
+  });
+}
+
+/**
+ * A corrected score, or a kamp taken out. Either one is replayed from the
+ * start, so everything after it moves: the evening, the ladder, every profile.
+ */
+function invalidateResults(client: ReturnType<typeof useQueryClient>, sessionId: string): void {
+  void client.invalidateQueries({ queryKey: keys.session(sessionId) });
+  void client.invalidateQueries({ queryKey: ["ladder"] });
+  void client.invalidateQueries({ queryKey: ["sessions"] });
+  void client.invalidateQueries({ queryKey: ["profile"] });
+}
+
+export function useCorrectScore(sessionId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, body }: { id: string; body: MatchScoreUpdate }) =>
+      api.correctScore(id, body),
+    onSuccess: () => invalidateResults(client, sessionId),
+  });
+}
+
+export function useDeleteMatch(sessionId: string) {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.deleteMatch(id),
+    onSuccess: () => invalidateResults(client, sessionId),
   });
 }
 

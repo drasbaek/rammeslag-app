@@ -343,3 +343,47 @@ Rejected: making the whole team admin. It is the honest reading of how this
 group works, and it costs exactly one thing — everybody would see what the
 admin who entered them thinks they are worth, which is the one number in this
 app that was never meant to be published.
+## 18. A wrong score is corrected, never re-entered
+
+The first evening typed in after the fact showed the gap: a score went in
+wrong, there was no way to change it, so the right one was typed in as a
+fifth kamp on a four-kamp evening. The ladder counted both, and nothing in
+the app could take either back out.
+
+`PATCH /api/matches/{id}` replaces the sets and nothing else. The four
+players and `played_at` stay as entered, so the replay order holds and the
+correction moves exactly what the wrong score moved. Four wrong *names* is a
+different kamp, not a typo in this one; it is deleted, which the API always
+allowed and the app now offers on the same sheet.
+
+Who may correct is who may enter or delete: any member, open evening or
+closed. Decision 17's argument carries straight over — a correction is a
+replay like a delete is, and a wrong score should not sit on the ladder until
+an admin wakes up.
+
+The entry screen also stops before saving the same two pairs a second time
+on an evening, unless a planned court is still waiting for them, and offers
+"Ret den" beside "Gem ny kamp". It is a question, not a refusal: a rematch is
+real and the plan explicitly allows one.
+
+## 19. One game is not a win, and a match-tie is a set
+
+Two rule changes, asked for together, both about what counts as winning.
+
+**Level on sets, the games decide only on a lead of two.** 6-4 6-7 was a win
+for the side with 12 games to 11. Nobody on court would have called it that,
+and the app was telling them otherwise. The threshold is two because two is
+already the margin that wins a set; one number for "clear" is easier to
+explain than two. It applies at 0-0 on sets as well as 1-1, which changes no
+historical match but keeps the rule one sentence long.
+
+It moved the golden fixture: four historical matches went from a win to a
+draw. The PR body names who moved.
+
+**A third set can be a match-tie.** Won on a two-point lead, no 7-6
+exception. Its points are not games — counting them would make a 10-8
+match-tie worth more margin than a whole 6-0 set — so the engine carries it
+beside the sets, not among them, and the game totals the app shows never
+include it. A kamp of nothing but a match-tie is refused: with no games there
+is nothing for the margin to measure, and a winner the rating cannot pay out
+is a scorecard and a ladder disagreeing.

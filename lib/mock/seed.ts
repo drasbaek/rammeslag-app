@@ -283,6 +283,8 @@ export interface SeedSet {
   set_number: number;
   games_a: number;
   games_b: number;
+  /** A match-tie as the third set. The seed never generates one. */
+  tiebreak?: boolean;
 }
 
 export interface SeedMatch extends MatchInput {

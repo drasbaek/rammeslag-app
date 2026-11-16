@@ -27,6 +27,7 @@ from rammeslag.modules.rating.engine import (
     MatchInput,
     RatingResult,
     compute,
+    match_tie_winner,
     observed_score,
     set_winner,
 )
@@ -93,7 +94,10 @@ class MatchRow:
     source: str
     team_a: tuple[str, str]
     team_b: tuple[str, str]
+    # The real sets, in games. A match-tie is held apart, in points, so every
+    # sum over `sets` is a game count without anybody having to remember.
     sets: tuple[tuple[int, int], ...]
+    match_tie: tuple[int, int] | None = None
 
     @property
     def games_a(self) -> int:
@@ -144,7 +148,8 @@ class MatchView:
     source: str
     team_a: list[PlayerInfoLike]
     team_b: list[PlayerInfoLike]
-    sets: list[tuple[int, int, str]]
+    # (a, b, verdict, is_match_tie), in the order played.
+    sets: list[tuple[int, int, str, bool]]
     games_a: int
     games_b: int
     winner: str
@@ -249,13 +254,15 @@ def seed_rating(view: ReplayView, player_id: str) -> float:
 # --------------------------------------------------------------------------
 
 
-def match_verdict(sets: Sequence[tuple[int, int]]) -> str:
-    """Who won the match: sets decide, games break a tie on sets.
+def match_verdict(
+    sets: Sequence[tuple[int, int]], match_tie: tuple[int, int] | None = None
+) -> str:
+    """Who won the match: sets decide, a clear game lead breaks a tie on sets.
 
     Delegates to the engine so the winner the app displays and the winner the
     rating pays out can never disagree. See docs/RATING.md.
     """
-    score_a = observed_score(sets)
+    score_a = observed_score(sets, match_tie)
     if score_a == 1.0:
         return TEAM_A
     if score_a == 0.0:
@@ -269,7 +276,15 @@ def set_verdict(games_a: int, games_b: int) -> str:
     The engine owns this rule now that sets decide the match, so this is a
     presentation of `rating.engine.set_winner`, not a second copy of it.
     """
-    winner = set_winner(games_a, games_b)
+    return _side(set_winner(games_a, games_b))
+
+
+def match_tie_verdict(points_a: int, points_b: int) -> str:
+    """Who won a match-tie: a two-point lead. Presentation of the engine's rule."""
+    return _side(match_tie_winner(points_a, points_b))
+
+
+def _side(winner: int) -> str:
     if winner == SET_A:
         return TEAM_A
     if winner == SET_B:
@@ -282,7 +297,7 @@ def player_verdict(row: MatchRow, player_id: str) -> str:
     team = row.team_of(player_id)
     if team is None:
         raise ValueError(f"{player_id} did not play in {row.id}")
-    winner = match_verdict(row.sets)
+    winner = match_verdict(row.sets, row.match_tie)
     if winner == TEAM_NONE:
         return DRAW
     return WIN if winner == team else LOSS
@@ -314,6 +329,7 @@ def to_match_inputs(rows: Iterable[MatchRow]) -> list[MatchInput]:
             team_a=row.team_a,
             team_b=row.team_b,
             sets=row.sets,
+            match_tie=row.match_tie,
         )
         for row in sorted_rows(internal_rows(rows))
     ]
@@ -445,10 +461,15 @@ def build_match_views(
             source=row.source,
             team_a=[info(pid) for pid in row.team_a],
             team_b=[info(pid) for pid in row.team_b],
-            sets=[(a, b, set_verdict(a, b)) for a, b in row.sets],
+            sets=[(a, b, set_verdict(a, b), False) for a, b in row.sets]
+            + (
+                [(*row.match_tie, match_tie_verdict(*row.match_tie), True)]
+                if row.match_tie is not None
+                else []
+            ),
             games_a=row.games_a,
             games_b=row.games_b,
-            winner=match_verdict(row.sets),
+            winner=match_verdict(row.sets, row.match_tie),
             deltas={pid: round(d, 1) for pid, d in view.delta_for(row.id).items()},
         )
         for row in sorted_rows(rows)
@@ -456,6 +477,8 @@ def build_match_views(
 
 
 def to_row(match: Match) -> MatchRow:
+    ordered = sorted(match.sets, key=lambda s: s.set_number)
+    tie = next((s for s in ordered if s.tiebreak), None)
     return MatchRow(
         id=match.id,
         session_id=match.session_id,
@@ -464,7 +487,8 @@ def to_row(match: Match) -> MatchRow:
         source=match.source,
         team_a=(match.team_a_player1_id, match.team_a_player2_id),
         team_b=(match.team_b_player1_id, match.team_b_player2_id),
-        sets=tuple((s.games_a, s.games_b) for s in sorted(match.sets, key=lambda s: s.set_number)),
+        sets=tuple((s.games_a, s.games_b) for s in ordered if not s.tiebreak),
+        match_tie=(tie.games_a, tie.games_b) if tie is not None else None,
     )
 
 
@@ -506,18 +530,54 @@ def validate_teams(team_a: Sequence[str], team_b: Sequence[str]) -> None:
         raise DomainError("En kamp skal have fire forskellige spillere.")
 
 
-def validate_sets(sets: Sequence[tuple[int, int]]) -> None:
+def validate_sets(
+    sets: Sequence[tuple[int, int]], match_tie: tuple[int, int] | None = None
+) -> None:
     if not sets:
         raise DomainError("En kamp skal have mindst ét sæt.")
-    if len(sets) > MAX_SETS:
+    if len(sets) + (match_tie is not None) > MAX_SETS:
         raise DomainError("En kamp kan højst have tre sæt.")
-    for games_a, games_b in sets:
+    for games_a, games_b in [*sets, *([match_tie] if match_tie else [])]:
         if games_a < 0 or games_b < 0:
             raise DomainError("Antal partier kan ikke være negativt.")
         if games_a > MAX_GAMES_PER_SET or games_b > MAX_GAMES_PER_SET:
             raise DomainError("Antal partier ser forkert ud.")
+    # Games, not points: a match-tie on top of two empty sets would show a
+    # winner the engine cannot rate, because it has no games to rate it on.
     if sum(a + b for a, b in sets) == 0:
         raise DomainError("En kamp skal have mindst ét spillet parti.")
+
+
+def split_sets(
+    sets: Sequence[tuple[int, int, bool]],
+) -> tuple[list[tuple[int, int]], tuple[int, int] | None]:
+    """The wire's flat list -> (real sets, match-tie or None).
+
+    A match-tie decides a match that is one set all, so it is only ever the
+    third set, after two real ones. Anywhere else it is a mistake on the
+    score pad, refused before it can be rated.
+    """
+    ties = [i for i, (_, _, tiebreak) in enumerate(sets) if tiebreak]
+    if ties and (ties != [2] or len(sets) != 3):
+        raise DomainError("En match-tie kan kun spilles som tredje sæt.")
+    regular = [(a, b) for a, b, tiebreak in sets if not tiebreak]
+    tie = next(((a, b) for a, b, tiebreak in sets if tiebreak), None)
+    return regular, tie
+
+
+def _set_rows(match_id: str, sets: Sequence[tuple[int, int]], match_tie: tuple[int, int] | None):
+    """The `match_sets` rows for one match, numbered in the order played."""
+    flagged = [(a, b, False) for a, b in sets] + ([(*match_tie, True)] if match_tie else [])
+    return [
+        MatchSet(
+            id=f"{match_id}-s{number}",
+            set_number=number,
+            games_a=games_a,
+            games_b=games_b,
+            tiebreak=tiebreak,
+        )
+        for number, (games_a, games_b, tiebreak) in enumerate(flagged, start=1)
+    ]
 
 
 #: Time of day a backfilled session's first match is anchored to. The real
@@ -567,13 +627,14 @@ def create_match(
     session_id: str,
     team_a: Sequence[str],
     team_b: Sequence[str],
-    sets: Sequence[tuple[int, int]],
+    sets: Sequence[tuple[int, int, bool]],
     played_at: datetime | None = None,
     source: str = INTERNAL,
     created_by: str | None = None,
 ) -> Match:
     """Write one match.
 
+    ``sets`` is (a, b, is_match_tie) per set, in the order played.
     ``played_at`` defaults to now and the HTTP layer never forwards a
     client-supplied value; only scripts/import_history.py passes the original
     historical timestamp.
@@ -585,7 +646,8 @@ def create_match(
         raise DomainError("Sessionen er lukket, så der kan ikke tilføjes flere kampe.")
 
     validate_teams(team_a, team_b)
-    validate_sets(sets)
+    regular, match_tie = split_sets(sets)
+    validate_sets(regular, match_tie)
 
     from rammeslag.modules.players.models import Player  # local: avoids an import cycle
 
@@ -611,16 +673,38 @@ def create_match(
         team_b_player2_id=team_b[1],
         created_by=created_by,
     )
-    for number, (games_a, games_b) in enumerate(sets, start=1):
-        match.sets.append(
-            MatchSet(
-                id=f"{match.id}-s{number}",
-                set_number=number,
-                games_a=games_a,
-                games_b=games_b,
-            )
-        )
+    match.sets.extend(_set_rows(match.id, regular, match_tie))
     db.add(match)
+    db.commit()
+    return match
+
+
+def correct_score(
+    db: DbSession,
+    match_id: str,
+    *,
+    sets: Sequence[tuple[int, int, bool]],
+) -> Match:
+    """Replace a match's sets. The four players and ``played_at`` stay put.
+
+    A score typed in wrong is fixed on the match itself, never by entering a
+    second match next to it: a second match is a second result, and the
+    ladder counts both. Keeping ``played_at`` keeps the replay order, so the
+    correction moves exactly what the wrong score moved and nothing else.
+
+    Any member, on an open evening or a closed one -- the same reach as a
+    delete, and for the same reason (DECISIONS.md 17): it is a replay, so it
+    is as safe to hand out, and a wrong score should not wait for an admin.
+    """
+    match = get_match(db, match_id)
+    regular, match_tie = split_sets(sets)
+    validate_sets(regular, match_tie)
+
+    # Cleared and flushed before the new sets go in: a set's id and its
+    # (match_id, set_number) are both unique, and the new rows reuse them.
+    match.sets.clear()
+    db.flush()
+    match.sets.extend(_set_rows(match.id, regular, match_tie))
     db.commit()
     return match
 
@@ -653,6 +737,7 @@ __all__ = [
     "ReplayView",
     "build_match_views",
     "build_replay_view",
+    "correct_score",
     "create_match",
     "day_bounds",
     "delete_match",
@@ -660,6 +745,7 @@ __all__ = [
     "get_match",
     "load_entry_ratings",
     "load_rows",
+    "match_tie_verdict",
     "match_verdict",
     "next_played_at",
     "player_verdict",
@@ -671,6 +757,7 @@ __all__ = [
     "rows_within",
     "set_verdict",
     "sorted_rows",
+    "split_sets",
     "to_match_inputs",
     "to_row",
     "validate_sets",

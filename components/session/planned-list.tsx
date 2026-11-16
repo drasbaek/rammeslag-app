@@ -1,5 +1,6 @@
 "use client";
 
+import { SetScores } from "@/components/session/set-scores";
 import { SectionHeader } from "@/components/ui/section";
 import { firstName } from "@/lib/format";
 import { haptic } from "@/lib/haptics";
@@ -72,20 +73,7 @@ export function PlannedList({
                 {firstName(game.team_b[1]?.name ?? "")}
               </span>
               {match ? (
-                /* Set by set, the way it is said out loud. The game total is
-                   what the rating adds up; it is not a result anybody says. */
-                <span className="flex shrink-0 items-center gap-1">
-                  {match.sets.map((set, index) => (
-                    <span
-                      key={index}
-                      className="num-tight text-[13px] font-bold tabular-nums text-chalk"
-                    >
-                      {set.games_a}
-                      <span className="text-dim">-</span>
-                      {set.games_b}
-                    </span>
-                  ))}
-                </span>
+                <SetScores sets={match.sets} />
               ) : (
                 <span
                   className={cn(

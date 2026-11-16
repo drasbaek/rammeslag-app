@@ -48,21 +48,29 @@ Expected score for team A, standard logistic on a 400-point scale:
     E_a = 1 / (1 + 10 ** ((R_b - R_a) / 400))
     E_b = 1 - E_a
 
-Observed score comes from **sets won**, with games breaking a tie on sets.
-A set is won on a two-game lead, or at 7-6; anything else counts for neither
-side (see "The set rule" below):
+Observed score comes from **sets won**, with a clear game lead breaking a
+tie on sets. A set is won on a two-game lead, or at 7-6; a match-tie on a
+two-point lead; anything else counts for neither side (see "The set rule"
+below):
 
-    sets_a = the number of sets team A won
-    sets_b = the number of sets team B won
+    sets_a = the number of sets team A won, a match-tie included
+    sets_b = the number of sets team B won, a match-tie included
 
     S_a = 1.0  if sets_a > sets_b
           0.0  if sets_a < sets_b
-          otherwise, level on sets, so the game count decides:
-          1.0  if games_a > games_b
-          0.0  if games_a < games_b
-          0.5  if games_a == games_b
+          otherwise, level on sets (1-1, or 0-0), so the game count decides,
+          but only on a lead of two:
+          1.0  if games_a - games_b >= 2
+          0.0  if games_b - games_a >= 2
+          0.5  otherwise
 
     S_b = 1 - S_a
+
+The two-game threshold is the same margin that wins a set. 6-2 4-6 is A's;
+6-4 6-7 is a draw. A single game over two sets is not a result anybody on
+court would claim, and until 2026-11 the engine claimed it for them: 4 of the
+98 historical matches were 1-1 on sets and one game apart, and all 4 were
+scored as wins.
 
 Sets decide because sets are what the players believe they won. 6-0 6-7 6-7
 is a win for B by one set, however the 32 games fell, and an engine that
@@ -70,8 +78,9 @@ reads only the game totals credits it to A. That was a real bug, not a
 tuning choice.
 
 Games are not decoration, though: timed sets end level often enough that
-sets alone leave 19 of the 98 historical matches undecided. Games resolve
-12 of those; the remaining 7 are level on both and stay draws.
+sets alone leave 19 of the 98 historical matches undecided. A clear game lead
+resolves 8 of those; the other 11 — 7 level on games, 4 one game apart — are
+draws.
 
 Margin multiplier, proportional because match length varies from 7 to 24
 games. The margin belongs to **whoever won the match**, and it is clamped at
@@ -85,8 +94,9 @@ The clamp is what stops the sets rule from paying a perverse bonus. A team
 that takes the sets while trailing on games — 6-0 6-7 6-7 again, B winning
 with 14 games to 18 — has a negative margin. Withholding the bonus leaves
 that match moving by K alone (`mov = 1.0`); an unclamped `abs()` would have
-handed B a 1.22x *reward* for being outplayed on games. For a draw both
-totals are equal, so `mov` is 1.0 there too.
+handed B a 1.22x *reward* for being outplayed on games. A draw has no
+winner and no margin, so `mov` is 1.0 there too — including a draw one game
+apart, whose one game is exactly what the draw rule says does not count.
 
 `MOV_SCALE` multiplies the margin term, as written above. Several placements
 are numerically identical at 1.0; this one is normative, and the others
@@ -151,8 +161,9 @@ anything is written:
 
 - four distinct players
 - every set's games are non-negative
-- at least one game in total
+- at least one game in total, counted over the real sets only
 - one to three sets
+- a match-tie only as the third set, after two real ones
 
 ## The set rule
 
@@ -160,14 +171,24 @@ A set is won when a team leads by two or more games, or at 7-6. Anything else
 counts for neither side — these are timed sessions, so sets end unfinished at
 4-3 or 5-4 routinely.
 
+**A match-tie** is a deciding third set played to points. It is won on a
+two-point lead and nothing else — no 7-6 exception, because a match-tie the
+clock stopped at 7-6 is as unfinished as a set stopped at 4-3. Its points are
+**never games**: a 10-8 match-tie is one set won, not eighteen games played,
+so it adds nothing to `games_a`, `games_b` or the margin. The engine carries
+it as `MatchInput.match_tie`, beside `sets` rather than in it, so every sum
+over `sets` is a game count without anyone having to remember. In the
+database it is the `match_sets` row with `tiebreak = true`.
+
 This rule **is normative and feeds the rating.** It lives in
-`rating.engine.set_winner`, and `matches.service.set_verdict` is a
+`rating.engine.set_winner` and `rating.engine.match_tie_winner`, and `matches.service.set_verdict` is a
 presentation of it rather than a second copy — two implementations is how
 the ladder and the scorecard start disagreeing about who won.
 
-Across the 98 historical matches: 78 have sets and games agreeing, 12 are
-level on sets and resolved by games, 7 are level on both and are draws, and
-**1 is level on games and resolved by sets** — 2026-02-01, a 6-7 2-1 that
+Across the 98 historical matches (counted before the 2026-11 draw rule): 78
+have sets and games agreeing, 12 are level on sets and resolved by games —
+now 8, the other 4 being one game apart and draws — 7 are level on both and
+are draws, and **1 is level on games and resolved by sets** — 2026-02-01, a 6-7 2-1 that
 games call 8-8. The game count alone made that a draw even though one side
 won a set and lost none. No historical match has games and sets naming
 opposite winners, but nothing prevents it: 6-0 6-7 6-7 is exactly that shape.

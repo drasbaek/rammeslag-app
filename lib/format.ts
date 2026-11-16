@@ -194,3 +194,13 @@ export function surplus(value: number): string {
   if (value === 0) return "±0";
   return value > 0 ? `+${value}` : `−${Math.abs(value)}`;
 }
+
+/**
+ * A scoreline the way it is said out loud: "6-4 4-6 [10-8]". A match-tie is
+ * in brackets, because its numbers are points and must not read as games.
+ */
+export function formatSets(sets: { games_a: number; games_b: number; tiebreak?: boolean }[]): string {
+  return sets
+    .map((set) => (set.tiebreak ? `[${set.games_a}-${set.games_b}]` : `${set.games_a}-${set.games_b}`))
+    .join(" ");
+}
