@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { Wordmark } from "@/components/brand";
 import { MatchCard } from "@/components/session/match-card";
+import { MatchEdit } from "@/components/session/match-edit";
 import { MovementBars } from "@/components/session/movement-bars";
 import { PlannedList } from "@/components/session/planned-list";
 import { Recap } from "@/components/session/recap";
@@ -24,6 +25,8 @@ export default function SessionDetailPage() {
   const gate = useAuthGate();
   const session = useSession(id);
   const [editing, setEditing] = useState(false);
+  /** The kamp whose score is being corrected, if any. */
+  const [fixing, setFixing] = useState<string | null>(null);
   const data = session.data;
 
   // The endpoint hands over the matches and a three-line recap; who played and
@@ -33,6 +36,7 @@ export default function SessionDetailPage() {
   const standings = useMemo(() => sessionStandings(matches), [matches]);
   const squad = useMemo(() => participants(matches), [matches]);
   const missing = planned.filter((game) => game.match_id === null).length;
+  const fixingMatch = matches.find((match) => match.id === fixing);
 
   return (
     <div>
@@ -134,7 +138,16 @@ export default function SessionDetailPage() {
               </div>
               <div className="space-y-1.5">
                 {matches.map((match, index) => (
-                  <MatchCard key={match.id} match={match} index={index} />
+                  <MatchCard
+                    key={match.id}
+                    match={match}
+                    index={index}
+                    // Any member, open evening or closed (DECISIONS.md 18).
+                    onEdit={() => {
+                      haptic("tap");
+                      gate.requireAuth(() => setFixing(match.id));
+                    }}
+                  />
                 ))}
               </div>
             </section>
@@ -160,6 +173,17 @@ export default function SessionDetailPage() {
                 played_on: data.played_on,
                 type: data.type,
                 note: data.note,
+              }}
+            />
+          ) : null}
+
+          {fixingMatch ? (
+            <MatchEdit
+              key={fixingMatch.id}
+              match={fixingMatch}
+              sessionId={data.id}
+              onOpenChange={(open) => {
+                if (!open) setFixing(null);
               }}
             />
           ) : null}

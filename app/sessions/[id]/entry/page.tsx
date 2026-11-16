@@ -5,8 +5,16 @@ import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { AttendancePicker } from "@/components/entry/attendance-picker";
 import { PlayerPicker } from "@/components/entry/player-picker";
-import { ScorePad, type SetDraft } from "@/components/entry/score-pad";
+import {
+  SetsEditor,
+  draftGames,
+  draftReady,
+  toSetIn,
+  type SetDraft,
+} from "@/components/entry/score-pad";
+import { MatchEdit } from "@/components/session/match-edit";
 import { PlannedList } from "@/components/session/planned-list";
+import { SetScores } from "@/components/session/set-scores";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { SectionHeader } from "@/components/ui/section";
@@ -20,10 +28,19 @@ import {
 } from "@/lib/queries";
 import { participants } from "@/lib/session-stats";
 import { readAttendance, writeAttendance } from "@/lib/attendance";
-import { firstName, formatDateLong, delta } from "@/lib/format";
+import { firstName, formatDateLong, formatSets, delta } from "@/lib/format";
 import { haptic } from "@/lib/haptics";
 import { cn } from "@/lib/utils";
-import type { PlannedGameOut, PlayerOut } from "@/lib/types";
+import type { MatchOut, PlannedGameOut, PlayerOut } from "@/lib/types";
+
+/** Who played whom, with sides and order inside a side ignored. */
+function pairingKey(teamA: string[], teamB: string[]): string {
+  return [[...teamA].sort().join("+"), [...teamB].sort().join("+")].sort().join(" v ");
+}
+
+function ids(team: { id: string }[]): string[] {
+  return team.map((player) => player.id);
+}
 
 /**
  * Rotation that keeps the evening even: the four who have played least, drawn
@@ -84,6 +101,8 @@ export default function EntryPage() {
   const [showPicker, setShowPicker] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
+  /** The saved kamp whose score is being corrected, if any. */
+  const [fixing, setFixing] = useState<string | null>(null);
 
   const data = session.data;
   const everyone = useMemo(() => players.data ?? [], [players.data]);
@@ -209,15 +228,37 @@ export default function EntryPage() {
     haptic("success");
   };
 
-  const gamesA = sets.reduce((sum, set) => sum + (set.games_a ?? 0), 0);
-  const gamesB = sets.reduce((sum, set) => sum + (set.games_b ?? 0), 0);
-  const complete = sets.every((set) => set.games_a !== null && set.games_b !== null);
-  const ready = selected.length === 4 && complete && gamesA + gamesB > 0;
+  // Partier only: a match-tie's points are not games, here or in the rating.
+  const [gamesA, gamesB] = draftGames(sets);
+  const ready = selected.length === 4 && draftReady(sets);
+
+  /**
+   * The same two pairs already have a score tonight, and no planned court is
+   * still waiting for them. Almost always that is somebody fixing a wrong
+   * score by typing it in again — which leaves both on the ladder. So the save
+   * bar stops and offers the correction; a real rematch is one more tap.
+   */
+  const pairing = selected.length === 4 ? pairingKey(selected.slice(0, 2), selected.slice(2, 4)) : null;
+  const duplicate = useMemo<MatchOut | undefined>(() => {
+    if (!pairing) return undefined;
+    const waiting = planned.some(
+      (game) => game.match_id === null && pairingKey(ids(game.team_a), ids(game.team_b)) === pairing,
+    );
+    if (waiting) return undefined;
+    return [...matches]
+      .reverse()
+      .find((match) => pairingKey(ids(match.team_a), ids(match.team_b)) === pairing);
+  }, [pairing, planned, matches]);
+  const fixingMatch = matches.find((match) => match.id === fixing);
 
   const teamA = selected.slice(0, 2).map((pid) => everyone.find((p) => p.id === pid));
   const teamB = selected.slice(2, 4).map((pid) => everyone.find((p) => p.id === pid));
 
-  const save = () => {
+  const save = (asExtra = false) => {
+    if (duplicate && !asExtra) {
+      haptic("warn");
+      return;
+    }
     if (!ready) {
       setError(
         selected.length !== 4
@@ -233,14 +274,11 @@ export default function EntryPage() {
         team_a: [selected[0], selected[1]],
         team_b: [selected[2], selected[3]],
         // `played_at` is stamped by the server so the replay order is its own.
-        sets: sets.map((set) => ({
-          games_a: set.games_a ?? 0,
-          games_b: set.games_b ?? 0,
-        })),
+        sets: toSetIn(sets),
       })
       .then(() => {
         haptic("success");
-        setSaved(`${gamesA}–${gamesB} gemt`);
+        setSaved(`${formatSets(toSetIn(sets))} gemt`);
         setSets([{ games_a: null, games_b: null }]);
         // The next match starts empty and asks again, rather than inheriting
         // four names that were right for the match that just finished.
@@ -455,41 +493,24 @@ export default function EntryPage() {
 
               <section className="mt-5">
                 <SectionHeader title="Partier" />
-                <div className="space-y-2">
-                  {sets.map((draftSet, index) => (
-                    <ScorePad
-                      key={index}
-                      index={index}
-                      draft={draftSet}
-                      onChange={(next) =>
-                        setSets((current) => current.map((set, i) => (i === index ? next : set)))
-                      }
-                      onRemove={
-                        sets.length > 1
-                          ? () => setSets((current) => current.filter((_, i) => i !== index))
-                          : undefined
-                      }
-                    />
-                  ))}
-                  {/* Under the last set, not in the header: you read down the sets
-                      you have played and the next one is the next thing on screen.
-                      Outlined, never volt — "Gem kamp" is the only filled button
-                      on this screen and it stays that way. */}
-                  {sets.length < 3 ? (
-                    <button
-                      onClick={() => {
-                        haptic("tap");
-                        setSets((current) => [...current, { games_a: null, games_b: null }]);
-                      }}
-                      className="flex w-full items-center justify-center gap-1.5 rounded-row border border-dashed border-line py-2.5 text-[11px] font-bold tracking-[0.12em] text-dim transition-colors active:border-volt/50 active:text-volt"
-                    >
-                      <svg viewBox="0 0 12 12" className="h-2.5 w-2.5" aria-hidden>
-                        <path d="M6 1.5v9M1.5 6h9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-                      </svg>
-                      TILFØJ SÆT
-                    </button>
-                  ) : null}
-                </div>
+                {/* Every row says whose it is, in the colour the line-up above
+                    uses for that side. Before four are picked there are no
+                    names to say, so the sides are just A and B. */}
+                <SetsEditor
+                  sets={sets}
+                  teams={[
+                    teamA.length === 2 && teamA.every(Boolean)
+                      ? teamA.map((p) => firstName(p!.name)).join(" & ")
+                      : "Hold A",
+                    teamB.length === 2 && teamB.every(Boolean)
+                      ? teamB.map((p) => firstName(p!.name)).join(" & ")
+                      : "Hold B",
+                  ]}
+                  onChange={(next) => {
+                    setError(null);
+                    setSets(next);
+                  }}
+                />
               </section>
             </>
           )}
@@ -498,10 +519,17 @@ export default function EntryPage() {
             <section className="mt-6">
               <SectionHeader title="Gemt i aften" />
               <div className="space-y-1">
+                {/* Tap a row to fix its score. That is the only fix: typing
+                    the right score in again is a second kamp, not a fix. */}
                 {matches.map((match, index) => (
-                  <div
+                  <button
                     key={match.id}
-                    className="flex items-center gap-1.5 rounded-row bg-ink-850/60 px-3 py-2"
+                    onClick={() => {
+                      haptic("tap");
+                      setFixing(match.id);
+                    }}
+                    aria-label={`Ret resultatet i kamp ${index + 1}`}
+                    className="flex w-full items-center gap-1.5 rounded-row bg-ink-850/60 px-3 py-2 text-left transition-colors active:bg-ink-800"
                   >
                     <span className="num w-3.5 shrink-0 text-[10px] text-dim">{index + 1}</span>
                     <span className="min-w-0 flex-1 truncate text-[12px] text-mute">
@@ -509,29 +537,28 @@ export default function EntryPage() {
                       <span className="text-dim"> mod </span>
                       {firstName(match.team_b[0].name)} & {firstName(match.team_b[1].name)}
                     </span>
-                    {/* The scoreline, set by set, the way it is said out loud.
-                        The game total is what the rating engine adds up, not a
-                        result anybody recognises. Never shrinks: the names give
-                        way first. */}
-                    <span className="flex shrink-0 items-center gap-1">
-                      {match.sets.map((set, setIndex) => (
-                        <span
-                          key={setIndex}
-                          className="num-tight text-[13px] font-bold tabular-nums text-chalk"
-                        >
-                          {set.games_a}
-                          <span className="text-dim">-</span>
-                          {set.games_b}
-                        </span>
-                      ))}
-                    </span>
+                    <SetScores sets={match.sets} />
                     <span className="num w-[30px] shrink-0 text-right text-[10px] text-dim">
                       {delta(match.deltas[match.team_a[0].id] ?? 0, 0)}
                     </span>
-                  </div>
+                  </button>
                 ))}
               </div>
+              <p className="mt-1.5 px-1 text-[10px] leading-snug text-dim">
+                Forkert resultat? Tryk på kampen og ret den.
+              </p>
             </section>
+          ) : null}
+
+          {fixingMatch ? (
+            <MatchEdit
+              key={fixingMatch.id}
+              match={fixingMatch}
+              sessionId={id}
+              onOpenChange={(open) => {
+                if (!open) setFixing(null);
+              }}
+            />
           ) : null}
 
           {/* Closing is what turns the evening into the report, so it waits
@@ -578,7 +605,11 @@ export default function EntryPage() {
             <div className="mx-auto w-full max-w-[520px] rounded-card border border-line bg-ink-900/92 p-2.5 shadow-[0_18px_40px_-20px_rgba(0,0,0,0.9)] backdrop-blur-xl">
               <div className="flex items-center justify-between gap-2 px-1 pb-2">
                 <span className="min-w-0 flex-1 truncate text-[11px] text-mute">
-                  {error ?? saved ?? `Partier i alt ${gamesA}–${gamesB}`}
+                  {error ??
+                    saved ??
+                    (duplicate
+                      ? `Står allerede som ${formatSets(duplicate.sets)}`
+                      : `Partier i alt ${gamesA}–${gamesB}`)}
                 </span>
                 <span className="num-tight shrink-0 text-[18px] font-black">
                   <span className="text-volt">{gamesA}</span>
@@ -586,15 +617,40 @@ export default function EntryPage() {
                   <span className="text-chalk">{gamesB}</span>
                 </span>
               </div>
-              <Button
-                variant="volt"
-                size="lg"
-                className="w-full"
-                disabled={createMatch.isPending}
-                onClick={save}
-              >
-                {createMatch.isPending ? "Gemmer…" : "Gem kamp"}
-              </Button>
+              {duplicate ? (
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    variant="ghost"
+                    size="lg"
+                    className="w-full border border-line"
+                    onClick={() => {
+                      haptic("tap");
+                      setFixing(duplicate.id);
+                    }}
+                  >
+                    Ret den
+                  </Button>
+                  <Button
+                    variant="volt"
+                    size="lg"
+                    className="w-full"
+                    disabled={createMatch.isPending}
+                    onClick={() => save(true)}
+                  >
+                    {createMatch.isPending ? "Gemmer…" : "Gem ny kamp"}
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  variant="volt"
+                  size="lg"
+                  className="w-full"
+                  disabled={createMatch.isPending}
+                  onClick={() => save()}
+                >
+                  {createMatch.isPending ? "Gemmer…" : "Gem kamp"}
+                </Button>
+              )}
             </div>
           </div>
         </>

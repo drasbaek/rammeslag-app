@@ -286,3 +286,172 @@ def test_matches_in_one_backfilled_session_keep_entry_order(client, db) -> None:
     assert all(s[:10] == str(played) for s in stamps), "every match sits on the session's date"
     assert stamps == sorted(stamps), "and they replay in the order they were entered"
     assert len(set(stamps)) == 6, "no two matches may share a timestamp"
+
+
+# --------------------------------------------------------------------------
+# Correcting a score in place
+# --------------------------------------------------------------------------
+
+
+def _ladder(client) -> dict[str, float]:
+    return {
+        e["player_id"]: e["rating"]
+        for e in client.get("/api/ladder?season=all").json()["entries"]
+    }
+
+
+def test_a_wrong_score_is_corrected_in_place(client, db) -> None:
+    """The fix for a wrong score is the same match with the right sets -- not a
+    second match beside it, which the ladder would count twice."""
+    _seed(db)
+    make_player(db, "pleb", "Pleb", pin="1111")
+    login(client, "pleb", "1111")
+    wrong = client.post("/api/matches", json=_payload(sets=[{"games_a": 4, "games_b": 6}])).json()
+
+    response = client.patch(
+        f"/api/matches/{wrong['id']}",
+        json={"sets": [{"games_a": 6, "games_b": 4}, {"games_a": 6, "games_b": 3}]},
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["id"] == wrong["id"]
+    assert body["played_at"] == wrong["played_at"]
+    assert [p["id"] for p in body["team_a"]] == ["p1", "p2"]
+    assert [(s["games_a"], s["games_b"]) for s in body["sets"]] == [(6, 4), (6, 3)]
+    assert body["winner"] == "A"
+    assert body["deltas"]["p1"] > 0
+
+    detail = client.get("/api/sessions/s1").json()
+    assert [m["id"] for m in detail["matches"]] == [wrong["id"]]
+
+
+def test_a_corrected_score_rates_as_if_it_had_been_typed_right(client, db) -> None:
+    _seed(db)
+    login(client, "boss", "9999")
+    right = [{"games_a": 6, "games_b": 2}]
+    match = client.post("/api/matches", json=_payload(sets=right)).json()
+    client.post("/api/matches", json=_payload(team_a=["p1", "p3"], team_b=["p2", "p4"]))
+    typed_right = _ladder(client)
+
+    client.patch(f"/api/matches/{match['id']}", json={"sets": [{"games_a": 1, "games_b": 6}]})
+    assert _ladder(client) != typed_right
+    client.patch(f"/api/matches/{match['id']}", json={"sets": right})
+    assert _ladder(client) == typed_right
+
+
+def test_any_member_corrects_a_closed_evening(client, db) -> None:
+    """The same reach as a delete (DECISIONS.md 17): a wrong score on last
+    week's report does not wait for an admin."""
+    _seed(db)
+    make_player(db, "pleb", "Pleb", pin="1111")
+    login(client, "boss", "9999")
+    match = client.post("/api/matches", json=_payload()).json()
+    client.post("/api/sessions/s1/close")
+
+    login(client, "pleb", "1111")
+    fixed = client.patch(f"/api/matches/{match['id']}", json={"sets": [{"games_a": 6, "games_b": 1}]})
+    assert fixed.status_code == 200
+    assert fixed.json()["games_b"] == 1
+
+
+def test_a_correction_obeys_the_entry_rules(client, db) -> None:
+    _seed(db)
+    login(client, "boss", "9999")
+    match = client.post("/api/matches", json=_payload()).json()
+
+    zero = client.patch(f"/api/matches/{match['id']}", json={"sets": [{"games_a": 0, "games_b": 0}]})
+    assert zero.status_code == 400
+    assert client.patch(f"/api/matches/{match['id']}", json={"sets": []}).status_code == 422
+    assert client.patch("/api/matches/nope", json={"sets": [{"games_a": 6, "games_b": 1}]}).status_code == 404
+
+    sets = client.get("/api/sessions/s1").json()["matches"][0]["sets"]
+    assert [(s["games_a"], s["games_b"]) for s in sets] == [(6, 4)]
+
+
+def test_correcting_needs_a_login(client, db) -> None:
+    _seed(db)
+    login(client, "boss", "9999")
+    match = client.post("/api/matches", json=_payload()).json()
+    client.post("/api/auth/logout")
+    response = client.patch(f"/api/matches/{match['id']}", json={"sets": [{"games_a": 6, "games_b": 1}]})
+    assert response.status_code == 401
+
+
+# --------------------------------------------------------------------------
+# A third set played as a match-tie
+# --------------------------------------------------------------------------
+
+MATCH_TIE = [
+    {"games_a": 6, "games_b": 4},
+    {"games_a": 3, "games_b": 6},
+    {"games_a": 10, "games_b": 7, "tiebreak": True},
+]
+
+
+def test_a_match_tie_is_a_set_and_its_points_are_not_games(client, db) -> None:
+    _seed(db)
+    login(client, "boss", "9999")
+    body = client.post("/api/matches", json=_payload(sets=MATCH_TIE)).json()
+
+    assert [s["tiebreak"] for s in body["sets"]] == [False, False, True]
+    assert [s["winner"] for s in body["sets"]] == ["A", "B", "A"]
+    assert (body["games_a"], body["games_b"]) == (9, 10)
+    assert body["winner"] == "A"
+
+    # And it reads back the same way, from the database.
+    stored = client.get("/api/sessions/s1").json()["matches"][0]
+    assert [(s["games_a"], s["games_b"], s["tiebreak"]) for s in stored["sets"]] == [
+        (6, 4, False),
+        (3, 6, False),
+        (10, 7, True),
+    ]
+
+
+@pytest.mark.parametrize(
+    "sets",
+    [
+        # A match-tie as the only set.
+        [{"games_a": 10, "games_b": 7, "tiebreak": True}],
+        # As the second set.
+        [{"games_a": 6, "games_b": 4}, {"games_a": 10, "games_b": 7, "tiebreak": True}],
+        # Before the real third set.
+        [
+            {"games_a": 6, "games_b": 4},
+            {"games_a": 10, "games_b": 7, "tiebreak": True},
+            {"games_a": 6, "games_b": 4},
+        ],
+    ],
+)
+def test_a_match_tie_is_only_ever_the_third_set(client, db, sets) -> None:
+    _seed(db)
+    login(client, "boss", "9999")
+    response = client.post("/api/matches", json=_payload(sets=sets))
+    assert response.status_code == 400
+    assert response.json()["detail"] == "En match-tie kan kun spilles som tredje sæt."
+
+
+def test_match_tie_points_alone_are_not_a_played_game(client, db) -> None:
+    _seed(db)
+    login(client, "boss", "9999")
+    sets = [
+        {"games_a": 0, "games_b": 0},
+        {"games_a": 0, "games_b": 0},
+        {"games_a": 10, "games_b": 8, "tiebreak": True},
+    ]
+    response = client.post("/api/matches", json=_payload(sets=sets))
+    assert response.status_code == 400
+    assert response.json()["detail"] == "En kamp skal have mindst ét spillet parti."
+
+
+def test_a_third_set_can_be_corrected_into_a_match_tie(client, db) -> None:
+    _seed(db)
+    login(client, "boss", "9999")
+    match = client.post(
+        "/api/matches",
+        json=_payload(sets=[*MATCH_TIE[:2], {"games_a": 10, "games_b": 7}]),
+    ).json()
+    assert match["games_a"] == 19
+
+    fixed = client.patch(f"/api/matches/{match['id']}", json={"sets": MATCH_TIE}).json()
+    assert fixed["sets"][2]["tiebreak"] is True
+    assert fixed["games_a"] == 9

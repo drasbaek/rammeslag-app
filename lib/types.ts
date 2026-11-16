@@ -157,8 +157,11 @@ export interface LadderOut {
 
 export interface SetOut {
   set_number: number;
+  /** Games — or, for a match-tie, points. */
   games_a: number;
   games_b: number;
+  /** A match-tie played as the third set. Its points are never games. */
+  tiebreak: boolean;
   /** Display-only set verdict. Never feeds the rating. */
   winner: TeamSide;
 }
@@ -172,7 +175,7 @@ export interface MatchOut {
   team_a: PlayerOut[];
   team_b: PlayerOut[];
   sets: SetOut[];
-  /** Sum over sets. Derived, never stored. */
+  /** Sum over the regular sets; a match-tie's points are not games. Derived. */
   games_a: number;
   games_b: number;
   winner: TeamSide;
@@ -407,6 +410,8 @@ export interface LoginRequest {
 export interface SetIn {
   games_a: number;
   games_b: number;
+  /** Only ever the third set, after two regular ones. Its values are points. */
+  tiebreak?: boolean;
 }
 
 export interface MatchCreate {
@@ -415,6 +420,11 @@ export interface MatchCreate {
   team_a: PlayerId[];
   team_b: PlayerId[];
   /** One to three sets. `played_at` is stamped by the server, never sent. */
+  sets: SetIn[];
+}
+
+/** PATCH /api/matches/{id}. Only the sets: who played, and when, stay put. */
+export interface MatchScoreUpdate {
   sets: SetIn[];
 }
 

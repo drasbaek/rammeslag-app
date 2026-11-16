@@ -18,12 +18,14 @@ import {
   type SeedSession,
 } from "@/lib/mock/seed";
 import {
+  gameTotals,
   observedScore,
   replay,
   setVerdict,
   verdictFromScore,
   SEED_RATING,
   type AppliedMatch,
+  type ScoreSet,
 } from "@/lib/mock/engine";
 import { PROVISIONAL_MATCHES } from "@/lib/types";
 import type {
@@ -44,6 +46,7 @@ import type {
   LadderOut,
   LadderScope,
   MatchCreate,
+  MatchScoreUpdate,
   MatchOut,
   MatchupsIn,
   MeOut,
@@ -80,6 +83,8 @@ const MIN_HIGHLIGHT_SAMPLE = 2;
 /** PlayerOut plus the admin flag, exactly as MeOut is. */
 const roster: MeOut[] = PLAYERS.map((p) => ({ ...p }));
 const extraMatches: SeedMatch[] = [];
+/** Deleted one at a time by an admin. The seed itself is never spliced. */
+const deletedMatches = new Set<string>();
 let authed: MeOut | null = null;
 
 const playerById = new Map(roster.map((p) => [p.id, p]));
@@ -114,7 +119,9 @@ function recomputeCurrent(): void {
  * update, exactly as the backend does it.
  */
 function allMatches(): SeedMatch[] {
-  return [...MATCHES, ...extraMatches].filter((m) => sessionById.has(m.session_id));
+  return [...MATCHES, ...extraMatches].filter(
+    (m) => sessionById.has(m.session_id) && !deletedMatches.has(m.id),
+  );
 }
 
 /**
@@ -518,7 +525,7 @@ export async function getSessions(seasonId?: string): Promise<SessionOut[]> {
 
 /** Who won the match: sets decide, games break a tie. Delegates to the engine
  *  so the scorecard and the ladder cannot disagree. See docs/RATING.md. */
-function sideOf(sets: Array<{ games_a: number; games_b: number }>): TeamSide {
+function sideOf(sets: ScoreSet[]): TeamSide {
   const scoreA = observedScore(sets);
   if (scoreA === 1) return "A";
   if (scoreA === 0) return "B";
@@ -526,8 +533,8 @@ function sideOf(sets: Array<{ games_a: number; games_b: number }>): TeamSide {
 }
 
 /** Who won one set. A presentation of the engine's rule, not a second copy. */
-function setWinner(gamesA: number, gamesB: number): TeamSide {
-  const won = setVerdict(gamesA, gamesB);
+function setWinner(gamesA: number, gamesB: number, tiebreak: boolean): TeamSide {
+  const won = setVerdict(gamesA, gamesB, tiebreak);
   if (won === "a") return "A";
   if (won === "b") return "B";
   return "D";
@@ -546,7 +553,8 @@ function toMatch(item: AppliedMatch, seed: SeedMatch): MatchOut {
       set_number: set.set_number,
       games_a: set.games_a,
       games_b: set.games_b,
-      winner: setWinner(set.games_a, set.games_b),
+      tiebreak: Boolean(set.tiebreak),
+      winner: setWinner(set.games_a, set.games_b, Boolean(set.tiebreak)),
     })),
     games_a: item.match.games_a,
     games_b: item.match.games_b,
@@ -796,8 +804,7 @@ export async function me(): Promise<MeOut | null> {
 
 export async function createMatch(body: MatchCreate): Promise<MatchOut> {
   if (!authed) throw new Error("Log ind for at gemme kampe");
-  const gamesA = body.sets.reduce((s, x) => s + x.games_a, 0);
-  const gamesB = body.sets.reduce((s, x) => s + x.games_b, 0);
+  const [gamesA, gamesB] = gameTotals(body.sets);
   const index = allMatches().filter((m) => m.session_id === body.session_id).length;
   const session = sessionById.get(body.session_id);
   const date = session?.played_on ?? new Date().toISOString().slice(0, 10);
@@ -812,13 +819,35 @@ export async function createMatch(body: MatchCreate): Promise<MatchOut> {
     team_b: [body.team_b[0], body.team_b[1]],
     games_a: gamesA,
     games_b: gamesB,
-    sets: body.sets.map((set, i) => ({ set_number: i + 1, ...set })),
+    sets: body.sets.map((set, i) => ({ set_number: i + 1, ...set, tiebreak: Boolean(set.tiebreak) })),
   };
   extraMatches.push(seed);
 
   const w = world();
   const item = w.applied.find((x) => x.match.id === seed.id)!;
   return delay(toMatch(item, seed));
+}
+
+/** PATCH /api/matches/{id}. Any member, open evening or closed. */
+export async function correctScore(id: string, body: MatchScoreUpdate): Promise<MatchOut> {
+  if (!authed) throw new Error("Du skal være logget ind for at gøre det.");
+  const seed = allMatches().find((m) => m.id === id);
+  if (!seed) throw new Error("Kampen findes ikke.");
+  if (body.sets.reduce((sum, set) => sum + set.games_a + set.games_b, 0) === 0) {
+    throw new Error("En kamp skal have mindst ét spillet parti.");
+  }
+  seed.sets = body.sets.map((set, i) => ({ set_number: i + 1, ...set, tiebreak: Boolean(set.tiebreak) }));
+  [seed.games_a, seed.games_b] = gameTotals(body.sets);
+  const item = world().applied.find((x) => x.match.id === id)!;
+  return delay(toMatch(item, seed));
+}
+
+/** DELETE /api/matches/{id}. Any member; the replay simply runs without it. */
+export async function deleteMatch(id: string): Promise<null> {
+  if (!authed) throw new Error("Du skal være logget ind for at gøre det.");
+  if (!allMatches().some((m) => m.id === id)) throw new Error("Kampen findes ikke.");
+  deletedMatches.add(id);
+  return delay(null);
 }
 
 const SESSION_TYPES: SessionType[] = ["training", "casual", "social", "tournament"];

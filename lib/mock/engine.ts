@@ -14,6 +14,13 @@ export const PROVISIONAL_MATCHES = 5;
 export const MOV_SCALE = 1.75;
 export const ELO_SCALE = 400.0;
 
+/** One set as played. A match-tie carries points in the games fields. */
+export interface ScoreSet {
+  games_a: number;
+  games_b: number;
+  tiebreak?: boolean;
+}
+
 export interface MatchInput {
   id: string;
   session_id: string;
@@ -21,7 +28,8 @@ export interface MatchInput {
   team_a: [string, string];
   team_b: [string, string];
   /** Per-set games, in the order played. The rating reads this, not the totals. */
-  sets: Array<{ games_a: number; games_b: number }>;
+  sets: ScoreSet[];
+  /** Regular sets only: a match-tie's points are never games. */
   games_a: number;
   games_b: number;
 }
@@ -41,34 +49,50 @@ export interface ReplayResult {
 }
 
 /**
- * A set is won on a two-game lead, or at 7-6. A level set belongs to nobody.
- * Normative: this feeds the rating. See docs/RATING.md.
+ * A set is won on a two-game lead, or at 7-6. A match-tie is won on a
+ * two-point lead and nothing else — 7-6 in points is unfinished. A level set
+ * belongs to nobody. Normative: this feeds the rating. See docs/RATING.md.
  */
-export function setVerdict(gamesA: number, gamesB: number): "a" | "b" | null {
+export function setVerdict(gamesA: number, gamesB: number, tiebreak = false): "a" | "b" | null {
   const diff = Math.abs(gamesA - gamesB);
   if (diff >= 2) return gamesA > gamesB ? "a" : "b";
+  if (tiebreak) return null;
   if ((gamesA === 7 && gamesB === 6) || (gamesB === 7 && gamesA === 6)) {
     return gamesA > gamesB ? "a" : "b";
   }
   return null;
 }
 
-/** Team A's observed score: sets decide, games break a tie on sets. */
-export function observedScore(sets: Array<{ games_a: number; games_b: number }>): number {
+/** Game totals over the regular sets. A match-tie's points are not games. */
+export function gameTotals(sets: ScoreSet[]): [number, number] {
+  const regular = sets.filter((set) => !set.tiebreak);
+  return [
+    regular.reduce((sum, set) => sum + set.games_a, 0),
+    regular.reduce((sum, set) => sum + set.games_b, 0),
+  ];
+}
+
+/** The lead in games it takes to decide a match that is level on sets. */
+export const GAME_MARGIN_TO_DECIDE = 2;
+
+/**
+ * Team A's observed score. Sets decide, a match-tie counting as one. Level on
+ * sets, the games decide only by two or more — 6-4 6-7 is a draw.
+ */
+export function observedScore(sets: ScoreSet[]): number {
   let takenA = 0;
   let takenB = 0;
   for (const set of sets) {
-    const won = setVerdict(set.games_a, set.games_b);
+    const won = setVerdict(set.games_a, set.games_b, Boolean(set.tiebreak));
     if (won === "a") takenA += 1;
     else if (won === "b") takenB += 1;
   }
   if (takenA > takenB) return 1;
   if (takenB > takenA) return 0;
 
-  const gamesA = sets.reduce((sum, set) => sum + set.games_a, 0);
-  const gamesB = sets.reduce((sum, set) => sum + set.games_b, 0);
-  if (gamesA > gamesB) return 1;
-  if (gamesB > gamesA) return 0;
+  const [gamesA, gamesB] = gameTotals(sets);
+  if (gamesA - gamesB >= GAME_MARGIN_TO_DECIDE) return 1;
+  if (gamesB - gamesA >= GAME_MARGIN_TO_DECIDE) return 0;
   return 0.5;
 }
 

@@ -29,6 +29,10 @@ SET_A = 1
 SET_B = -1
 SET_NONE = 0
 
+#: The lead that decides anything short of a finished set: a set, a match-tie,
+#: and a match that is level on sets. One margin, so the three never drift.
+CLEAR_LEAD = 2
+
 
 @dataclass(frozen=True)
 class MatchInput:
@@ -38,6 +42,10 @@ class MatchInput:
     The game totals are derived from it rather than carried beside it, so the
     two can never disagree -- the shape `matches.service.MatchRow` already
     uses.
+
+    `match_tie` is a deciding third set played as a match-tie, in POINTS. It
+    sits beside `sets` rather than in it because points are not games: a
+    10-8 match-tie is one set won, not eighteen games played.
     """
 
     match_id: str
@@ -45,6 +53,7 @@ class MatchInput:
     team_a: tuple[str, str]
     team_b: tuple[str, str]
     sets: tuple[tuple[int, int], ...]
+    match_tie: tuple[int, int] | None = None
 
     @property
     def games_a(self) -> int:
@@ -91,28 +100,52 @@ def set_winner(games_a: int, games_b: int) -> int:
         return SET_A
     if (games_a, games_b) == (6, 7):
         return SET_B
-    if games_a - games_b >= 2:
+    return _clear_lead(games_a, games_b)
+
+
+def match_tie_winner(points_a: int, points_b: int) -> int:
+    """Which side took a match-tie: a two-point lead, and nothing else.
+
+    No 7-6 exception. A match-tie stopped by the clock at 7-6 is as unfinished
+    as a set stopped at 4-3.
+    """
+    return _clear_lead(points_a, points_b)
+
+
+def _clear_lead(a: int, b: int) -> int:
+    if a - b >= CLEAR_LEAD:
         return SET_A
-    if games_b - games_a >= 2:
+    if b - a >= CLEAR_LEAD:
         return SET_B
     return SET_NONE
 
 
-def sets_won(sets: Sequence[tuple[int, int]]) -> tuple[int, int]:
-    """Sets taken by A and by B. Unfinished sets count for neither."""
+def sets_won(
+    sets: Sequence[tuple[int, int]], match_tie: tuple[int, int] | None = None
+) -> tuple[int, int]:
+    """Sets taken by A and by B, the match-tie included. Unfinished ones count
+    for neither."""
     winners = [set_winner(games_a, games_b) for games_a, games_b in sets]
+    if match_tie is not None:
+        winners.append(match_tie_winner(*match_tie))
     return winners.count(SET_A), winners.count(SET_B)
 
 
-def observed_score(sets: Sequence[tuple[int, int]]) -> float:
-    """Team A's observed score. Sets decide the match; games break a set tie.
+def observed_score(
+    sets: Sequence[tuple[int, int]], match_tie: tuple[int, int] | None = None
+) -> float:
+    """Team A's observed score. Sets decide; a clear game lead breaks a set tie.
 
     Sets are what the players believe they won -- 6-0 6-7 6-7 is a win for B,
-    however the 32 games fell. But timed sets end level often enough that sets
-    alone leave a fifth of the history undecided, so the game count breaks a
-    tie on sets rather than calling those matches draws.
+    however the 32 games fell. Level on sets, the games decide only on a lead
+    of two, the same margin that wins a set: 6-2 4-6 is A's, but 6-4 6-7 is a
+    draw. One game over two sets is not a result anybody on court would claim.
+
+    Match-tie points never enter the game count. A match-tie that is decided
+    is a set; one that is not leaves the match level on sets, and then the
+    games of the real sets decide it, or nothing does.
     """
-    taken_a, taken_b = sets_won(sets)
+    taken_a, taken_b = sets_won(sets, match_tie)
     if taken_a > taken_b:
         return 1.0
     if taken_b > taken_a:
@@ -120,9 +153,10 @@ def observed_score(sets: Sequence[tuple[int, int]]) -> float:
 
     games_a = sum(games for games, _ in sets)
     games_b = sum(games for _, games in sets)
-    if games_a > games_b:
+    lead = _clear_lead(games_a, games_b)
+    if lead == SET_A:
         return 1.0
-    if games_b > games_a:
+    if lead == SET_B:
         return 0.0
     return 0.5
 
@@ -182,7 +216,7 @@ def compute(
         for player_id in team_a + team_b:
             seed(player_id)
 
-        score_a = observed_score(match.sets)
+        score_a = observed_score(match.sets, match.match_tie)
         score_b = 1.0 - score_a
 
         rating_a = (ratings[team_a[0]] + ratings[team_a[1]]) / 2.0
@@ -196,9 +230,12 @@ def compute(
             deltas = {player_id: 0.0 for player_id in team_a + team_b}
         else:
             # The margin belongs to whoever won, so a side that took the sets
-            # while losing the game count gets none. A draw is level on games,
-            # which makes the order irrelevant there.
-            if score_a < 0.5:
+            # while losing the game count gets none. A draw has no winner and
+            # no margin: 6-4 6-7 is a draw a game apart, and that game is
+            # exactly what the draw rule just said does not count.
+            if score_a == 0.5:
+                mov = 1.0
+            elif score_a < 0.5:
                 mov = margin_multiplier(match.games_b, match.games_a)
             else:
                 mov = margin_multiplier(match.games_a, match.games_b)

@@ -242,12 +242,81 @@ def test_games_break_a_tie_on_sets() -> None:
 
 
 def test_a_level_set_counts_for_neither_side() -> None:
-    """A single 4-3 set is nobody's set, and 4-3 on games still decides it."""
+    """A single 4-3 set is nobody's set, and one game is not a clear lead."""
     result = compute([sets_match(1, ("a1", "a2"), ("b1", "b2"), ((4, 3),))])
 
     delta = result.history[0]
+    assert set(delta.verdict.values()) == {"D"}
+    assert delta.deltas["a1"] == 0.0
+
+
+def test_one_set_all_and_one_game_apart_is_a_draw() -> None:
+    """6-4 6-7 is a set each and 12-11 on games. One game over two sets is not
+    a win, and the draw carries no margin: from level ratings nobody moves."""
+    result = compute([sets_match(1, ("a1", "a2"), ("b1", "b2"), ((6, 4), (6, 7)))])
+
+    delta = result.history[0]
+    assert set(delta.verdict.values()) == {"D"}
+    for player_id in ("a1", "a2", "b1", "b2"):
+        assert delta.deltas[player_id] == 0.0
+
+
+def test_one_set_all_and_two_games_apart_goes_to_the_games() -> None:
+    result = compute([sets_match(1, ("a1", "a2"), ("b1", "b2"), ((6, 2), (4, 6)))])
+
+    delta = result.history[0]
     assert delta.verdict["a1"] == "W"
-    assert delta.deltas["a1"] == pytest.approx(K_PROVISIONAL * (1.0 + MOV_SCALE / 7) * 0.5)
+    assert delta.verdict["b1"] == "L"
+    assert delta.deltas["a1"] == pytest.approx(K_PROVISIONAL * (1.0 + MOV_SCALE * 2 / 18) * 0.5)
+
+
+def test_two_unfinished_sets_two_games_apart_go_to_the_games() -> None:
+    """Level on sets includes nil-nil: 4-3 4-3 is nobody's sets and 8-6 on games."""
+    result = compute([sets_match(1, ("a1", "a2"), ("b1", "b2"), ((4, 3), (4, 3)))])
+    assert result.history[0].verdict["a1"] == "W"
+
+
+def tie_match(sets, match_tie) -> MatchInput:
+    return MatchInput(
+        match_id="match-001",
+        played_at=START,
+        team_a=("a1", "a2"),
+        team_b=("b1", "b2"),
+        sets=sets,
+        match_tie=match_tie,
+    )
+
+
+def test_a_match_tie_won_by_two_points_is_a_set() -> None:
+    result = compute([tie_match(((6, 4), (4, 6)), (10, 8))])
+    assert result.history[0].verdict["a1"] == "W"
+
+    # A clock-stopped match-tie on a two-point lead counts too.
+    result = compute([tie_match(((6, 4), (4, 6)), (3, 5))])
+    assert result.history[0].verdict["b1"] == "W"
+
+
+def test_a_match_tie_one_point_apart_is_nobodys_and_seven_six_is_no_exception() -> None:
+    """Level on sets after it, and level on games, so a draw."""
+    for points in ((9, 8), (7, 6)):
+        result = compute([tie_match(((6, 4), (4, 6)), points)])
+        assert set(result.history[0].verdict.values()) == {"D"}, points
+
+
+def test_match_tie_points_are_not_games() -> None:
+    """A 10-2 match-tie is one set, not eight games of margin."""
+    match = tie_match(((6, 4), (4, 6)), (10, 2))
+    assert (match.games_a, match.games_b) == (10, 10)
+
+    delta = compute([match]).history[0]
+    # Won on sets while level on games: no margin bonus, K alone.
+    assert delta.deltas["a1"] == pytest.approx(K_PROVISIONAL * 0.5)
+
+
+def test_a_match_tie_outweighs_a_game_lead() -> None:
+    """6-0 4-6 is A by six games, but a match-tie B won makes it 2-1 in sets."""
+    result = compute([tie_match(((6, 0), (4, 6)), (6, 10))])
+    assert result.history[0].verdict["b1"] == "W"
 
 
 def test_level_on_sets_and_on_games_is_a_draw() -> None:
